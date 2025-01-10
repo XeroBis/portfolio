@@ -1,0 +1,165 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet"  type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="canonical" href="https://www.alanbignon.com">
+    <meta name="theme-color" content="#rgb(240 240 232)">
+    <title>Alan Bignon</title>
+</head>
+<body>
+    
+    <header id="contenu_header">
+        <a href="" id="name_href">Alan Bignon</a>
+        <div id="links">
+            <a href="mailto:contact@alanbignon.com" id="send_mail">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <span id="span_point">•</span>
+            <a href="#projects" id="my_projects">My projects</a>
+        </div>
+    
+    </header>
+    
+    <section id="about_me">
+        <div id="about_me_txt">
+            <h1 id="about_me_accroche">A great addition to you team !</h1>
+            <p id="about_me_phrase">
+                I'm Alan, a passionate developer with a strong interest in technology and data. 
+                I enjoy working on challenging projects and constantly improving my skills across multiple domains.
+            </p>
+        </div>
+        <img src="{% static 'images/me.png' %}" id="img_me">
+        <div id="logo_liens">
+            <a href="https://github.com/XeroBis" target=”_blank”>
+                <img src="{% static 'images/github_logo.png' %}" class="logo">
+            </a>
+            <a href="https://www.linkedin.com/in/alan-bignon/" target=”_blank”>
+                <img src="{% static 'images/linkedin_logo.png' %}" class ="logo">
+            </a>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="project">
+            <div class="project_div">
+                <div class="project_title" id="project_website_title">This Website</div>
+                <div class="project_description" id="project_website_content">
+                    Website using the framework Django.
+                    It serves as a platform to display my abilities in Python developpement and what kind of project I have been doing.
+                    By sharing what I have done, I hope I can attract potential employers or collaborators.
+                </div>
+                <div class="project_tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">Django</span>
+                    <span class="tag">HTML & css</span>
+                    <span class="tag">In progress</span>
+                </div>
+                <a href="https://github.com/XeroBis/portfolio" target=”_blank”>
+                    <img src="{% static 'images/github_logo.png' %}" class="logo">
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <div class="project_div">
+                <div class="project_title" id="project_irc_chat_title">IRC Chat</div>
+                <div class="project_description" id="project_irc_chat_content">
+                    This is a multi-threaded IRC chat application implemented in Python. Two implementations are available:
+                    - multi server
+                    - single server 
+                    For each implementation there is a client-side code that allows users to connect to the server, 
+                    join channels, and send messages and there is a server-side code capable of handling multiple clients and servers.
+                    <br/> Each server logs relevant information (precious for debugging).
+                </div>
+                <div class="project_tags">
+                    <span class="tag">Multi-threading</span>
+                    <span class="tag">Python</span>
+                </div>
+                <a href="https://github.com/XeroBis/irc_chat" target=”_blank”>
+                    <img src="{% static 'images/github_logo.png' %}" class="logo">
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <div class="project_div">
+                <div class="project_title" id="project_finance_title" >Financial Sentiment Analysis</div>
+                <div class="project_description" id="project_finance_content">
+                    This project offers a comprehensive toolkit for analyzing sentiments within financial text data. 
+                    Leveraging state-of-the-art natural language processing (NLP) techniques, machine learning algorithms and LMs fine tuning, our project provides insights into the sentiment dynamics of financial phrases.
+                </div>
+                <div class="project_tags">
+                    <span class="tag">LLM</span>
+                    <span class="tag">Machine Learning</span>
+                    <span class="tag">NLP</span>
+                    <span class="tag">Python</span>
+                </div>
+                <a href="https://github.com/XeroBis/financial_sentiment_analysis" target=”_blank”>
+                    <img src="{% static 'images/github_logo.png' %}" class="logo">
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <div class="project_div">
+                <div class="project_title" id="project_language_title">Native Language Detection</div>
+                <div class="project_description" id="project_language_content">
+                    This project is a native language detection tool. It is able to detect the native language of person that wrote a given text in english.
+                    The project was coded in Python and uses NLP and Machine Learning algorithm.
+                </div>
+                <div class="project_tags">
+                    <span class="tag">Machine Learning</span>
+                    <span class="tag">NLP</span>
+                    <span class="tag">Python</span>
+                </div>
+                <a href="https://github.com/XeroBis/lang_detection" target=”_blank”>
+                    <img src="{% static 'images/github_logo.png' %}" class="logo">
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <div class="project_div">
+                <div class="project_title" id="project_life_title">Game Of Life</div>
+                <div class="project_description" id="project_life_content">
+                    This project is an implementation of Conway's Game of Life, a cellular automaton devised by the British mathematician John Horton Conway. 
+                    The game is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. 
+                    The project was coded in OCaml and Python.
+                    Both version are very different and have different features.
+                </div>
+                <div class="project_tags">
+                    <span class="tag">OCaml</span>
+                    <span class="tag">Multi-threading</span>
+                    <span class="tag">Python</span>
+                </div>
+                <a href="https://github.com/XeroBis/Game-Of-Life" target=”_blank”>
+                    <img src="{% static 'images/github_logo.png' %}" class="logo">
+                </a>
+            </div>
+        </div>
+        <div class="project">
+            <div class="project_div">
+                <div class="project_title" id="project_autograd_title">Basic Autograd implementation</div>
+                <div class="project_description" id="project_autograd_content">
+                    Basic implementation of autograd in Python. This project was created to understand how autograd and neural network basic functionnality works. I followed the tutorial of Andrej Karpathy.
+                    His implementation : <a href="https://github.com/karpathy/micrograd" target=”_blank”><b>micrograd</b></a>
+                </div>
+                <div class="project_tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">Neural Network</span>
+                </div>
+                <a href="https://github.com/XeroBis/nn_grad_basic" target=”_blank”>
+                    <img src="{% static 'images/github_logo.png' %}" class="logo">
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="cv">
+        <div id="cv_title">My Resume</div>
+        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv">click here to download pdf</a>
+    </section>
+</body>
+</html>
