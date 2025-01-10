@@ -27,9 +27,9 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['51.75.22.217', '.alanbignon.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -121,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = '/home/ubuntu/portfolio/static'
+STATIC_ROOT = '/var/www/portfolio/static/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'home/static/home'),
