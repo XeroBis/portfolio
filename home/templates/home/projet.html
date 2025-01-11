@@ -1,0 +1,19 @@
+{% load static %}
+
+{% include "head.html" %}
+<body>
+    {% include "header.html" %}
+    <h1>
+    {{ projet.title}}
+    </h1>
+
+    <p>
+        {{ projet.description}}
+    </p>
+
+    <ul>
+        {% for tag in projet.tags.all %}
+        <li>{{ tag.name }}</li>
+        {% endfor %}
+    </ul>
+</body>

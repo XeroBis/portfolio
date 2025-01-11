@@ -1,30 +1,9 @@
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet"  type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="canonical" href="https://www.alanbignon.com">
-    <meta name="theme-color" content="#rgb(240 240 232)">
-    <title>Alan Bignon</title>
-</head>
+{% include "head.html" %} 
 <body>
-    
-    <header id="contenu_header">
-        <a href="" id="name_href">Alan Bignon</a>
-        <div id="links">
-            <a href="mailto:contact@alanbignon.com" id="send_mail">
-                <i class="fas fa-envelope"></i>
-            </a>
-            <span id="span_point">•</span>
-            <a href="#projects" id="my_projects">My projects</a>
-        </div>
-    
-    </header>
-    
+    {% include "header.html" %}
+
     <section id="about_me">
         <div id="about_me_txt">
             <h1 id="about_me_accroche">A great addition to your team !</h1>
@@ -45,45 +24,23 @@
     </section>
 
     <section id="projects">
-        <div class="project">
-            <div class="project_div">
-                <div class="project_title" id="project_website_title">This Website</div>
-                <div class="project_description" id="project_website_content">
-                    Website using the framework Django.
-                    It serves as a platform to display my abilities in Python developpement and what kind of project I have been doing.
-                    By sharing what I have done, I hope I can attract potential employers or collaborators.
+        {% for projet in projets %}
+            <div class="project">
+                <div class="project_div">
+                    <div class="project_title">{{ projet.title }}</div>
+                    <div class="project_description">{{ projet.description }}</div>
+                    <div class="project_tags">
+                    {% for tag in projet.tags.all %}
+                        <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                    </div>
+                    <a href="{{ projet.github_url }}" target=”_blank”>
+                        <img src="{% static 'images/github_logo.png' %}" class="logo">
+                    </a>
+                    
                 </div>
-                <div class="project_tags">
-                    <span class="tag">Python</span>
-                    <span class="tag">Django</span>
-                    <span class="tag">HTML & css</span>
-                    <span class="tag">In progress</span>
-                </div>
-                <a href="https://github.com/XeroBis/portfolio" target=”_blank”>
-                    <img src="{% static 'images/github_logo.png' %}" class="logo">
-                </a>
             </div>
-        </div>
-        <div class="project">
-            <div class="project_div">
-                <div class="project_title" id="project_irc_chat_title">IRC Chat</div>
-                <div class="project_description" id="project_irc_chat_content">
-                    This is a multi-threaded IRC chat application implemented in Python. Two implementations are available:
-                    - multi server
-                    - single server 
-                    For each implementation there is a client-side code that allows users to connect to the server, 
-                    join channels, and send messages and there is a server-side code capable of handling multiple clients and servers.
-                    <br/> Each server logs relevant information (precious for debugging).
-                </div>
-                <div class="project_tags">
-                    <span class="tag">Multi-threading</span>
-                    <span class="tag">Python</span>
-                </div>
-                <a href="https://github.com/XeroBis/irc_chat" target=”_blank”>
-                    <img src="{% static 'images/github_logo.png' %}" class="logo">
-                </a>
-            </div>
-        </div>
+        {% endfor %}
         <div class="project">
             <div class="project_div">
                 <div class="project_title" id="project_finance_title" >Financial Sentiment Analysis</div>

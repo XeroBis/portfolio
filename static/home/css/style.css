@@ -16,6 +16,7 @@ a {
     all: unset;
 }
 
+
 @media (min-width:1100px) {
     #contenu_header {
         position: fixed;
@@ -85,6 +86,7 @@ a {
     }
     #projects {
         grid-template-columns: 1fr 1fr 1fr;
+        padding-top: 10%;
         padding-left: 12%;
         padding-right: 12%;
         padding-bottom: 5%;
@@ -160,6 +162,7 @@ a {
     
     #projects {
         grid-template-columns: 1fr;
+        
         padding-left: 5%;
         padding-right: 5%;
         padding-bottom: 8%;
@@ -201,7 +204,7 @@ a {
 
 }
 #about_me_accroche {
-    font-size: 3rem;
+    font-size: 2.9rem;
 }
 
 /* PROJECT */
