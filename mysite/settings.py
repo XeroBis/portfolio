@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import ast
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,9 +28,9 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = ['.51.75.22.217', '.alanbignon.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ast.literal_eval(os.getenv("ALLOWED_HOSTS"))
 
 
 # Application definition
@@ -122,10 +123,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/var/www/portfolio/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'home/static/home'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 # Default primary key field type
