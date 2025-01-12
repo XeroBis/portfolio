@@ -129,7 +129,7 @@ a {
         -moz-transform: translateY(-50%);
         -webkit-transform: translateY(-50%);
         -o-transform: translateY(-50%);
-        right: 0%;
+        right: 5%;
         font-size: 1.125rem;
         color: rgb(143, 123, 120);
     }
