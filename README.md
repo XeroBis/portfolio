@@ -3,10 +3,10 @@
 
 git pull
 
-python manage.py colletstatic
+python manage.py collectstatic
 
 pkill gunicorn
 
 sudo systemctl restart nginx
 
-gunicorn --bind 0.0.0.0:8000 mysiste.wsgi --daemon
+gunicorn --bind 0.0.0.0:8000 mysite.wsgi --daemon
