@@ -136,6 +136,8 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+CSRF_TRUSTED_ORIGINS = ['https://*.alanbignon.com', 'https://*.127.0.0.1']
+
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE=False
 CSRF_COOKIE_SECURE=False
