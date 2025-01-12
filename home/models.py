@@ -9,14 +9,17 @@ class Tag(models.Model):
         return self.name
 
 class Projet(models.Model):
-    title = models.CharField(max_length=50)
 
-    description = models.TextField ()
+    title_en = models.CharField(max_length=50)
+    description_en = models.TextField()
+
+    title_fr = models.CharField(max_length=50)
+    description_fr = models.TextField()
 
     github_url = models.CharField(max_length=100)
 
     tags = models.ManyToManyField(Tag)
 
     def __str__(self):
-        return self.title
+        return self.title_en
     
