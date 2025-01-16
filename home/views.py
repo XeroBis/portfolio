@@ -18,6 +18,7 @@ def home(request, lang):
 def redirect_view(request, lang=None, any=None):
     if lang is not None:
         response = redirect(f'/{lang}/')
+        # on repasse dans la fonction home pour check si lang == en ou fr
     else:
         response = redirect('/fr/')
     return response
