@@ -15,6 +15,9 @@ def home(request, lang):
 
 
 
-def redirect_view(request):
-    response = redirect('/fr/')
+def redirect_view(request, lang=None, any=None):
+    if lang is not None:
+        response = redirect(f'/{lang}/')
+    else:
+        response = redirect('/fr/')
     return response

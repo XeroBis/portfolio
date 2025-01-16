@@ -5,7 +5,12 @@
             <i class="fas fa-envelope"></i>
         </a>
         <span id="span_point">•</span>
-        <a href="#projects" id="my_projects">My projects</a>
+        {% if lang == "en" %}
+        <a href="#projects" id="my_projects">My Projects</a>
+        {% endif %}
+        {% if lang == "fr" %}
+        <a href="#projects" id="my_projects">Mes Projets</a>
+        {% endif %}
         <span id="span_point">•</span>
         <a href="/fr/" class="flag" id="french_flag">🇫🇷</a>
         <span id="span_point">•</span>
