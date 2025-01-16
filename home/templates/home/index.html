@@ -63,8 +63,14 @@
     </section>
 
     <section id="cv">
+        {% if lang == "fr" %}
+        <div id="cv_title">Mon CV</div>
+        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv">cliquer ici pour le télécharger</a>
+        {% endif %}
+        {% if lang == "en" %}
         <div id="cv_title">My Resume</div>
         <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv">click here to download pdf</a>
+        {% endif %}
     </section>
 </body>
 </html>
