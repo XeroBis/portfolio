@@ -36,6 +36,7 @@
     <section id="projects">
         {% for projet in projets %}
             <div class="project">
+                
                 <div class="project_div">
                     {% if lang == "en" %}
                         <div class="project_title">{{ projet.title_en }}</div>
@@ -59,7 +60,29 @@
             </div>
         {% endfor %}
         </div>
-
+    </section>
+    <section id="testimonials">
+        <div id="testimonials_title">
+            {% if lang == "en" %}
+            <h2>What People Say About Me</h2>
+            {% endif %}
+            {% if lang == "fr" %}
+            <h2>Ce que les gens disent de moi</h2>
+            {% endif %}
+        </div>
+        <div id="testimonials_list">
+            {% for testimonial in testimonials %}
+                <div class="testimonial">
+                    {% if lang == "en" %}
+                    <p class="testimonial_text">{{ testimonial.text_en }}</p>
+                    {% endif %}
+                    {% if lang == "fr" %}
+                    <p class="testimonial_text">{{ testimonial.text_fr }}</p>
+                    {% endif %}
+                    <p class="testimonial_author">- {{ testimonial.author }}</p>
+                </div>
+            {% endfor %}
+        </div>
     </section>
 
     <section id="cv">

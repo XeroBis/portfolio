@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.shortcuts import redirect
 
-from .models import Projet
+from .models import Projet, Testimonial
 
 def home(request, lang):
     """
@@ -10,7 +10,8 @@ def home(request, lang):
     if lang not in ["fr", "en"]:
         return redirect('/fr/')
     projets = Projet.objects.all()
-    context = {"projets":projets, "lang":lang}
+    testimonial = Testimonial.objects.all()
+    context = {"projets":projets, "lang":lang, "testimonials":testimonial}
     return render(request, 'index.html', context)
 
 
