@@ -24,10 +24,10 @@
         </div>
         <img src="{% static 'images/me.png' %}" id="img_me">
         <div id="logo_liens">
-            <a href="https://github.com/XeroBis" target=”_blank”>
+            <a href="https://github.com/XeroBis" target=”_blank”, class="cliquable">
                 <img src="{% static 'images/github_logo.png' %}" class="logo">
             </a>
-            <a href="https://www.linkedin.com/in/alan-bignon/" target=”_blank”>
+            <a href="https://www.linkedin.com/in/alan-bignon/" target=”_blank” class="cliquable">
                 <img src="{% static 'images/linkedin_logo.png' %}" class ="logo">
             </a>
         </div>
@@ -52,7 +52,7 @@
                         <span class="tag">{{ tag.name }}</span>
                     {% endfor %}
                     </div>
-                    <a href="{{ projet.github_url }}" target=”_blank”>
+                    <a href="{{ projet.github_url }}" target=”_blank” class="cliquable">
                         <img src="{% static 'images/github_logo.png' %}" class="logo">
                     </a>
                     
@@ -88,11 +88,11 @@
     <section id="cv">
         {% if lang == "fr" %}
         <div id="cv_title">Mon CV</div>
-        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv">cliquer ici pour le télécharger</a>
+        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv" class="cliquable">cliquer ici pour le télécharger</a>
         {% endif %}
         {% if lang == "en" %}
         <div id="cv_title">My Resume</div>
-        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv">click here to download pdf</a>
+        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv" class="cliquable">click here to download pdf</a>
         {% endif %}
     </section>
 </body>

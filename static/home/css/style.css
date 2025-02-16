@@ -91,6 +91,10 @@ a {
         padding-right: 12%;
         padding-bottom: 5%;
     }
+    .container_workout {
+        margin: 0 auto;
+    }
+    
     
 }
 @media (max-width:1100px) {
@@ -166,12 +170,16 @@ a {
         padding-bottom: 8%;
         padding-top: 10%;
     }
+    .container_workout {
+        margin-left: 3%;
+        margin-right: 3%;
+    }
 }
 
 /* HEADER */
 #send_mail, #my_projects, .flag {
     display: inline-block;
-    position: relative;
+    position: relative;    
 }
 #send_mail::after, #my_projects::after, .flag::after{
     content: '';
@@ -254,6 +262,10 @@ a {
     text-transform: uppercase;
 }
 
+.cliquable {
+    cursor: pointer;
+}
+
 /* CV */
 #cv {
 
@@ -268,11 +280,6 @@ a {
     font-size: 3rem;
     font-weight: bold;
 }
-
-
-
-
-
 
 /* 404 */
 #div_404 {
@@ -349,4 +356,75 @@ a {
     font-style: italic;
     text-align: right;
     color: rgb(100, 100, 100);
+}
+
+
+/* Workout */
+
+.container_workout {
+    max-width: 800px;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#l_workout {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.workout_date_type {
+    padding-bottom: 2%;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+table tr td {
+    color: #555;
+}
+
+#load-more {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #b8a77c;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+#load-more:hover {
+    background-color: #b8ab8aac;
+}
+
+#load-more:active {
+    transform: scale(0.95);
 }
