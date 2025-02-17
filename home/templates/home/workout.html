@@ -4,11 +4,21 @@
 <body>
     {% include "header.html" %}
     <div class="container_workout">
-        {% if lang == "en" %}
-        <h1 id="l_workout">Sports Sessions</h1>
-        {% endif %}
+        <h1 id="l_workout">
+            {% if lang == "fr" %} Séances de sports {% endif %}
+            {% if lang == "en" %} Sports Sessions {% endif %}
+        </h1>
+        {% if user.is_authenticated %}
         {% if lang == "fr" %}
-        <h1 id="l_workout">Séances de sports</h1>
+        <a href="/fr/ajout_seance/">
+            <button id="btn_add_workout" class="cliquable">Ajout Séance</button>
+        </a>
+        {% endif %}
+        {% if lang == "en" %}
+        <a href="/en/add_workout/">
+            <button id="btn_add_workout" class="cliquable">Add Workout</button>
+        </a>
+        {% endif %}
         {% endif %}
 
         <div id="workout-list">
@@ -54,7 +64,10 @@
         </div>
 
         {% if has_next %}
-        <button id="load-more" class="cliquable" data-next-page="{{ next_page_number }}">Load More</button>
+        <button id="load-more" class="cliquable" data-next-page="{{ next_page_number }}">
+            {% if lang == "fr" %}Charger plus{% endif%}
+            {% if lang == "en" %}Load More{% endif%}
+        </button>
         {% endif %}
     </div>
 
@@ -70,7 +83,7 @@
                     type: 'GET',
                     dataType: 'json',
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'  // Explicitly set the header
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     success: function(response) {
                         if (response.workout_data.length > 0) {

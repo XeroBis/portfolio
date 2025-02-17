@@ -13,20 +13,45 @@
             <a href="/fr/" id="my_projects" class="cliquable">Accueil</a>
             {% endif %}
             <span id="span_point">•</span>
-            <a href="/fr/workout" class="flag cliquable" id="french_flag">🇫🇷</a>
+            <a href="/fr/sports/" class="flag cliquable" id="french_flag">🇫🇷</a>
             <span id="span_point">•</span>
-            <a href="/en/workout" class="flag cliquable" id="english_flag">🇬🇧</a>
-        {% else %}
+            <a href="/en/workout/" class="flag cliquable" id="english_flag">🇬🇧</a>
+        {% endif %}
+        {% if page == "login" %}
             {% if lang == "en" %}
-            <a href="/en/workout" id="my_projects" class="cliquable">Workout</a>
+            <a href="/en/" id="my_projects" class="cliquable">Home</a>
             {% endif %}
             {% if lang == "fr" %}
-            <a href="/fr/workout" id="my_projects" class="cliquable">Sports</a>
+            <a href="/fr/" id="my_projects" class="cliquable">Accueil</a>
+            {% endif %}
+            <span id="span_point">•</span>
+            <a href="/fr/login/" class="flag cliquable" id="french_flag">🇫🇷</a>
+            <span id="span_point">•</span>
+            <a href="/en/login/" class="flag cliquable" id="english_flag">🇬🇧</a>
+        {% endif %}
+        {% if page == "home" %}
+            {% if lang == "en" %}
+            <a href="/en/workout/" id="my_projects" class="cliquable">Workout</a>
+            {% endif %}
+            {% if lang == "fr" %}
+            <a href="/fr/sports/" id="my_projects" class="cliquable">Sports</a>
             {% endif %}
             <span id="span_point">•</span>
             <a href="/fr/" class="flag cliquable" id="french_flag">🇫🇷</a>
             <span id="span_point">•</span>
             <a href="/en/" class="flag cliquable" id="english_flag">🇬🇧</a>
+        {% endif %}
+        {% if page == "add_workout" %}
+            {% if lang == "en" %}
+            <a href="/en/" id="my_projects" class="cliquable">Home</a>
+            {% endif %}
+            {% if lang == "fr" %}
+            <a href="/fr/" id="my_projects" class="cliquable">Accueil</a>
+            {% endif %}
+            <span id="span_point">•</span>
+            <a href="/fr/ajout_seance/" class="flag cliquable" id="french_flag">🇫🇷</a>
+            <span id="span_point">•</span>
+            <a href="/en/add_workout/" class="flag cliquable" id="english_flag">🇬🇧</a>
         {% endif %}
     </div>
     <script type="module" defer>
