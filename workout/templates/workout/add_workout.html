@@ -45,7 +45,7 @@
 </div>
 <script>
     document.getElementById('btn_add_exercise').addEventListener('click', function() {
-        fetch('/get_list_exercice/')
+        fetch('/en/workout/get_list_exercice/')
                 .then(response => response.json())
                 .then(data => {
                     const exercisesContainer = document.getElementById('exercises');
@@ -90,7 +90,7 @@
     document.getElementById('add_workout_type_workout').addEventListener('change', function() {
         const selectedType = this.value;
         if (selectedType) {
-            fetch(`/get_last_workout/?type=${selectedType}`)
+            fetch(`/en/workout/get_last_workout/?type=${selectedType}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.date) {

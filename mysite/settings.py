@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
+    'workout.apps.WorkoutConfig',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +61,10 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['home/templates/home'],
+        'DIRS': [
+            'home/templates/home',
+            'workout/templates/workout'
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

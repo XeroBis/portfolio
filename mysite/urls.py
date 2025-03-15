@@ -18,9 +18,13 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
-
+from django.urls import re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("home.urls"))
+    path("fr/sports/", include("workout.urls")),
+    path("en/workout/", include("workout.urls")),
+    path("fr/", include("home.urls")),
+    path("en/", include("home.urls")),
+    re_path(r".*", include("home.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

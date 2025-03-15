@@ -1,13 +1,13 @@
 import csv
 from django.core.management.base import BaseCommand
-from home.models import Exercice
+from workout.models import Exercice
 
 class Command(BaseCommand):
     help = 'Import exercises from a CSV file'
 
     def handle(self, *args, **kwargs):
 
-        csv_file_path = 'exercises.csv' # à changer
+        csv_file_path = 'data/PROD/exercises_PROD_2025-03-15.csv' # à changer
 
         with open(csv_file_path, mode='r', newline='') as csvfile:
             reader = csv.DictReader(csvfile)

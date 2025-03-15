@@ -1,14 +1,14 @@
 import csv
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from home.models import TypeWorkout, Workout, Exercice, OneExercice
+from workout.models import TypeWorkout, Workout, Exercice, OneExercice
 
 class Command(BaseCommand):
     help = 'Import workout data from a CSV file into the database'
 
     def handle(self, *args, **kwargs):
 
-        csv_file_path = 'workouts.csv' # à changer
+        csv_file_path = 'data/PROD/workout_PROD_2025-03-15.csv' # à changer
 
         with open(csv_file_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)

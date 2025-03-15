@@ -1,21 +1,21 @@
 {% load static %}
 
-{% include "head.html" %} 
+{% include "home/head.html" %} 
 <body>
-    {% include "header.html" %}
+    {% include "home/header.html" %}
     <div class="container_workout">
         <h1 id="l_workout">
             {% if lang == "fr" %} Séances de sports {% endif %}
-            {% if lang == "en" %} Sports Sessions {% endif %}
+            {% if lang == "en" %} Workout Sessions {% endif %}
         </h1>
         {% if user.is_authenticated %}
         {% if lang == "fr" %}
-        <a href="/fr/ajout_seance/">
+        <a href="/fr/sports/ajout_seance/">
             <button id="btn_add_workout" class="cliquable">Ajout Séance</button>
         </a>
         {% endif %}
         {% if lang == "en" %}
-        <a href="/en/add_workout/">
+        <a href="/en/workout/add_workout/">
             <button id="btn_add_workout" class="cliquable">Add Workout</button>
         </a>
         {% endif %}
@@ -52,14 +52,28 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5">Aucun exercice enregistré pour ce workout.</td>
+                            <td colspan="5">
+                                {% if lang == "fr" %}
+                                Aucun exercice enregistré pour ce workout.
+                                {% endif %}
+                                {% if lang == "en" %}
+                                No exercises recorded for this workout.
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
             {% empty %}
-            <p>Aucun workout enregistré.</p>
+            <p>
+                {% if lang == "fr" %}
+                Aucun workout enregistré.
+                {% endif %}
+                {% if lang == "en" %}
+                No workouts recorded.
+                {% endif %}
+            </p>
             {% endfor %}
         </div>
 
@@ -76,7 +90,8 @@
         $(document).ready(function() {
             $('#load-more').click(function() {
                 var nextPage = $(this).data('next-page');
-                var url = "{% url 'redirect_workout' lang=lang %}?page=" + nextPage;
+                var lang = "{{lang}}";
+                var url = "/" + lang + "/workout?page=" + nextPage;+ nextPage;
 
                 $.ajax({
                     url: url,
