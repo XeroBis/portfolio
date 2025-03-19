@@ -91,7 +91,11 @@
             $('#load-more').click(function() {
                 var nextPage = $(this).data('next-page');
                 var lang = "{{lang}}";
-                var url = "/" + lang + "/workout?page=" + nextPage;+ nextPage;
+                var name_workout = "sports"
+                if (lang == "en") {
+                    name_workout = "workout"
+                }
+                var url = "/" + lang + "/"+ name_workout + "/?page=" + nextPage;
 
                 $.ajax({
                     url: url,
