@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-print("host !",os.getenv('DB_HOST', 'localhost'),)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

@@ -2,10 +2,15 @@
 
 
 ## COMMAND
+### docker 
 
-git pull
+sudo docker compose run django-web python manage.py makemigrations
 
-python manage.py collectstatic
+sudo docker compose run django-web python manage.py migrate
+
+sudo docker compose run django-web python manage.py import_exercice
+
+sudo docker compose run django-web python manage.py import_workout
 
 ### nginx
 

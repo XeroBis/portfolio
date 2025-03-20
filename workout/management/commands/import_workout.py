@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
 
-        csv_file_path = 'data/PROD/workout_PROD_2025-03-15.csv' # à changer
+        csv_file_path = 'data/PROD/workout_PROD_2025-03-20.csv' # à changer
 
         with open(csv_file_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
