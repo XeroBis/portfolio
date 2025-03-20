@@ -12,7 +12,7 @@ class Command(BaseCommand):
         today_date = datetime.today().strftime('%Y-%m-%d')
         is_prod = "PROD" if os.getenv('IS_PROD', False) == 'True' else "LOCAL"
         json_file_path = f'data/{is_prod}/home_{is_prod}_{today_date}.json'
-        
+
         data = {
             "tags": list(Tag.objects.values("id", "name")),
             "projects": list(Projet.objects.values(
@@ -27,4 +27,4 @@ class Command(BaseCommand):
         with open(json_file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
         
-        self.stdout.write(self.style.SUCCESS('Data successfully exported to exported_data.json'))
+        self.stdout.write(self.style.SUCCESS(f'Data successfully exported to {json_file_path}'))
