@@ -6,11 +6,12 @@ from workout.models import TypeWorkout, Workout, Exercice, OneExercice
 class Command(BaseCommand):
     help = 'Import workout data from a CSV file into the database'
 
+    def add_arguments(self, parser):
+        parser.add_argument("file_name", nargs=1, type=str)
+
     def handle(self, *args, **kwargs):
 
-        csv_file_path = 'data/PROD/workout_PROD_2025-03-20.csv' # à changer
-
-        with open(csv_file_path, newline='') as csvfile:
+        with open(kwargs["file_name"][0], newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
 

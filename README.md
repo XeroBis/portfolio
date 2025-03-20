@@ -18,6 +18,8 @@ sudo docker compose run django-web python manage.py import_workout
 
 ### nginx
 
+python manage.py collectstatic
+
 sudo systemctl restart nginx
 
 sudo systemctl stop nginx
