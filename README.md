@@ -1,12 +1,17 @@
 # portofolio
 
 
-## COMMAND
+## COMMAND USED FREQUENTLY
+
+scp -r 
+
 ### docker 
 
 sudo docker compose up --build
 
 sudo docker compose down
+
+sudo docker cp container:file file
 
 sudo docker compose run django-web python manage.py makemigrations
 
