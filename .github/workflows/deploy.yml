@@ -25,3 +25,4 @@ jobs:
             sudo systemctl restart nginx
             docker compose -f docker-compose.prod.yml up --build -d
             docker system prune -f
+ 
