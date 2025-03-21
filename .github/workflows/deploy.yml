@@ -19,7 +19,7 @@ jobs:
           script: |
             cd portfolio/
             git pull origin main
-            .venv/bin/python manage.py collectstatic
+            yes yes | .venv/bin/python manage.py collectstatic
             .venv/bin/python manage.py makemigrations
             .venv/bin/python manage.py migrate
             sudo systemctl restart nginx
