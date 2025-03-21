@@ -7,19 +7,31 @@ scp -r
 
 ### docker 
 
-sudo docker compose up --build
+build prod :
+docker compose -f docker-compose.prod.yml up --build -d
 
-sudo docker compose down
 
-sudo docker cp container:file file
+build dev :
+docker-compose -f docker-compose.yml up --build -d
 
-sudo docker compose run django-web python manage.py makemigrations
 
-sudo docker compose run django-web python manage.py migrate
 
-sudo docker compose run django-web python manage.py import_exercice
+docker compose up -d
 
-sudo docker compose run django-web python manage.py import_workout
+docker compose up -d --build
+
+docker compose down
+
+remove images : 
+docker rmi -f $(docker images -aq)
+
+docker compose run django-docker python manage.py makemigrations
+
+docker compose run django-docker python manage.py migrate
+
+docker compose run django-docker python manage.py import_exercice
+
+docker compose run django-docker python manage.py import_workout
 
 ### nginx
 
