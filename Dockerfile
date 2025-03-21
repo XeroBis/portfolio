@@ -47,5 +47,4 @@ USER appuser
 # Expose the application port
 EXPOSE 8000 
 
-# test ave collectstatic
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "mysite.wsgi:application"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn --bind 0.0.0.0:8000 --workers 3 mysite.wsgi:application"]

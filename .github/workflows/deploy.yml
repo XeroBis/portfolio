@@ -20,8 +20,6 @@ jobs:
             cd portfolio/
             git pull origin main
             yes yes | .venv/bin/python manage.py collectstatic
-            .venv/bin/python manage.py makemigrations
-            .venv/bin/python manage.py migrate
             sudo systemctl restart nginx
             docker compose -f docker-compose.prod.yml up --build -d
             docker system prune -f
