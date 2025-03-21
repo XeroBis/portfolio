@@ -429,7 +429,7 @@ table tr td {
 
 /* Hover effect */
 #load-more:hover, #btn_add_workout:hover, #btn_add_exercise:hover {
-    background-color: #ff0000ac;
+    background-color: #b88a8aac;
 }
 
 #load-more:active, #btn_add_workout:active, #btn_add_exercise:active {
