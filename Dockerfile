@@ -39,11 +39,13 @@ COPY --chown=appuser:appuser . .
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1 
 
+# DROIT sur les fichiers static
+RUN chown -R appuser /app/static
 # Switch to non-root user
 USER appuser
 
 # Expose the application port
 EXPOSE 8000 
 
-# Start the application using Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "mysite.wsgi:application"]
+# test ave collectstatic
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 --workers 3 mysite.wsgi:application"]
