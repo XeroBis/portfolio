@@ -26,7 +26,17 @@ def home(request):
 def download_data_json(request):
     data = {
         "tags": list(Tag.objects.values()),
-        "projects": list(Projet.objects.values("title_en", "description_en", "title_fr", "description_fr", "github_url", "tags")),
+        "projects": [
+            {
+                "title_en": proj.title_en,
+                "description_en": proj.description_en,
+                "title_fr": proj.title_fr,
+                "description_fr": proj.description_fr,
+                "github_url": proj.github_url,
+                "tags": list(proj.tags.values_list("id", flat=True))  # Fetch all tag IDs
+            }
+            for proj in Projet.objects.all()
+        ],
         "testimonials": list(Testimonial.objects.values()),
         "type_workouts": list(TypeWorkout.objects.values()),
         "workouts": [
@@ -63,11 +73,8 @@ def import_data_json(request):
                         "github_url": project["github_url"]
                     }
                 )
-                tags = project.get("tags", [])
-                if isinstance(tags, int):  # Convert single integer to a list
-                    tags = [tags]
+                obj.tags.set([tag_objects[tag_id] for tag_id in project.get("tags", [])])
 
-                obj.tags.set([tag_objects[tag_id] for tag_id in tags if tag_id in tag_objects])
 
             for testimonial in data.get("testimonials", []):
                 Testimonial.objects.update_or_create(
