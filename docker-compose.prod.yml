@@ -14,7 +14,9 @@ services:
      - .env
  django-web:
    restart: always
-   build: .
+   build:
+    context: .
+    dockerfile: Dockerfile.prod
    container_name: django-docker
    ports:
      - "8000:8000"

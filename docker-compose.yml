@@ -14,7 +14,9 @@ services:
      - .env
  django-web:
    restart: always
-   build: .
+   build:
+    context: .
+    dockerfile: Dockerfile
    container_name: django-docker
    volumes:
       - .:/app
