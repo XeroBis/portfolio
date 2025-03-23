@@ -19,8 +19,10 @@ jobs:
           script: |
             cd portfolio/
             git pull origin main
+            rm staticsfiles/
             yes yes | .venv/bin/python manage.py collectstatic
             sudo systemctl restart nginx
+            docker compose down
             docker compose -f docker-compose.prod.yml up --build -d
             docker system prune -f
  

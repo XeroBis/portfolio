@@ -1,4 +1,4 @@
-FROM python:3.10.12-slim AS builder
+FROM public.ecr.aws/docker/library/python:3.10.12-slim-bullseye
 RUN mkdir /app
 WORKDIR /app
 
