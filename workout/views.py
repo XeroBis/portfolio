@@ -24,7 +24,8 @@ def redirect_workout(request):
             'workout': {
                 'id': workout.id,
                 'date': workout.date.strftime('%-d/%m/%Y'),
-                'type_workout': workout.type_workout.name
+                'type_workout': workout.type_workout.name,
+                'duration':workout.duration
             },
             'exercises': [
                 {
@@ -68,10 +69,11 @@ def add_workout(request):
     if request.method == 'POST':
         date = request.POST['date']
         type_workout = request.POST['type_workout']
+        duration = request.POST['duration']
 
-        type = TypeWorkout.objects.filter(name=type_workout).first()
-        
-        workout = Workout(date=date, type_workout=type)
+        type, _= TypeWorkout.objects.get_or_create(name=type_workout)
+
+        workout = Workout(date=date, type_workout=type, duration=duration)
         workout.save()
         
         for key, value in request.POST.items():
@@ -92,9 +94,9 @@ def add_workout(request):
                 exercise.save()
         
         if lang == "en":
-            return redirect(f'/en/workout')
+            return redirect(f'/en/workout/')
         else:
-            return redirect(f'/fr/sports')
+            return redirect(f'/fr/sports/')
     
     context = {"page": "add_workout", "lang": lang}
     return render(request, 'add_workout.html', context)

@@ -11,6 +11,7 @@ class TypeWorkout(models.Model):
 class Workout(models.Model):
     date = models.DateField()
     type_workout = models.ForeignKey(TypeWorkout, null=True, on_delete=models.SET_NULL)
+    duration = models.IntegerField(default=0)
 
     def __str__(self):
         date_str = self.date.strftime('%Y-%m-%d')

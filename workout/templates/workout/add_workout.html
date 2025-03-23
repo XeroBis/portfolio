@@ -16,6 +16,13 @@
             <input type="date" id="add_workout_date" name="date" required>
         </div>
         <div class="form-group">
+            <label for="duration" class="label_workout">
+                {% if lang == "fr" %}Durée :{% endif %}
+                {% if lang == "en" %}Duration :{% endif %}
+            </label>
+            <input type="number" id="add_workout_duration" name="duration" required>
+        </div>
+        <div class="form-group">
             <label for="type_workout" class="label_workout">
                 {% if lang == "fr" %}Type de séance :{% endif %}
                 {% if lang == "en" %}Type of workout :{% endif %}
@@ -28,6 +35,7 @@
                 <option value="Pull">Pull</option>
                 <option value="Push">Push</option>
                 <option value="Legs">Legs</option>
+                <option value="CrossFit">CrossFit</option>
             </select>
         </div>
     </div>
@@ -156,5 +164,5 @@
             exerciseRow.remove();
         }
     }
-    </script>
+</script>
 </body>

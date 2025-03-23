@@ -1,5 +1,7 @@
 {% load static %}
 
+{% load custom_filters %}
+
 {% include "home/head.html" %} 
 <body>
     {% include "home/header.html" %}
@@ -24,19 +26,28 @@
         <div id="workout-list">
             {% for data in workout_data %}
             <div>
-                <h2 class="workout_date_type">Date : {{ data.workout.date }} - Type: {{ data.workout.type_workout }}</h2>
+                <h2 class="workout_date_type">
+                    {{ data.workout.date }} - {{ data.workout.type_workout }}
+                    {% if data.workout.duration > 0 %}
+                        - {{ data.workout.duration|hours_minutes }}
+                    {% endif %}
+                </h2>
                 <table>
                     <thead>
                         <tr>
                             {% if lang == "fr" %}
                             <th>Exercice</th>
+                            {% if data.workout.type_workout != "CrossFit" %}
                             <th>Séries</th>
+                            {% endif %}
                             <th>Répétitions</th>
                             <th>Poids (kg)</th>
                             {% endif %}
                             {% if lang == "en" %}
                             <th>Exercise</th>
+                            {% if data.workout.type_workout != "CrossFit" %}
                             <th>Series</th>
+                            {% endif %}
                             <th>Repetitions</th>
                             <th>Weight (kg)</th>
                             {% endif %}
@@ -46,7 +57,9 @@
                         {% for exercise in data.exercises %}
                         <tr>
                             <td>{{ exercise.name }}</td>
+                            {% if data.workout.type_workout != "CrossFit" %}
                             <td>{{ exercise.nb_series }}</td>
+                            {% endif %}
                             <td>{{ exercise.nb_repetition }}</td>
                             <td>{{ exercise.weight }}</td>
                         </tr>
