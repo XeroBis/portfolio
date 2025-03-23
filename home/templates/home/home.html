@@ -95,5 +95,24 @@
         <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv" class="cliquable">click here to download pdf</a>
         {% endif %}
     </section>
+    {% if user.is_authenticated %}
+    <form id="exportFom" action="export_data/">
+        {% csrf_token %}
+        <button type="submit" class="cliquable">Download data</button>
+    </form>
+    <form id="importForm" action="import_data/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" id="jsonFile" name="file" accept=".json">
+        <button type="submit" class="cliquable" onclick="return confirm('Are you sure you want to import your file ? This action cannot be undone!');">
+        Import JSON
+        </button>
+    </form>
+    <form id="resetForm" action="reset_data/">
+        {% csrf_token %}
+        <button type="submit" class="cliquable" onclick="return confirm('Are you sure you want to reset all data? This action cannot be undone!');">
+            Reset All Data
+        </button>
+    </form>
+    {% endif %}
 </body>
 </html>
