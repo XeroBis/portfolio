@@ -75,7 +75,7 @@ table tr td {
     padding: 10px;
     box-sizing: border-box;
 }
-#add_workout_type_workout, #add_workout_date {
+#add_workout_type_workout, #add_workout_date, #add_workout_duration {
     border: 2px solid #888888;
     border-radius: 4px;
     font-size: 14px;
