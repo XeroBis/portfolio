@@ -1,5 +1,5 @@
 # Stage 1: Base build stage
-FROM python:3.10.12-slim AS builder
+FROM public.ecr.aws/docker/library/python:3.10.12-slim-bullseye AS builder
 RUN mkdir /app
 WORKDIR /app
  
@@ -19,7 +19,7 @@ COPY requirements.txt  /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Production Stage
-FROM python:3.10.12-slim
+FROM public.ecr.aws/docker/library/python:3.10.12-slim-bullseye
 
 RUN useradd -m -r appuser && \
    mkdir /app && \
