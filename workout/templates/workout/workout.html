@@ -122,7 +122,7 @@
                             var html = '';
                             response.workout_data.forEach(function(data) {
                                 html += '<div>';
-                                html += '<h2 class="workout_date_type">Date : ' + data.workout.date + ' - Type: ' + data.workout.type_workout + '</h2>';
+                                html += '<h2 class="workout_date_type">' + data.workout.date + ' - ' + data.workout.type_workout + '</h2>';
                                 html += '<table><thead><tr>';
                                 html += '{% if lang == "fr" %}<th>Exercice</th><th>Séries</th><th>Répétitions</th><th>Poids (kg)</th>{% endif %}';
                                 html += '{% if lang == "en" %}<th>Exercise</th><th>Series</th><th>Repetitions</th><th>Weight (kg)</th>{% endif %}';
