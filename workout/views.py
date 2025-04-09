@@ -20,11 +20,15 @@ def redirect_workout(request):
     workout_data = []
     for workout in page_obj:
         exercises = OneExercice.objects.filter(seance=workout)
+        if lang == "en":
+            type_workout = workout.type_workout.name_workout_en
+        else:
+            type_workout = workout.type_workout.name_workout_fr
         workout_data.append({
             'workout': {
                 'id': workout.id,
                 'date': workout.date.strftime('%-d/%m/%Y'),
-                'type_workout': workout.type_workout.name,
+                'type_workout': type_workout,
                 'duration':workout.duration
             },
             'exercises': [

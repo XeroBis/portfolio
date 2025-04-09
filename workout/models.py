@@ -2,10 +2,11 @@ from django.db import models
 
 
 class TypeWorkout(models.Model):
-    name = models.CharField(max_length=50)
+    name_workout_fr = models.CharField(max_length=50)
+    name_workout_en = models.CharField(max_length=50, default="Workout")
 
     def __str__(self):
-        return self.name
+        return self.name_workout_fr
 
 
 class Workout(models.Model):
@@ -15,7 +16,7 @@ class Workout(models.Model):
 
     def __str__(self):
         date_str = self.date.strftime('%Y-%m-%d')
-        type_workout_name = self.type_workout.name if self.type_workout else "No Type"
+        type_workout_name = self.type_workout.name_workout_fr if self.type_workout else "No Type"
 
         return f"{date_str} - {type_workout_name}"
 

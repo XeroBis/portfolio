@@ -33,7 +33,7 @@ def download_data_json(request):
                 "title_fr": proj.title_fr,
                 "description_fr": proj.description_fr,
                 "github_url": proj.github_url,
-                "tags": list(proj.tags.values_list("id", flat=True))  # Fetch all tag IDs
+                "tags": list(proj.tags.values_list("id", flat=True))
             }
             for proj in Projet.objects.all()
         ],
@@ -133,9 +133,9 @@ def reset_data(request):
         Workout.objects.all().delete()
         Exercice.objects.all().delete()
         OneExercice.objects.all().delete()
+
         url_path = request.get_full_path().split("/")
         lang = url_path[1]
-
         if lang not in ["fr", "en"]:
             return redirect('/fr/')
             
