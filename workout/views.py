@@ -75,7 +75,7 @@ def add_workout(request):
         type_workout = request.POST['type_workout']
         duration = request.POST['duration']
 
-        type, _= TypeWorkout.objects.get_or_create(name=type_workout)
+        type, _= TypeWorkout.objects.get_or_create(name_workout_fr=type_workout)
 
         workout = Workout(date=date, type_workout=type, duration=duration)
         workout.save()
