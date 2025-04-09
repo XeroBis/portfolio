@@ -109,7 +109,7 @@ def add_workout(request):
 @login_required
 def get_last_workout(request):
     workout_type = request.GET.get('type')
-    workout_type_id = TypeWorkout.objects.filter(name=workout_type).first()
+    workout_type_id = TypeWorkout.objects.filter(name_workout_fr=workout_type).first()
     last_workout = Workout.objects.filter(type_workout=workout_type_id).order_by('-date').first()
     
     all_exercises = Exercice.objects.all().order_by("name").values_list('name', flat=True)

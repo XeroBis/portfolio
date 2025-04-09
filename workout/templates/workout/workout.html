@@ -2,8 +2,9 @@
 
 {% load custom_filters %}
 
-{% include "home/head.html" %} 
-<body>
+{% include "home/head.html" %}
+
+<body data-lang="{{ lang }}">
     {% include "home/header.html" %}
     <div class="container_workout">
         <h1 id="l_workout">
@@ -29,7 +30,7 @@
                 <h2 class="workout_date_type">
                     {{ data.workout.date }} - {{ data.workout.type_workout }}
                     {% if data.workout.duration > 0 %}
-                        - {{ data.workout.duration|hours_minutes }}
+                    - {{ data.workout.duration|hours_minutes }}
                     {% endif %}
                 </h2>
                 {% if data.exercises %}
@@ -63,7 +64,7 @@
                             {% endif %}
                             <td>{{ exercise.nb_repetition }}</td>
                             <td>{{ exercise.weight }}</td>
-                        </tr>                        
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -82,7 +83,7 @@
         </div>
 
         {% if has_next %}
-        <button id="load-more" class="cliquable" data-next-page="{{ next_page_number }}">
+        <button id="load-more" class="cliquable" data-next-page="{{ next_page_number }}" onclick="loadMore()">
             {% if lang == "fr" %}Charger plus{% endif%}
             {% if lang == "en" %}Load More{% endif%}
         </button>
@@ -90,55 +91,5 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#load-more').click(function() {
-                var nextPage = $(this).data('next-page');
-                var lang = "{{lang}}";
-                var name_workout = "sports"
-                if (lang == "en") {
-                    name_workout = "workout"
-                }
-                var url = "/" + lang + "/"+ name_workout + "/?page=" + nextPage;
-
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'json',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    success: function(response) {
-                        if (response.workout_data.length > 0) {
-                            var html = '';
-                            response.workout_data.forEach(function(data) {
-                                html += '<div>';
-                                html += '<h2 class="workout_date_type">' + data.workout.date + ' - ' + data.workout.type_workout + '</h2>';
-                                html += '<table><thead><tr>';
-                                html += '{% if lang == "fr" %}<th>Exercice</th><th>Séries</th><th>Répétitions</th><th>Poids (kg)</th>{% endif %}';
-                                html += '{% if lang == "en" %}<th>Exercise</th><th>Series</th><th>Repetitions</th><th>Weight (kg)</th>{% endif %}';
-                                html += '</tr></thead><tbody>';
-                                data.exercises.forEach(function(exercise) {
-                                    html += '<tr>';
-                                    html += '<td>' + exercise.name + '</td>';
-                                    html += '<td>' + exercise.nb_series + '</td>';
-                                    html += '<td>' + exercise.nb_repetition + '</td>';
-                                    html += '<td>' + exercise.weight + '</td>';
-                                    html += '</tr>';
-                                });
-                                html += '</tbody></table></div>';
-                            });
-                            $('#workout-list').append(html);
-                        }
-
-                        if (response.has_next) {
-                            $('#load-more').data('next-page', response.next_page_number);
-                        } else {
-                            $('#load-more').remove();
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="{% static 'js/workout.js' %}"></script>
 </body>
