@@ -19,6 +19,7 @@ jobs:
           script: |
             cd portfolio/
             git pull origin main
+            rm -rf staticfiles/
             yes yes | .venv/bin/python manage.py collectstatic
             sudo systemctl restart nginx
             docker compose down
