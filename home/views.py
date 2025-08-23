@@ -61,7 +61,11 @@ def import_data_json(request):
             json_file = request.FILES["file"]
             data = json.load(json_file)
 
-            tag_objects = {tag["id"]: Tag.objects.get_or_create(id=tag["id"], defaults={"name": tag["name"]})[0] for tag in data.get("tags", [])}
+            tag_objects = {}
+            for tag in data.get("tags", []):
+                if "name" not in tag:
+                    raise ValueError(f"Tag with id {tag.get('id', 'unknown')} is missing 'name' field")
+                tag_objects[tag["id"]] = Tag.objects.get_or_create(id=tag["id"], defaults={"name": tag["name"]})[0]
 
             for project in data.get("projects", []):
                 obj, _ = Projet.objects.update_or_create(
@@ -85,7 +89,14 @@ def import_data_json(request):
                     }
                 )
 
-            type_workout_objects = {tw["id"]: TypeWorkout.objects.get_or_create(id=tw["id"], defaults={"name": tw["name"]})[0] for tw in data.get("type_workouts", [])}
+            type_workout_objects = {}
+            for tw in data.get("type_workouts", []):
+                if "name_workout_fr" not in tw:
+                    raise ValueError(f"TypeWorkout with id {tw.get('id', 'unknown')} is missing 'name_workout_fr' field")
+                defaults = {"name_workout_fr": tw["name_workout_fr"]}
+                if "name_workout_en" in tw:
+                    defaults["name_workout_en"] = tw["name_workout_en"]
+                type_workout_objects[tw["id"]] = TypeWorkout.objects.get_or_create(id=tw["id"], defaults=defaults)[0]
 
             workout_objects = {}
             for workout in data.get("workouts", []):
@@ -98,7 +109,11 @@ def import_data_json(request):
                 )
                 workout_objects[workout["date"]] = obj
 
-            exercice_objects = {ex["id"]: Exercice.objects.get_or_create(id=ex["id"], defaults={"name": ex["name"]})[0] for ex in data.get("exercises", [])}
+            exercice_objects = {}
+            for ex in data.get("exercises", []):
+                if "name" not in ex:
+                    raise ValueError(f"Exercise with id {ex.get('id', 'unknown')} is missing 'name' field")
+                exercice_objects[ex["id"]] = Exercice.objects.get_or_create(id=ex["id"], defaults={"name": ex["name"]})[0]
             for one_ex in data.get("one_exercises", []):
                 OneExercice.objects.update_or_create(
                     name=exercice_objects[one_ex["name"]],
