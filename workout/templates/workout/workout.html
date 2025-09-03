@@ -83,10 +83,14 @@
         </div>
 
         {% if has_next %}
-        <button id="load-more" class="cliquable" data-next-page="{{ next_page_number }}" onclick="loadMore()">
+        <button id="load-more" class="cliquable" data-next-page="{{ next_page_number }}">
             {% if lang == "fr" %}Charger plus{% endif%}
             {% if lang == "en" %}Load More{% endif%}
         </button>
+        <div id="loading-indicator" style="display: none; text-align: center; padding: 20px;">
+            {% if lang == "fr" %}Chargement...{% endif%}
+            {% if lang == "en" %}Loading...{% endif%}
+        </div>
         {% endif %}
     </div>
 
