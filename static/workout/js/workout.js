@@ -1,9 +1,17 @@
-function loadMore() {
+let isLoading = false;
+let hasMoreContent = document.getElementById('load-more') ? true : false;
+let currentPage = document.getElementById('load-more') ? parseInt(document.getElementById('load-more').getAttribute('data-next-page')) : null;
 
-    var nextPage = document.getElementById('load-more').getAttribute('data-next-page');
+function loadMore() {
+    if (isLoading || !hasMoreContent) return;
+    
+    isLoading = true;
+    $('#loading-indicator').show();
+    $('#load-more').hide();
+    
     var lang = document.body.getAttribute('data-lang');
     var name_workout = (lang === "en") ? "workout" : "sports";
-    var url = "/" + lang + "/" + name_workout + "/?page=" + nextPage;
+    var url = "/" + lang + "/" + name_workout + "/?page=" + currentPage;
 
     $.ajax({
         url: url,
@@ -19,7 +27,6 @@ function loadMore() {
                     html += '<div>';
                     html += '<h2 class="workout_date_type">' + data.workout.date + ' - ' + data.workout.type_workout;
                     
-                    /* On affiche la durée si elle est supérieur à 0 */
                     if (data.workout.duration > 0) {
                         var hours = Math.floor(data.workout.duration / 60);
                         var minutes = data.workout.duration % 60;
@@ -28,7 +35,6 @@ function loadMore() {
                     }
                     html += '</h2>';
 
-                    /* on affiche les exo seulement si il y en as plus qu'un */
                     if (data.exercises && data.exercises.length > 0) {
                         html += '<table><thead><tr>';
                         if (lang === "fr") {
@@ -57,10 +63,32 @@ function loadMore() {
             }
 
             if (response.has_next) {
-                $('#load-more').attr('data-next-page', response.next_page_number);
+                currentPage = response.next_page_number;
+                $('#load-more').show();
             } else {
+                hasMoreContent = false;
                 $('#load-more').remove();
             }
+            
+            $('#loading-indicator').hide();
+            isLoading = false;
+        },
+        error: function() {
+            $('#loading-indicator').hide();
+            $('#load-more').show();
+            isLoading = false;
         }
     });
 }
+
+$(document).ready(function() {
+    $(window).scroll(function() {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+            loadMore();
+        }
+    });
+    
+    $('#load-more').click(function() {
+        loadMore();
+    });
+});
