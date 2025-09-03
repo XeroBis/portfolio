@@ -41,6 +41,10 @@
             <span id="span_point">•</span>
             <a href="/en/workout/add_workout/" class="flag cliquable" id="english_flag">🇬🇧</a>
         {% endif %}
+        {% if user.is_staff %}
+        <span id="span_point">•</span>
+        <a href="/admin-dashboard/" class="cliquable" id="admin_dashboard" title="Admin Dashboard">⚙️</a>
+        {% endif %}
     </div>
     <script type="module" defer>
         import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
