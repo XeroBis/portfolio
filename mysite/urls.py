@@ -19,18 +19,9 @@ from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
 from django.urls import re_path
-from workout import admin_views
 
 urlpatterns = [
-    # Admin dashboard URLs (must be before Django admin)
-    path("admin-dashboard/", admin_views.admin_dashboard, name="admin_dashboard"),
-    path("admin-data/export/<str:app_name>/<str:model_name>/", admin_views.export_model_data, name="export_model_data"),
-    path("admin-data/import/<str:app_name>/<str:model_name>/", admin_views.import_model_data, name="import_model_data"),
-    path("admin-data/delete/<str:app_name>/<str:model_name>/", admin_views.delete_all_model_data, name="delete_all_model_data"),
-    path("admin-data/view/<str:app_name>/<str:model_name>/", admin_views.get_model_data, name="get_model_data"),
-    # Django admin
     path("admin/", admin.site.urls),
-    # App URLs
     path("fr/sports/", include("workout.urls")),
     path("en/workout/", include("workout.urls")),
     path("fr/", include("home.urls")),
