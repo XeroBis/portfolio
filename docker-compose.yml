@@ -16,12 +16,13 @@ services:
    restart: always
    build:
     context: .
-    dockerfile: Dockerfile
+    dockerfile: dockerfiles/web/Dockerfile
    container_name: django-docker
    volumes:
       - .:/app
-   ports:
-     - "8000:8000"
+      - static_volume:/app/staticfiles
+   expose:
+     - "8000"
    depends_on:
      - db
    environment:
@@ -34,10 +35,25 @@ services:
      DATABASE_PASSWORD: ${DB_PASSWORD}
      DATABASE_HOST: ${DB_HOST}
      DATABASE_PORT: ${DB_PORT}
-     DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME:-admin}
-     DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL:-admin@example.com}
-     DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD:-admin}
+     DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+     DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+     DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
    env_file:
      - .env
+ nginx:
+  build:
+    context: .
+    dockerfile: dockerfiles/nginx/Dockerfile
+  container_name: nginx-docker
+  ports:
+    - 8080:80
+  volumes:
+    - static_volume:/app/staticfiles
+  depends_on:
+    - django-web
+  restart: always
+
+
 volumes:
    postgres_data:
+   static_volume:

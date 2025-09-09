@@ -16,7 +16,7 @@ services:
    restart: always
    build:
     context: .
-    dockerfile: Dockerfile.prod
+    dockerfile: dockerfiles/web/Dockerfile.prod
    container_name: django-docker
    ports:
      - "127.0.0.1:8000:8000"
@@ -34,6 +34,17 @@ services:
      DATABASE_PORT: ${DB_PORT}
    env_file:
      - .env
+
+ nginx:
+  build:
+    context: .
+    dockerfile: dockerfiles/nginx/Dockerfile
+  container_name: nginx-docker
+  ports:
+    - 8080:80
+  depends_on:
+    - django-web
+  restart: always
 
 volumes:
    postgres_data:
