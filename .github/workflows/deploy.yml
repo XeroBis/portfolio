@@ -21,7 +21,6 @@ jobs:
             git pull origin main
             rm -rf staticfiles/
             yes yes | .venv/bin/python manage.py collectstatic
-            sudo systemctl restart nginx
             docker compose down
             docker compose -f docker-compose.prod.yml up --build -d
             docker system prune -f
