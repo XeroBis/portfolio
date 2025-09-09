@@ -176,7 +176,7 @@ cython_debug/
 staticfiles/
 
 # SSL certificates and keys (security sensitive)
-ssl/
+
 *.pem
 *.key
 *.crt
