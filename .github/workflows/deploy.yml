@@ -19,7 +19,6 @@ jobs:
           script: |
             cd portfolio/
             git pull origin main
-            rm -rf staticfiles/
             docker compose down
             docker compose -f docker-compose.prod.yml up --build -d
             docker system prune -f
