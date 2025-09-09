@@ -4,10 +4,6 @@
 echo "Waiting for database to be ready..."
 python manage.py wait_for_db
 
-# Make migrations
-echo "Making migrations..."
-python manage.py makemigrations
-
 # Apply migrations
 echo "Applying migrations..."
 python manage.py migrate
@@ -18,9 +14,9 @@ python manage.py shell << END
 from django.contrib.auth.models import User
 import os
 
-username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
-email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
-password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin')
+username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
+email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
+password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
 
 if not User.objects.filter(username=username).exists():
     User.objects.create_superuser(username, email, password)
