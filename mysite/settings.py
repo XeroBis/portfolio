@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home.apps.HomeConfig',
-    'workout.apps.WorkoutConfig',
+    'apps.home.apps.HomeConfig',
+    'apps.workout.apps.WorkoutConfig',
+    'apps.newsfeed.apps.NewsfeedConfig'
 ]
 
 MIDDLEWARE = [
@@ -62,8 +63,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'home/templates/home',
-            'workout/templates/workout'
+            'apps/home/templates/home',
+            'apps/workout/templates/workout'
             ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -137,6 +138,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/home'),
     os.path.join(BASE_DIR, 'static/workout'),
+    os.path.join(BASE_DIR, 'static/newsfeed'),
 )
 
 # Default primary key field type
@@ -145,7 +147,7 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CSRF_TRUSTED_ORIGINS = ['https://*.alanbignon.com', 'https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://*.alanbignon.com', 'https://*.127.0.0.1', 'http://localhost:8080', 'http://127.0.0.1:8080']
 
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE=False

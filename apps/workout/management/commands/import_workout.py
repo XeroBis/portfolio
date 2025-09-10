@@ -1,7 +1,7 @@
 import csv
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from workout.models import TypeWorkout, Workout, Exercice, OneExercice
+from apps.workout.models import TypeWorkout, Workout, Exercice, OneExercice
 
 class Command(BaseCommand):
     help = 'Import workout data from a CSV file into the database'
