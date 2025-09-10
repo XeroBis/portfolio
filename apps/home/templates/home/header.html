@@ -13,17 +13,22 @@
             <a href="/fr/" id="my_projects" class="cliquable">Accueil</a>
             {% endif %}
             <span id="span_point">•</span>
+            <a href="/news/" id="news_link" class="cliquable">News</a>
+            <span id="span_point">•</span>
             <a href="/fr/sports/" class="flag cliquable" id="french_flag">🇫🇷</a>
             <span id="span_point">•</span>
             <a href="/en/workout/" class="flag cliquable" id="english_flag">🇬🇧</a>
         {% endif %}
         {% if page == "home" %}
+            
             {% if lang == "en" %}
             <a href="/en/workout/" id="my_projects" class="cliquable">Workout</a>
             {% endif %}
             {% if lang == "fr" %}
             <a href="/fr/sports/" id="my_projects" class="cliquable">Sports</a>
             {% endif %}
+            <span id="span_point">•</span>
+            <a href="/news/" id="news_link" class="cliquable">News</a>
             <span id="span_point">•</span>
             <a href="/fr/" class="flag cliquable" id="french_flag">🇫🇷</a>
             <span id="span_point">•</span>
@@ -37,13 +42,20 @@
             <a href="/fr/" id="my_projects" class="cliquable">Accueil</a>
             {% endif %}
             <span id="span_point">•</span>
+            <a href="/news/" id="news_link" class="cliquable">News</a>
+            <span id="span_point">•</span>
             <a href="/fr/sports/ajout_seance/" class="flag cliquable" id="french_flag">🇫🇷</a>
             <span id="span_point">•</span>
             <a href="/en/workout/add_workout/" class="flag cliquable" id="english_flag">🇬🇧</a>
+        {% endif %}
+        {% if page == "news" %}
+            <a href="/en/" id="my_projects" class="cliquable">Home</a>
+            <span id="span_point">•</span>
+            <a href="/en/workout/" id="my_projects" class="cliquable">Workout</a>
         {% endif %}
     </div>
     <script type="module" defer>
         import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
         polyfillCountryFlagEmojis();
-      </script>
+    </script>
 </header>

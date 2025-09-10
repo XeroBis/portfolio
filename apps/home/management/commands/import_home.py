@@ -1,6 +1,6 @@
 import json
 from django.core.management.base import BaseCommand
-from home.models import Tag, Projet, Testimonial
+from apps.home.models import Tag, Projet, Testimonial
 
 class Command(BaseCommand):
     help = 'Import Tag, Projet, and Testimonial models from a JSON file'

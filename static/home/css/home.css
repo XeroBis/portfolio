@@ -182,11 +182,11 @@ a {
 }
 
 /* HEADER */
-#send_mail, #my_projects, .flag {
+#send_mail, #my_projects, .flag, #news_link {
     display: inline-block;
     position: relative;    
 }
-#send_mail::after, #my_projects::after, .flag::after{
+#send_mail::after, #my_projects::after, .flag::after, #news_link::after {
     content: '';
     position: absolute;
     width: 100%;
@@ -198,7 +198,7 @@ a {
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 }
-#send_mail:hover::after, #my_projects:hover::after, .flag:hover::after{
+#send_mail:hover::after, #my_projects:hover::after, .flag:hover::after, #news_link:hover::after {
     transform: scaleX(1);
     transform-origin: bottom left;
 }

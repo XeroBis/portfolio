@@ -22,9 +22,10 @@ from django.urls import re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("fr/sports/", include("workout.urls")),
-    path("en/workout/", include("workout.urls")),
-    path("fr/", include("home.urls")),
-    path("en/", include("home.urls")),
-    re_path(r".*", include("home.urls")),
+    path("news/", include("apps.newsfeed.urls")),
+    path("fr/sports/", include("apps.workout.urls")),
+    path("en/workout/", include("apps.workout.urls")),
+    path("fr/", include("apps.home.urls")),
+    path("en/", include("apps.home.urls")),
+    re_path(r".*", include("apps.home.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

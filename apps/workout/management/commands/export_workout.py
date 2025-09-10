@@ -1,6 +1,6 @@
 import csv
 from django.core.management.base import BaseCommand
-from workout.models import OneExercice
+from apps.workout.models import OneExercice
 from datetime import datetime
 import os
 

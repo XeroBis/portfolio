@@ -1,6 +1,6 @@
 import csv
 from django.core.management.base import BaseCommand
-from workout.models import Exercice
+from apps.workout.models import Exercice
 
 class Command(BaseCommand):
     help = 'Import exercises from a CSV file'

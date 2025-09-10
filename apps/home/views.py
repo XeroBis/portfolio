@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect 
 
 from .models import Projet, Tag, Testimonial
-from workout.models import TypeWorkout, Workout, Exercice, OneExercice
+from apps.workout.models import TypeWorkout, Workout, Exercice, OneExercice
 import json
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
