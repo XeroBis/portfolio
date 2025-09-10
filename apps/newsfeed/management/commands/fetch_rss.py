@@ -36,6 +36,9 @@ class Command(BaseCommand):
                 for entry in parsed_feed.entries:
                     published_date = self.parse_published_date(entry)
                     
+                    image_url = self.extract_image_url(entry)
+                    author = entry.get('author', '')
+                    
                     article, created = Article.objects.get_or_create(
                         link=entry.link,
                         defaults={
@@ -44,6 +47,8 @@ class Command(BaseCommand):
                             'published_date': published_date,
                             'source': feed,
                             'guid': entry.get('id', ''),
+                            'image_url': image_url,
+                            'author': author[:200] if author else '',
                         }
                     )
                     
@@ -71,3 +76,30 @@ class Command(BaseCommand):
                     continue
         
         return timezone.now()
+
+    def extract_image_url(self, entry):
+        """Extract image URL from RSS entry"""
+        # Check for media content
+        if hasattr(entry, 'media_content') and entry.media_content:
+            for media in entry.media_content:
+                if media.get('medium') == 'image' or 'image' in media.get('type', ''):
+                    return media.get('url')
+        
+        # Check for enclosures
+        if hasattr(entry, 'enclosures') and entry.enclosures:
+            for enclosure in entry.enclosures:
+                if 'image' in enclosure.get('type', ''):
+                    return enclosure.get('href')
+        
+        # Check for media_thumbnail
+        if hasattr(entry, 'media_thumbnail') and entry.media_thumbnail:
+            return entry.media_thumbnail[0].get('url')
+        
+        # Look for images in summary/description
+        import re
+        content = entry.get('summary', '') + entry.get('description', '')
+        img_match = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', content)
+        if img_match:
+            return img_match.group(1)
+        
+        return None
