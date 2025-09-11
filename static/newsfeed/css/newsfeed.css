@@ -23,8 +23,8 @@
         --accent-color: #4dabf7;
         --accent-hover: #339af0;
         --border-color: #404040;
-        --shadow: 0 2px 4px rgba(0,0,0,0.3);
-        --shadow-hover: 0 4px 12px rgba(0,0,0,0.4);
+        --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
         --gradient: linear-gradient(135deg, #4c6ef5 0%, #9c88ff 100%);
     }
 
@@ -318,7 +318,8 @@
         min-width: 80px;
     }
 
-    .view-count, .read-time {
+    .view-count,
+    .read-time {
         font-size: 12px;
         color: var(--text-muted);
         display: flex;
@@ -334,7 +335,8 @@
         gap: 10px;
     }
 
-    .pagination a, .pagination span {
+    .pagination a,
+    .pagination span {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -369,7 +371,16 @@
         align-items: center;
     }
 
-    .fetch-button, .export-button, .import-button {
+    .admin-controls form {
+        display: inline-flex;
+        margin: 0;
+        padding: 0;
+    }
+
+    .fetch-button,
+    .export-button,
+    .import-button,
+    .delete-button {
         background: var(--accent-color);
         color: white;
         border: 2px solid var(--accent-color);
@@ -389,10 +400,23 @@
         min-height: 44px;
     }
 
-    .fetch-button:hover, .export-button:hover, .import-button:hover {
+    .fetch-button:hover,
+    .export-button:hover,
+    .import-button:hover,
+    .delete-button:hover {
         background: var(--accent-hover);
         border-color: var(--accent-hover);
         transform: translateY(-2px);
+    }
+
+    .delete-button {
+        background: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .delete-button:hover {
+        background: #c82333;
+        border-color: #c82333;
     }
 
     .messages {
@@ -491,7 +515,14 @@
             gap: 8px;
         }
 
-        .fetch-button, .export-button, .import-button {
+        .admin-controls form {
+            width: 100%;
+        }
+
+        .fetch-button,
+        .export-button,
+        .import-button,
+        .delete-button {
             width: 100%;
             justify-content: center;
         }
@@ -502,6 +533,13 @@
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }

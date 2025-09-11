@@ -8,7 +8,7 @@ from django.db.models import Q, F
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.utils import timezone
 from .models import Article, RSSFeed
 import io
@@ -219,5 +219,63 @@ def import_rss_feeds(request):
         messages.error(request, 'Invalid JSON file format.')
     except Exception as e:
         messages.error(request, f'Error importing feeds: {str(e)}')
+    
+    return redirect('newsfeed:home')
+
+
+@staff_member_required
+@require_POST
+def delete_articles(request):
+    """Delete all articles"""
+    try:
+        article_count = Article.objects.count()
+        Article.objects.all().delete()
+        cache.clear()
+        
+        messages.success(request, f'Successfully deleted {article_count} articles.')
+        
+    except Exception as e:
+        messages.error(request, f'Error deleting articles: {str(e)}')
+    
+    return redirect('newsfeed:home')
+
+
+@staff_member_required
+@require_POST
+def delete_feeds(request):
+    """Delete all RSS feeds and their articles"""
+    try:
+        feed_count = RSSFeed.objects.count()
+        article_count = Article.objects.count()
+        
+        Article.objects.all().delete()
+        RSSFeed.objects.all().delete()
+        cache.clear()
+        
+        messages.success(request, f'Successfully deleted {feed_count} RSS feeds and {article_count} articles.')
+        
+    except Exception as e:
+        messages.error(request, f'Error deleting feeds: {str(e)}')
+    
+    return redirect('newsfeed:home')
+
+
+@staff_member_required
+@require_POST
+def clear_all(request):
+    """Clear the entire newsfeed - delete all RSS feeds and articles"""
+    try:
+        feed_count = RSSFeed.objects.count()
+        article_count = Article.objects.count()
+        total_count = feed_count + article_count
+        
+        Article.objects.all().delete()
+        RSSFeed.objects.all().delete()
+        cache.clear()
+        
+        messages.success(request, f'Successfully cleared the entire newsfeed ({total_count} records deleted).')
+        
+    except Exception as e:
+        messages.error(request, f'Error clearing newsfeed: {str(e)}')
     
     return redirect('newsfeed:home')

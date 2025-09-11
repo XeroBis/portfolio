@@ -32,6 +32,32 @@
                     {% csrf_token %}
                     <input type="file" id="import-file" name="feed_file" accept=".json" onchange="document.getElementById('import-form').submit()">
                 </form>
+                
+                <button type="button" class="delete-button delete-articles" onclick="confirmDelete('articles')">
+                    <i class="fas fa-trash-alt"></i>
+                    Delete Articles
+                </button>
+                
+                <button type="button" class="delete-button delete-feeds" onclick="confirmDelete('feeds')">
+                    <i class="fas fa-rss"></i>
+                    Delete RSS Feeds
+                </button>
+                
+                <button type="button" class="delete-button delete-all" onclick="confirmDelete('all')">
+                    <i class="fas fa-ban"></i>
+                    Clear All
+                </button>
+                <form id="delete-articles-form" method="post" action="{% url 'newsfeed:delete_articles' %}" style="display: none;">
+                    {% csrf_token %}
+                </form>
+                
+                <form id="delete-feeds-form" method="post" action="{% url 'newsfeed:delete_feeds' %}" style="display: none;">
+                    {% csrf_token %}
+                </form>
+                
+                <form id="delete-all-form" method="post" action="{% url 'newsfeed:clear_all' %}" style="display: none;">
+                    {% csrf_token %}
+                </form>
             </div>
             {% endif %}
         </div>
@@ -223,7 +249,30 @@
         </div>
 
         <script>
-
+            function confirmDelete(type) {
+                let message, formId;
+                
+                switch(type) {
+                    case 'articles':
+                        message = 'Are you sure you want to delete ALL articles? This action cannot be undone.';
+                        formId = 'delete-articles-form';
+                        break;
+                    case 'feeds':
+                        message = 'Are you sure you want to delete ALL RSS feeds and their articles? This action cannot be undone.';
+                        formId = 'delete-feeds-form';
+                        break;
+                    case 'all':
+                        message = 'Are you sure you want to CLEAR THE ENTIRE NEWSFEED? This will delete all RSS feeds and articles. This action cannot be undone.';
+                        formId = 'delete-all-form';
+                        break;
+                    default:
+                        return;
+                }
+                
+                if (confirm(message)) {
+                    document.getElementById(formId).submit();
+                }
+            }
         </script>
 </body>
 <script src="{% static 'js/newsfeed.js' %}"></script>
