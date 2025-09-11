@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_http_methods, require_POST
 from django.utils import timezone
-from .models import Article, RSSFeed
+from .models import Article, RSSFeed, FeedFetchTask
 import io
 import sys
 import json
@@ -85,31 +85,57 @@ def home(request):
 def fetch_feeds(request):
     if request.method == 'POST':
         try:
-            # Capture command output
-            out = io.StringIO()
-            call_command('fetch_rss', stdout=out)
-            output = out.getvalue()
-            
-            # Parse output to count new articles
-            lines = output.strip().split('\n')
-            total_new = 0
-            for line in lines:
-                if 'Created' in line and 'new articles' in line:
-                    try:
-                        count = int(line.split('Created ')[1].split(' new articles')[0])
-                        total_new += count
-                    except (ValueError, IndexError):
-                        pass
-            
-            if total_new > 0:
-                messages.success(request, f'Successfully fetched {total_new} new articles!')
-            else:
-                messages.info(request, 'No new articles found.')
-                
+            # Start async fetch task
+            call_command('fetch_rss_async')
+            messages.success(request, 'Feed fetch started in the background! Check the task status below.')
         except Exception as e:
-            messages.error(request, f'Error fetching feeds: {str(e)}')
+            messages.error(request, f'Error starting fetch: {str(e)}')
     
     return redirect('newsfeed:home')
+
+
+@staff_member_required
+def fetch_status(request):
+    """Get current fetch task status"""
+    recent_tasks = FeedFetchTask.objects.all()[:5]
+    
+    # Get running task if any
+    running_task = FeedFetchTask.objects.filter(status='running').first()
+    
+    if request.headers.get('Accept') == 'application/json':
+        # Return JSON for AJAX requests
+        tasks_data = []
+        for task in recent_tasks:
+            tasks_data.append({
+                'id': task.id,
+                'status': task.status,
+                'progress_percentage': task.progress_percentage,
+                'progress_text': task.progress_text,
+                'articles_created': task.articles_created,
+                'processed_feeds': task.processed_feeds,
+                'total_feeds': task.total_feeds,
+                'started_at': task.started_at.isoformat() if task.started_at else None,
+                'completed_at': task.completed_at.isoformat() if task.completed_at else None,
+                'errors': task.errors.split('\n') if task.errors else []
+            })
+        
+        return JsonResponse({
+            'tasks': tasks_data,
+            'running_task': {
+                'id': running_task.id,
+                'progress_percentage': running_task.progress_percentage,
+                'progress_text': running_task.progress_text,
+                'articles_created': running_task.articles_created,
+            } if running_task else None
+        })
+    
+    # Return HTML template
+    context = {
+        'recent_tasks': recent_tasks,
+        'running_task': running_task,
+    }
+    
+    return render(request, 'newsfeed/fetch_status.html', context)
 
 
 def article_detail(request, pk):

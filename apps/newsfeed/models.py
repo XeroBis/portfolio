@@ -53,3 +53,34 @@ class Article(models.Model):
             models.Index(fields=['is_featured']),
             models.Index(fields=['-view_count']),
         ]
+
+
+class FeedFetchTask(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('running', 'Running'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    progress_text = models.TextField(blank=True)
+    total_feeds = models.PositiveIntegerField(default=0)
+    processed_feeds = models.PositiveIntegerField(default=0)
+    articles_created = models.PositiveIntegerField(default=0)
+    errors = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Feed Fetch Task {self.id} - {self.status}"
+    
+    @property
+    def progress_percentage(self):
+        if self.total_feeds == 0:
+            return 0
+        return int((self.processed_feeds / self.total_feeds) * 100)
+    
+    class Meta:
+        ordering = ['-created_at']
