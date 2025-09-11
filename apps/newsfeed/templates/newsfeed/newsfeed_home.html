@@ -75,7 +75,7 @@
             <a href="?{% if search_query %}search={{ search_query }}&{% endif %}sort={{ current_sort }}"
                 class="category-link {% if not current_category %}active{% endif %}">All</a>
             {% for category in categories %}
-            <a href="?category={{ category }}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
+            <a href="?category={{ category|urlencode }}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
                 class="category-link {% if category == current_category %}active{% endif %}">
                 {{ category|title }}
             </a>
@@ -135,7 +135,7 @@
                         <div class="article-meta">
                             <span class="meta-item">
                                 <i class="fas fa-calendar"></i>
-                                {{ article.published_date|date:"M d, Y g:i A" }}
+                                {{ article.published_date|date:"M d, Y H:i" }}
                             </span>
                             <span class="meta-item">
                                 <i class="fas fa-newspaper"></i>
@@ -183,11 +183,11 @@
             {% if page_obj.has_other_pages %}
             <div class="pagination">
                 {% if page_obj.has_previous %}
-                <a href="?page=1{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
+                <a href="?page=1{% if current_category %}&category={{ current_category|urlencode }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
                     title="First">
                     <i class="fas fa-angle-double-left"></i>
                 </a>
-                <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category|urlencode }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
                     title="Previous">
                     <i class="fas fa-angle-left"></i>
                 </a>
@@ -198,11 +198,11 @@
                 <span>{{ page_obj.paginator.num_pages }}</span>
 
                 {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
+                <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category|urlencode }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
                     title="Next">
                     <i class="fas fa-angle-right"></i>
                 </a>
-                <a href="?page={{ page_obj.paginator.num_pages }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if current_category %}&category={{ current_category|urlencode }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
                     title="Last">
                     <i class="fas fa-angle-double-right"></i>
                 </a>

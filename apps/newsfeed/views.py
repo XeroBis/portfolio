@@ -15,6 +15,10 @@ import io
 import sys
 import json
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def home(request):
     cache_key = f"newsfeed_articles_{request.GET.urlencode()}"
