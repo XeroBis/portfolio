@@ -1,4 +1,6 @@
 import feedparser
+import re
+import html
 from django.core.management.base import BaseCommand
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
@@ -39,11 +41,13 @@ class Command(BaseCommand):
                     image_url = self.extract_image_url(entry)
                     author = entry.get('author', '')
                     
+                    clean_summary = self.clean_html_text(entry.get('summary', ''))
+                    
                     article, created = Article.objects.get_or_create(
                         link=entry.link,
                         defaults={
                             'title': entry.get('title', 'No title')[:500],
-                            'summary': entry.get('summary', ''),
+                            'summary': clean_summary,
                             'published_date': published_date,
                             'source': feed,
                             'guid': entry.get('id', ''),
@@ -103,3 +107,24 @@ class Command(BaseCommand):
             return img_match.group(1)
         
         return None
+    
+    def clean_html_text(self, html_content):
+        """Clean HTML content and extract readable text"""
+        if not html_content:
+            return ''
+        
+        # Decode HTML entities first
+        text = html.unescape(html_content)
+        
+        # Remove HTML tags using regex
+        text = re.sub(r'<[^>]+>', '', text)
+        
+        # Clean up whitespace and newlines
+        text = re.sub(r'\s+', ' ', text)
+        text = text.strip()
+        
+        # Limit text length to prevent extremely long summaries
+        if len(text) > 1000:
+            text = text[:1000] + '...'
+        
+        return text

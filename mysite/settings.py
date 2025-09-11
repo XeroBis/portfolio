@@ -152,3 +152,39 @@ CSRF_TRUSTED_ORIGINS = ['https://*.alanbignon.com', 'https://*.127.0.0.1', 'http
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE=False
 CSRF_COOKIE_SECURE=False
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        # Your app’s logger
+        "apps.newsfeed": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}

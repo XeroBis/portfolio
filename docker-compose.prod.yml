@@ -43,7 +43,7 @@ services:
  nginx:
   build:
     context: .
-    dockerfile: dockerfiles/nginx/Dockerfile
+    dockerfile: dockerfiles/nginx/Dockerfile.prod
   container_name: nginx-docker
   ports:
     - 80:80
