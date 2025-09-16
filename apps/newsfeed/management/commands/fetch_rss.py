@@ -102,6 +102,9 @@ class Command(BaseCommand):
                     self.style.SUCCESS(f'Created {articles_created} new articles from {feed.name} (processed {len(entries)} entries)')
                 )
                 
+                # Keep only the 10 most recent articles for this feed
+                self.cleanup_old_articles(feed)
+                
             except Exception as e:
                 self.stdout.write(
                     self.style.ERROR(f'Error fetching from {feed.name}: {str(e)}')
@@ -202,3 +205,28 @@ class Command(BaseCommand):
             text = text[:1000] + '...'
         
         return text
+    
+    def cleanup_old_articles(self, feed):
+        """Keep only the 10 most recent articles for the given feed"""
+        try:
+            # Get all articles for this feed, ordered by published_date (most recent first)
+            all_articles = Article.objects.filter(source=feed).order_by('-published_date')
+            
+            # If we have more than 10 articles, delete the older ones
+            if all_articles.count() > 10:
+                # Get the articles to keep (first 10)
+                articles_to_keep = list(all_articles[:10])
+                keep_ids = [article.id for article in articles_to_keep]
+                
+                # Delete articles that are not in the keep list
+                deleted_count = Article.objects.filter(source=feed).exclude(id__in=keep_ids).delete()[0]
+                
+                if deleted_count > 0:
+                    self.stdout.write(
+                        self.style.SUCCESS(f'Cleaned up {deleted_count} old articles from {feed.name}, keeping 10 most recent')
+                    )
+                    
+        except Exception as e:
+            self.stdout.write(
+                self.style.WARNING(f'Error cleaning up old articles for {feed.name}: {str(e)}')
+            )
