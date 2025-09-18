@@ -1,17 +1,15 @@
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.utils import translation
 
 from .models import Workout, OneExercice, TypeWorkout, Exercice
 
 
 def redirect_workout(request):
-    url_path = request.get_full_path().split("/")
-    lang = url_path[1]
+    lang = translation.get_language()
 
-    if lang not in ["fr", "en"]:
-        return redirect("/fr/sports/")
     workouts = Workout.objects.all().order_by('-date')
     paginator = Paginator(workouts, 5)
     page_number = request.GET.get('page')
@@ -65,11 +63,8 @@ def redirect_workout(request):
 
 @login_required
 def add_workout(request):
-    url_path = request.get_full_path().split("/")
-    lang = url_path[1]
-    if lang not in ["fr", "en"]:
-        return redirect("/fr/sports/")
-    
+    lang = translation.get_language()
+
     if request.method == 'POST':
         date = request.POST['date']
         type_workout = request.POST['type_workout']
@@ -79,7 +74,7 @@ def add_workout(request):
 
         workout = Workout(date=date, type_workout=type, duration=duration)
         workout.save()
-        
+
         for key, value in request.POST.items():
             if key.startswith('exercise_') and key.endswith('_name'):
                 exercise_id = key.split('_')[1]
@@ -87,7 +82,7 @@ def add_workout(request):
                 nb_series = request.POST.get(f'exercise_{exercise_id}_nb_series')
                 nb_repetition = request.POST.get(f'exercise_{exercise_id}_nb_repetition')
                 weight = request.POST.get(f'exercise_{exercise_id}_weight')
-                
+
                 exercise = OneExercice(
                     name=Exercice.objects.get(name=exercise_name),
                     seance=workout,
@@ -96,12 +91,9 @@ def add_workout(request):
                     weight=weight,
                 )
                 exercise.save()
-        
-        if lang == "en":
-            return redirect(f'/en/workout/')
-        else:
-            return redirect(f'/fr/sports/')
-    
+
+        return redirect('/workout/')
+
     context = {"page": "add_workout", "lang": lang}
     return render(request, 'add_workout.html', context)
 

@@ -4,7 +4,9 @@
 ## COMMAND USED FREQUENTLY
 
 scp -r 
-
+uv run python manage.py makemessages -l fr
+uv run python manage.py makemessages -l en
+uv run python manage.py makemessages -a
 ### docker 
 
 build prod :

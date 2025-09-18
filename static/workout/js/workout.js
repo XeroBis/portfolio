@@ -9,9 +9,7 @@ function loadMore() {
     $('#loading-indicator').show();
     $('#load-more').hide();
     
-    var lang = document.body.getAttribute('data-lang');
-    var name_workout = (lang === "en") ? "workout" : "sports";
-    var url = "/" + lang + "/" + name_workout + "/?page=" + currentPage;
+    var url = "/workout/?page=" + currentPage;
 
     $.ajax({
         url: url,
@@ -36,6 +34,7 @@ function loadMore() {
                     html += '</h2>';
 
                     if (data.exercises && data.exercises.length > 0) {
+                        var lang = document.body.getAttribute('data-lang');
                         html += '<table><thead><tr>';
                         if (lang === "fr") {
                             html += '<th>Exercice</th>';

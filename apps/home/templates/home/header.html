@@ -1,58 +1,43 @@
+{% load i18n %}
 <header id="contenu_header">
-    <a href="/" id="name_href" class="cliquable">Alan Bignon</a>
+    <a href="{% url 'home' %}" id="name_href" class="cliquable">Alan Bignon</a>
     <div id="links">
         <a href="mailto:contact@alanbignon.com" class="cliquable" id="send_mail">
             <i class="fas fa-envelope"></i>
         </a>
         <span id="span_point">•</span>
         {% if page == "workout" %}
-            {% if lang == "en" %}
-            <a href="/en/" id="my_projects" class="cliquable">Home</a>
-            {% endif %}
-            {% if lang == "fr" %}
-            <a href="/fr/" id="my_projects" class="cliquable">Accueil</a>
-            {% endif %}
+            <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
             <span id="span_point">•</span>
-            <a href="/news/?sort=date" id="news_link" class="cliquable">News</a>
-            <span id="span_point">•</span>
-            <a href="/fr/sports/" class="flag cliquable" id="french_flag">🇫🇷</a>
-            <span id="span_point">•</span>
-            <a href="/en/workout/" class="flag cliquable" id="english_flag">🇬🇧</a>
+            <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "home" %}
-            
-            {% if lang == "en" %}
-            <a href="/en/workout/" id="my_projects" class="cliquable">Workout</a>
-            {% endif %}
-            {% if lang == "fr" %}
-            <a href="/fr/sports/" id="my_projects" class="cliquable">Sports</a>
-            {% endif %}
+            <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
             <span id="span_point">•</span>
-            <a href="/news/?sort=date" id="news_link" class="cliquable">News</a>
-            <span id="span_point">•</span>
-            <a href="/fr/" class="flag cliquable" id="french_flag">🇫🇷</a>
-            <span id="span_point">•</span>
-            <a href="/en/" class="flag cliquable" id="english_flag">🇬🇧</a>
+            <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "add_workout" %}
-            {% if lang == "en" %}
-            <a href="/en/" id="my_projects" class="cliquable">Home</a>
-            {% endif %}
-            {% if lang == "fr" %}
-            <a href="/fr/" id="my_projects" class="cliquable">Accueil</a>
-            {% endif %}
+            <a href="{% url 'home' %}" id="my_projects" class="cliquable">{% trans "Home" %}</a>
             <span id="span_point">•</span>
-            <a href="/news/?sort=date" id="news_link" class="cliquable">News</a>
-            <span id="span_point">•</span>
-            <a href="/fr/sports/ajout_seance/" class="flag cliquable" id="french_flag">🇫🇷</a>
-            <span id="span_point">•</span>
-            <a href="/en/workout/add_workout/" class="flag cliquable" id="english_flag">🇬🇧</a>
+            <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "news" %}
-            <a href="/en/" id="my_projects" class="cliquable">Home</a>
+            <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
             <span id="span_point">•</span>
-            <a href="/en/workout/" id="my_projects" class="cliquable">Workout</a>
+            <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
         {% endif %}
+        <span id="span_point">•</span>
+        <form method="post" action="{% url 'set_language' %}" style="display: inline;">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                <button type="submit" name="language" value="fr" class="flag cliquable" id="french_flag" style="background: none; border: none; font-size: inherit;">🇫🇷</button>
+            </form>
+            <span id="span_point">•</span>
+            <form method="post" action="{% url 'set_language' %}" style="display: inline;">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                <button type="submit" name="language" value="en" class="flag cliquable" id="english_flag" style="background: none; border: none; font-size: inherit;">🇬🇧</button>
+            </form>
     </div>
     <script type="module" defer>
         import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";

@@ -18,14 +18,13 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.urls import re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("news/", include("apps.newsfeed.urls")),
-    path("fr/sports/", include("apps.workout.urls")),
-    path("en/workout/", include("apps.workout.urls")),
-    path("fr/", include("apps.home.urls")),
-    path("en/", include("apps.home.urls")),
-    re_path(r".*", include("apps.home.urls")),
+    path("i18n/", include("django.conf.urls.i18n")),
+    path("workout/", include("apps.workout.urls")),
+    path("", include("apps.home.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
