@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 {% include "head.html" %} 
 <body>
@@ -6,21 +7,10 @@
 
     <section id="about_me">
         <div id="about_me_txt">
-            {% if lang == "en" %}
-            <h1 id="about_me_accroche">A great addition to your team !</h1>
+            <h1 id="about_me_accroche">{% trans "A great addition to your team!" %}</h1>
             <p id="about_me_phrase">
-                I'm Alan, a passionate developer with a strong interest in technology and data. 
-                I enjoy working on challenging projects and constantly improving my skills across multiple domains.
+                {% trans "I'm Alan, a passionate developer with a strong interest in technology and data. I enjoy working on challenging projects and constantly improving my skills across multiple domains." %}
             </p>
-            {% endif %}
-
-            {% if lang == "fr" %}
-            <h1 id="about_me_accroche">Un excellent ajout à votre équipe !</h1>
-            <p id="about_me_phrase">
-                Je suis Alan, un développeur passionné avec un fort intérêt pour la technologie et la data.
-                J'aime travailler sur des projets stimulants et améliorer constamment mes compétences dans plusieurs domaines.
-            </p>
-            {% endif %}
         </div>
         <img src="{% static 'images/me.png' %}" id="img_me">
         <div id="logo_liens">
@@ -63,12 +53,7 @@
     </section>
     <section id="testimonials">
         <div id="testimonials_title">
-            {% if lang == "en" %}
-            <h2>What People Say About Me</h2>
-            {% endif %}
-            {% if lang == "fr" %}
-            <h2>Ce que les gens disent de moi</h2>
-            {% endif %}
+            <h2>{% trans "What People Say About Me" %}</h2>
         </div>
         <div id="testimonials_list">
             {% for testimonial in testimonials %}
@@ -86,31 +71,25 @@
     </section>
 
     <section id="cv">
-        {% if lang == "fr" %}
-        <div id="cv_title">Mon CV</div>
-        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv" class="cliquable">cliquer ici pour le télécharger</a>
-        {% endif %}
-        {% if lang == "en" %}
-        <div id="cv_title">My Resume</div>
-        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv" class="cliquable">click here to download pdf</a>
-        {% endif %}
+        <div id="cv_title">{% trans "My Resume" %}</div>
+        <a href="{% static 'files/bignon_alan_cv.pdf' %}" download="bignon_alan_cv" id="download_cv" class="cliquable">{% trans "click here to download pdf" %}</a>
     </section>
     {% if user.is_authenticated %}
     <form id="exportFom" action="export_data/">
         {% csrf_token %}
-        <button type="submit" class="cliquable">Download data</button>
+        <button type="submit" class="cliquable">{% trans "Download data" %}</button>
     </form>
     <form id="importForm" action="import_data/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" id="jsonFile" name="file" accept=".json">
-        <button type="submit" class="cliquable" onclick="return confirm('Are you sure you want to import your file ? This action cannot be undone!');">
-        Import JSON
+        <button type="submit" class="cliquable" onclick="return confirm('{% trans "Are you sure you want to import your file? This action cannot be undone!" %}');">
+        {% trans "Import JSON" %}
         </button>
     </form>
     <form id="resetForm" action="reset_data/">
         {% csrf_token %}
-        <button type="submit" class="cliquable" onclick="return confirm('Are you sure you want to reset all data? This action cannot be undone!');">
-            Reset All Data
+        <button type="submit" class="cliquable" onclick="return confirm('{% trans "Are you sure you want to reset all data? This action cannot be undone!" %}');">
+            {% trans "Reset All Data" %}
         </button>
     </form>
     {% endif %}

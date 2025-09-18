@@ -1,5 +1,5 @@
 function addExercice() {
-    fetch('/en/workout/get_list_exercice/')
+    fetch('/workout/get_list_exercice/')
         .then(response => response.json())
         .then(data => {
             const exercisesContainer = document.getElementById('exercises');
@@ -51,7 +51,7 @@ function deleteExercise(index) {
 function changeWorkoutType() {
     const selectedType = document.getElementById('add_workout_type_workout').value;
     if (selectedType) {
-        fetch(`/en/workout/get_last_workout/?type=${selectedType}`)
+        fetch(`/workout/get_last_workout/?type=${selectedType}`)
             .then(response => response.json())
             .then(data => {
                 if (data.date) {

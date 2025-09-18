@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
+from django.utils import translation
 
 from .models import Projet, Tag, Testimonial
 from apps.workout.models import TypeWorkout, Workout, Exercice, OneExercice
@@ -10,13 +11,8 @@ def home(request):
     """
     View pour afficher la page d'accueil.
     """
-    url_path = request.get_full_path().split("/")
-    lang = url_path[1]
+    lang = translation.get_language()
 
-    if lang not in ["fr", "en"]:
-        return redirect('/fr/') # langue par défaut
-    if len(url_path)>3 :
-        return redirect("/"+lang+"/")
     projets = Projet.objects.all()
     testimonial = Testimonial.objects.all()
     context = {"page":"home", "projets":projets, "lang":lang, "testimonials":testimonial}
@@ -125,13 +121,7 @@ def import_data_json(request):
                     }
                 )
 
-            url_path = request.get_full_path().split("/")
-            lang = url_path[1]
-
-            if lang not in ["fr", "en"]:
-                return redirect('/fr/') # langue par défaut
-            
-            return redirect("/"+lang+"/")
+            return redirect('home')
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
@@ -149,11 +139,6 @@ def reset_data(request):
         Exercice.objects.all().delete()
         OneExercice.objects.all().delete()
 
-        url_path = request.get_full_path().split("/")
-        lang = url_path[1]
-        if lang not in ["fr", "en"]:
-            return redirect('/fr/')
-            
-        return redirect("/"+lang+"/")
+        return redirect('home')
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)

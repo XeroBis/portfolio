@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 
 {% include "head.html" %}
 
@@ -7,25 +8,25 @@
 
     <div class="news-container">
         <div class="news-header">
-            <h1>News Feed</h1>
+            <h1>{% trans "News Feed" %}</h1>
             {% if user.is_staff %}
             <div class="admin-controls">
                 <form method="post" action="{% url 'newsfeed:fetch_feeds' %}" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit" class="fetch-button">
                         <i class="fas fa-sync-alt"></i>
-                        Fetch Latest Articles
+                        {% trans "Fetch Latest Articles" %}
                     </button>
                 </form>
                 
                 <a href="{% url 'newsfeed:export_feeds' %}" class="export-button">
                     <i class="fas fa-download"></i>
-                    Export RSS Feeds
+                    {% trans "Export RSS Feeds" %}
                 </a>
                 
                 <button type="button" class="import-button" onclick="document.getElementById('import-file').click()">
                     <i class="fas fa-upload"></i>
-                    Import RSS Feeds
+                    {% trans "Import RSS Feeds" %}
                 </button>
                 
                 <form id="import-form" method="post" action="{% url 'newsfeed:import_feeds' %}" enctype="multipart/form-data" style="display: none;">
@@ -35,17 +36,17 @@
                 
                 <button type="button" class="delete-button delete-articles" onclick="confirmDelete('articles')">
                     <i class="fas fa-trash-alt"></i>
-                    Delete Articles
+                    {% trans "Delete Articles" %}
                 </button>
                 
                 <button type="button" class="delete-button delete-feeds" onclick="confirmDelete('feeds')">
                     <i class="fas fa-rss"></i>
-                    Delete RSS Feeds
+                    {% trans "Delete RSS Feeds" %}
                 </button>
                 
                 <button type="button" class="delete-button delete-all" onclick="confirmDelete('all')">
                     <i class="fas fa-ban"></i>
-                    Clear All
+                    {% trans "Clear All" %}
                 </button>
                 <form id="delete-articles-form" method="post" action="{% url 'newsfeed:delete_articles' %}" style="display: none;">
                     {% csrf_token %}
@@ -73,7 +74,7 @@
         <div class="controls">
             <div class="search-container">
                 <form method="get" action="">
-                    <input type="text" name="search" value="{{ search_query }}" placeholder="Search articles..."
+                    <input type="text" name="search" value="{{ search_query }}" placeholder="{% trans 'Search articles...' %}"
                         class="search-input">
                     <button type="submit" class="search-button">
                         <i class="fas fa-search"></i>
@@ -87,19 +88,19 @@
             <div class="filters">
                 {% if total_articles %}
                 <span class="article-count">
-                    {{ total_articles }} article{{ total_articles|pluralize }}
+                    {% blocktrans count total=total_articles %}{{ total }} article{% plural %}{{ total }} articles{% endblocktrans %}
                 </span>
                 {% endif %}
             </div>
         </div>
         {% if search_query %}
-        <p>Search results for: "<strong>{{ search_query }}</strong>"</p>
+        <p>{% blocktrans %}Search results for: "<strong>{{ search_query }}</strong>"{% endblocktrans %}</p>
         {% endif %}
 
         {% if categories %}
         <div class="categories">
             <a href="?{% if search_query %}search={{ search_query }}&{% endif %}sort={{ current_sort }}"
-                class="category-link {% if not current_category %}active{% endif %}">All</a>
+                class="category-link {% if not current_category %}active{% endif %}">{% trans "All" %}</a>
             {% for category in categories %}
             <a href="?category={{ category|urlencode }}{% if search_query %}&search={{ search_query }}{% endif %}&sort={{ current_sort }}"
                 class="category-link {% if category == current_category %}active{% endif %}">
@@ -111,7 +112,7 @@
 
         {% if featured_articles and not search_query and not current_category %}
         <div class="featured-section">
-            <h2><i class="fas fa-star"></i> Featured Articles</h2>
+            <h2><i class="fas fa-star"></i> {% trans "Featured Articles" %}</h2>
             <div class="featured-articles">
                 {% for article in featured_articles %}
                 <div class="featured-article fade-in">
@@ -120,7 +121,7 @@
                         {% else %}
                         <div class="featured-image">
                             {% endif %}
-                            <div class="featured-badge">Featured</div>
+                            <div class="featured-badge">{% trans "Featured" %}</div>
                         </div>
                         <div class="featured-article-content">
                             <h3>
@@ -220,7 +221,7 @@
                 {% endif %}
 
                 <span class="current">{{ page_obj.number }}</span>
-                <span>of</span>
+                <span>{% trans "of" %}</span>
                 <span>{{ page_obj.paginator.num_pages }}</span>
 
                 {% if page_obj.has_next %}
@@ -237,12 +238,12 @@
             {% endif %}
             {% else %}
             <div class="no-articles">
-                <h2><i class="fas fa-inbox"></i> No articles found</h2>
+                <h2><i class="fas fa-inbox"></i> {% trans "No articles found" %}</h2>
                 {% if search_query %}
-                <p>No articles match your search for "{{ search_query }}"</p>
-                <a href="?">Clear search</a>
+                <p>{% blocktrans %}No articles match your search for "{{ search_query }}"{% endblocktrans %}</p>
+                <a href="?">{% trans "Clear search" %}</a>
                 {% else %}
-                <p>Try adding some RSS feeds and running the fetch command!</p>
+                <p>{% trans "Try adding some RSS feeds and running the fetch command!" %}</p>
                 {% endif %}
             </div>
             {% endif %}
