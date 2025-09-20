@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 <header id="contenu_header">
     <a href="{% url 'home' %}" id="name_href" class="cliquable">Alan Bignon</a>
     <div id="links">
@@ -30,17 +31,13 @@
         <form method="post" action="{% url 'set_language' %}" style="display: inline;">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                <button type="submit" name="language" value="fr" class="flag cliquable" id="french_flag" style="background: none; border: none; font-size: inherit;">🇫🇷</button>
+                <button type="submit" name="language" value="fr" class="flag cliquable" id="french_flag" style="background: url('{% static 'images/flag-fr.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;" title="Français"></button>
             </form>
             <span id="span_point">•</span>
             <form method="post" action="{% url 'set_language' %}" style="display: inline;">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                <button type="submit" name="language" value="en" class="flag cliquable" id="english_flag" style="background: none; border: none; font-size: inherit;">🇬🇧</button>
+                <button type="submit" name="language" value="en" class="flag cliquable" id="english_flag" style="background: url('{% static 'images/flag-gb.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;" title="English"></button>
             </form>
     </div>
-    <script type="module" defer>
-        import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
-        polyfillCountryFlagEmojis();
-    </script>
 </header>
