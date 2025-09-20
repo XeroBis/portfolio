@@ -18,6 +18,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd portfolio/
+            git reset --hard HEAD
             git pull origin main
             docker compose down
             docker compose -f docker-compose.prod.yml up --build -d
