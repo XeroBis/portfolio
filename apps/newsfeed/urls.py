@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, re_path
+from django.shortcuts import redirect
 from . import views
 
 app_name = 'newsfeed'
@@ -12,4 +13,5 @@ urlpatterns = [
     path('delete-articles/', views.delete_articles, name='delete_articles'),
     path('delete-feeds/', views.delete_feeds, name='delete_feeds'),
     path('clear-all/', views.clear_all, name='clear_all'),
+    re_path(r'^.*$', lambda request: redirect('newsfeed:home'), name='catch_all'),
 ]
