@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3 2" width="24" height="16">
+  <rect width="3" height="2" fill="#012169"/>
+  <g stroke="#FFF">
+    <g stroke-width="0.3">
+      <path d="m0,0 3,2m0,-2L0,2"/>
+    </g>
+    <g stroke-width="0.2">
+      <path d="m0,0 3,2m0,-2L0,2"/>
+    </g>
+    <g stroke="#C8102E">
+      <g stroke-width="0.2">
+        <path d="m0,0 3,2m0,-2L0,2"/>
+      </g>
+    </g>
+  </g>
+  <g stroke="#FFF" stroke-width="0.5">
+    <path d="M1.5,0v2M0,1h3"/>
+  </g>
+  <g stroke="#C8102E" stroke-width="0.3">
+    <path d="M1.5,0v2M0,1h3"/>
+  </g>
+</svg>
