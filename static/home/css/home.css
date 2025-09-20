@@ -202,9 +202,6 @@ a {
     transform: scaleX(1);
     transform-origin: bottom left;
 }
-.flag {
-    padding: 0.5rem;
-}
 
 /* Images + texte */
 #about_me_phrase {

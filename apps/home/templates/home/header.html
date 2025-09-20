@@ -8,36 +8,48 @@
         </a>
         <span id="span_point">•</span>
         {% if page == "workout" %}
-            <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-            <span id="span_point">•</span>
-            <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
+        <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
+        <span id="span_point">•</span>
+        <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "home" %}
-            <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
-            <span id="span_point">•</span>
-            <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
+        <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
+        <span id="span_point">•</span>
+        <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "add_workout" %}
-            <a href="{% url 'home' %}" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-            <span id="span_point">•</span>
-            <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
+        <a href="{% url 'home' %}" id="my_projects" class="cliquable">{% trans "Home" %}</a>
+        <span id="span_point">•</span>
+        <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "news" %}
-            <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-            <span id="span_point">•</span>
-            <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
-        {% endif %}
+        <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
         <span id="span_point">•</span>
-        <form method="post" action="{% url 'set_language' %}" style="display: inline;">
-                {% csrf_token %}
-                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                <button type="submit" name="language" value="fr" class="flag cliquable" id="french_flag" style="background: url('{% static 'images/flag-fr.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;" title="Français"></button>
-            </form>
-            <span id="span_point">•</span>
+        <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
+        {% endif %}
+
+        <span id="span_point">•</span>
+
+        <div class="flag cliquable">
             <form method="post" action="{% url 'set_language' %}" style="display: inline;">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}" />
-                <button type="submit" name="language" value="en" class="flag cliquable" id="english_flag" style="background: url('{% static 'images/flag-gb.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;" title="English"></button>
+                <button type="submit" name="language" value="fr" id="french_flag"
+                    style="background: url('{% static 'images/flag-fr.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;"
+                    title="Français"></button>
             </form>
+        </div>
+
+        <span id="span_point">•</span>
+
+        <div class="flag cliquable">
+            <form method="post" action="{% url 'set_language' %}" style="display: inline;">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                <button type="submit" name="language" value="en" id="english_flag"
+                    style="background: url('{% static 'images/flag-gb.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;"
+                    title="English"></button>
+            </form>
+        </div>
     </div>
 </header>
