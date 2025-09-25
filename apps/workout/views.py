@@ -194,3 +194,102 @@ def get_workout_types(request):
 
     data = {"workout_types": workout_types_data}
     return JsonResponse(data)
+
+
+@login_required
+def edit_workout(request, workout_id):
+    lang = translation.get_language()
+
+    try:
+        workout = Workout.objects.get(id=workout_id)
+    except Workout.DoesNotExist:
+        return redirect('/workout/')
+
+    if request.method == 'POST':
+        # Update workout basic info
+        workout.date = request.POST['date']
+        workout.duration = request.POST['duration']
+        workout.save()
+
+        # Delete existing exercises
+        OneExercice.objects.filter(seance=workout).delete()
+
+        # Add new exercises
+        for key, value in request.POST.items():
+            if key.startswith('exercise_') and key.endswith('_name'):
+                exercise_id = key.split('_')[1]
+                exercise_name = value
+                exercise_obj = Exercice.objects.get(name=exercise_name)
+
+                # Create specific exercise log based on type
+                if exercise_obj.exercise_type == 'strength':
+                    nb_series = request.POST.get(f'exercise_{exercise_id}_nb_series')
+                    nb_repetition = request.POST.get(f'exercise_{exercise_id}_nb_repetition')
+                    weight = request.POST.get(f'exercise_{exercise_id}_weight')
+
+                    exercise_log = StrengthExerciseLog.objects.create(
+                        exercise=exercise_obj,
+                        workout=workout,
+                        nb_series=nb_series,
+                        nb_repetition=nb_repetition,
+                        weight=weight,
+                    )
+                    content_type = ContentType.objects.get_for_model(StrengthExerciseLog)
+
+                elif exercise_obj.exercise_type == 'cardio':
+                    duration_seconds = request.POST.get(f'exercise_{exercise_id}_duration_seconds')
+                    distance_m = request.POST.get(f'exercise_{exercise_id}_distance_m')
+
+                    exercise_log = CardioExerciseLog.objects.create(
+                        exercise=exercise_obj,
+                        workout=workout,
+                        duration_seconds=duration_seconds,
+                        distance_m=distance_m,
+                    )
+                    content_type = ContentType.objects.get_for_model(CardioExerciseLog)
+
+                # Create the polymorphic OneExercice entry
+                one_exercise = OneExercice.objects.create(
+                    name=exercise_obj,
+                    seance=workout,
+                    content_type=content_type,
+                    object_id=exercise_log.id,
+                )
+
+        return redirect('/workout/')
+
+    # GET request - prepare data for editing
+    exercises = OneExercice.objects.filter(seance=workout)
+    exercises_data = []
+    for exercise in exercises:
+        exercise_data = {
+            'name': exercise.name.name,
+            'exercise_type': exercise.name.exercise_type,
+            'data': exercise.get_display_data()
+        }
+        exercises_data.append(exercise_data)
+
+    workout_data = {
+        'id': workout.id,
+        'date': workout.date,
+        'duration': workout.duration,
+        'type_workout': workout.type_workout.name_workout,
+        'exercises': exercises_data
+    }
+
+    context = {
+        "page": "edit_workout",
+        "lang": lang,
+        "workout": workout,
+        "workout_data": workout_data,
+        "translations": {
+            "sets": gettext("Sets"),
+            "series": gettext("Series"),
+            "reps": gettext("Reps"),
+            "repetitions": gettext("Repetitions"),
+            "weight_kg": gettext("Weight (kg)"),
+            "duration_sec": gettext("Duration (sec)"),
+            "distance_m": gettext("Distance (m)")
+        }
+    }
+    return render(request, 'edit_workout.html', context)

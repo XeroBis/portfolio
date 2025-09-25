@@ -9,5 +9,6 @@ urlpatterns = [
     path("get_list_exercice/", views.get_list_exercise, name="get_list_exercise"),
     path("get_workout_types/", views.get_workout_types, name="get_workout_types"),
     path("add_workout/", views.add_workout, name='add_workout'),
+    path("edit_workout/<int:workout_id>/", views.edit_workout, name='edit_workout'),
     re_path(r'^.*$', lambda request: redirect('workout'), name='catch_all'),
 ]

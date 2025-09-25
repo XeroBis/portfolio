@@ -44,10 +44,10 @@ table tr:hover {
 table tr td {
     color: #555;
 }
-#load-more, #btn_add_workout {
+#load-more, #btn_add_workout, #btn_add_exercise, #btn_edit_workout {
     display: block;
 }
-#load-more, #btn_add_workout, #btn_add_exercise {
+#load-more, #btn_add_workout, #btn_add_exercise, #btn_edit_workout {
     margin: 20px auto;
     padding: 10px 20px;
     font-size: 16px;
@@ -59,13 +59,20 @@ table tr td {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+/* Edit button specific styles */
+#btn_edit_workout {
+    margin: 0;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
 
 /* Hover effect */
-#load-more:hover, #btn_add_workout:hover, #btn_add_exercise:hover {
+#load-more:hover, #btn_add_workout:hover, #btn_add_exercise:hover, #btn_edit_workout:hover {
     background-color: #b8ab8aac;
 }
 
-#load-more:active, #btn_add_workout:active, #btn_add_exercise:active {
+#load-more:active, #btn_add_workout:active, #btn_add_exercise:active, #btn_edit_workout:active {
     transform: scale(0.95);
 }
 
@@ -144,9 +151,7 @@ table tr td {
     font-weight: bold;
 }
 
-#btn_add_exercise {
-    display: none;
-}
+
 
 .workout_input {
     flex: 1;
