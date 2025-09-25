@@ -209,7 +209,18 @@ class Command(BaseCommand):
             try:
                 exercise = Exercice.objects.get(id=one_exercise_data['name_id'])
                 workout = Workout.objects.get(id=one_exercise_data['seance_id'])
-                content_type = ContentType.objects.get(id=one_exercise_data['content_type_id'])
+
+                # Handle both old format (content_type_id) and new format (app_label + model)
+                if 'content_type_id' in one_exercise_data:
+                    content_type = ContentType.objects.get(id=one_exercise_data['content_type_id'])
+                else:
+                    app_label = one_exercise_data['content_type_app_label']
+                    model = one_exercise_data['content_type_model']
+                    if app_label and model:
+                        content_type = ContentType.objects.get(app_label=app_label, model=model)
+                    else:
+                        content_type = None
+
             except (Exercice.DoesNotExist, Workout.DoesNotExist, ContentType.DoesNotExist) as e:
                 self.stdout.write(
                     self.style.WARNING(f'Missing reference for OneExercice: {e}')

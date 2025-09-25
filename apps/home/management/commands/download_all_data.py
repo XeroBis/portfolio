@@ -79,7 +79,8 @@ class Command(BaseCommand):
                     "id": one_ex.id,
                     "name_id": one_ex.name_id,
                     "seance_id": one_ex.seance_id,
-                    "content_type_id": one_ex.content_type_id,
+                    "content_type_app_label": one_ex.content_type.app_label if one_ex.content_type else None,
+                    "content_type_model": one_ex.content_type.model if one_ex.content_type else None,
                     "object_id": one_ex.object_id
                 }
                 for one_ex in OneExercice.objects.all()
