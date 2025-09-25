@@ -17,7 +17,7 @@
         <span id="span_point">•</span>
         <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
-        {% if page == "add_workout" %}
+        {% if page == "add_workout" or page == "edit_workout" %}
         <a href="{% url 'home' %}" id="my_projects" class="cliquable">{% trans "Home" %}</a>
         <span id="span_point">•</span>
         <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>

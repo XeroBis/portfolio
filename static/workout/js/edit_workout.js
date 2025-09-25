@@ -130,108 +130,83 @@ function updateExerciseFields(exerciseIndex, exerciseType = null) {
     fieldsContainer.innerHTML = fieldsHTML;
 }
 
-function changeWorkoutType() {
-    const selectedType = document.getElementById('add_workout_type_workout').value;
-    if (selectedType) {
-        fetch(`/workout/get_last_workout/?type=${selectedType}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.date) {
-                    document.getElementById('add_workout_date').value = data.date;
-                }
 
-                const exercisesContainer = document.getElementById('exercises');
-                exercisesContainer.innerHTML = '';
 
-                if (data.exercises && data.exercises.length > 0) {
-                    data.exercises.forEach((exercise, index) => {
-                        const exerciseDiv = document.createElement('div');
-                        exerciseDiv.className = 'exercise';
-                        exerciseDiv.id = `exercise_row_${index}`;
+function loadWorkoutData() {
+    const workoutData = JSON.parse(document.getElementById('workout-data').textContent);
+    if (!workoutData) return;
 
-                        let fieldsHTML = '';
-                        const translations = JSON.parse(document.getElementById('add-workout-translations').textContent);
+    // Load existing exercises
+    const exercisesContainer = document.getElementById('exercises');
 
-                        for (let field in exercise) {
-                            if (['name', 'exercise_type', 'type'].includes(field)) continue;
-                            const value = exercise[field] || '';
+    if (workoutData.exercises && workoutData.exercises.length > 0) {
+        workoutData.exercises.forEach((exercise, index) => {
+            // Get all exercises for dropdown
+            fetch('/workout/get_list_exercice/')
+                .then(response => response.json())
+                .then(data => {
+                    const exerciseDiv = document.createElement('div');
+                    exerciseDiv.className = 'exercise';
+                    exerciseDiv.id = `exercise_row_${index}`;
 
-                            let labelText = field;
-                            if (field === 'nb_series') {
-                                labelText = translations.series;
-                            } else if (field === 'nb_repetition') {
-                                labelText = translations.reps;
-                            } else if (field === 'weight') {
-                                labelText = translations.weight_kg;
-                            } else if (field === 'duration_seconds') {
-                                labelText = translations.duration_sec;
-                            } else if (field === 'distance_m') {
-                                labelText = translations.distance_m;
-                            }
+                    let fieldsHTML = '';
+                    const translations = JSON.parse(document.getElementById('add-workout-translations').textContent);
 
-                            fieldsHTML += `
-                                <div class="input-group">
-                                    <label class="input-label">${labelText}</label>
-                                    <input type="number" class="workout_input"
-                                        id="exercise_${index}_${field}"
-                                        name="exercise_${index}_${field}"
-                                        value="${value}" required>
-                                </div>`;
+                    // Create fields based on exercise data
+                    for (let field in exercise.data) {
+                        if (['name', 'exercise_type', 'type'].includes(field)) continue;
+                        const value = exercise.data[field] || 0;
+
+                        let labelText = field;
+                        if (field === 'nb_series') {
+                            labelText = translations.series;
+                        } else if (field === 'nb_repetition') {
+                            labelText = translations.reps;
+                        } else if (field === 'weight') {
+                            labelText = translations.weight_kg;
+                        } else if (field === 'duration_seconds') {
+                            labelText = translations.duration_sec;
+                        } else if (field === 'distance_m') {
+                            labelText = translations.distance_m;
                         }
 
-                        exerciseDiv.innerHTML = `
-                            <div class="exercise-name-header">
-                                <div class="exercise-search-container">
-                                    <input type="text" class="workout_input exercise-search-input"
-                                           id="exercise_${index}_search"
-                                           value="${exercise.name}"
-                                           placeholder="Search exercise..."
-                                           onkeyup="filterExercises(${index})"
-                                           onfocus="showExerciseDropdown(${index})"
-                                           onblur="hideExerciseDropdown(${index})">
-                                    <input type="hidden" id="exercise_${index}_name" name="exercise_${index}_name" value="${exercise.name}" required>
-                                    <div class="exercise-dropdown" id="exercise_${index}_dropdown" style="display: none;">
-                                        ${data.all_exercises.map(ex => `<div class="exercise-option" data-name="${ex.name}" data-type="${ex.exercise_type}" onclick="selectExercise(${index}, '${ex.name}', '${ex.exercise_type}')">${ex.name}</div>`).join('')}
-                                    </div>
+                        fieldsHTML += `
+                            <div class="input-group">
+                                <label class="input-label">${labelText}</label>
+                                <input type="number" class="workout_input"
+                                    id="exercise_${index}_${field}"
+                                    name="exercise_${index}_${field}"
+                                    value="${value}" required>
+                            </div>`;
+                    }
+
+                    exerciseDiv.innerHTML = `
+                        <div class="exercise-name-header">
+                            <div class="exercise-search-container">
+                                <input type="text" class="workout_input exercise-search-input"
+                                       id="exercise_${index}_search"
+                                       value="${exercise.name}"
+                                       placeholder="Search exercise..."
+                                       onkeyup="filterExercises(${index})"
+                                       onfocus="showExerciseDropdown(${index})"
+                                       onblur="hideExerciseDropdown(${index})">
+                                <input type="hidden" id="exercise_${index}_name" name="exercise_${index}_name" value="${exercise.name}" required>
+                                <div class="exercise-dropdown" id="exercise_${index}_dropdown" style="display: none;">
+                                    ${data.all_exercises.map(ex => `<div class="exercise-option" data-name="${ex.name}" data-type="${ex.exercise_type}" onclick="selectExercise(${index}, '${ex.name}', '${ex.exercise_type}')">${ex.name}</div>`).join('')}
                                 </div>
-                                <button type="button" class="add_workout_btn_delete" onclick="deleteExercise(${index})">❌</button>
                             </div>
-                            <div id="exercise_${index}_fields" class="exercise-fields">${fieldsHTML}</div>
-                        `;
+                            <button type="button" class="add_workout_btn_delete" onclick="deleteExercise(${index})">❌</button>
+                        </div>
+                        <div id="exercise_${index}_fields" class="exercise-fields">${fieldsHTML}</div>
+                    `;
 
-                        exercisesContainer.appendChild(exerciseDiv);
-                    });
-                }
-            });
-    }
-};
-
-function loadWorkoutTypes() {
-    fetch('/workout/get_workout_types/')
-        .then(response => response.json())
-        .then(data => {
-            const select = document.getElementById('add_workout_type_workout');
-
-            // Clear existing options except the first one (placeholder)
-            while (select.children.length > 1) {
-                select.removeChild(select.lastChild);
-            }
-
-            // Add workout types from database
-            data.workout_types.forEach(workoutType => {
-                const option = document.createElement('option');
-                option.value = workoutType.value;
-                option.textContent = workoutType.display;
-                select.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Error loading workout types:', error);
+                    exercisesContainer.appendChild(exerciseDiv);
+                });
         });
+    }
 }
 
-// Load workout types when the page loads
+// Load workout data when the page loads
 document.addEventListener('DOMContentLoaded', function() {
-    loadWorkoutTypes();
+    loadWorkoutData();
 });
-
