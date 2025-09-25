@@ -315,3 +315,18 @@ table tr td {
 .add_workout_btn_delete:active {
     background-color: #990000;
 }
+
+/* Mobile responsiveness - labels on top of inputs */
+@media (max-width: 768px) {
+    .form-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .label_workout {
+        text-align: left;
+        min-width: auto;
+        margin-bottom: 4px;
+    }
+}
