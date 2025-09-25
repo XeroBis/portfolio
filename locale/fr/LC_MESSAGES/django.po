@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-25 22:01+0200\n"
+"POT-Creation-Date: 2025-09-25 22:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,7 @@ msgid "Date:"
 msgstr "Date :"
 
 #: apps/workout/templates/workout/add_workout.html:21
-#: apps/workout/templates/workout/edit_workout.html:22
+#: apps/workout/templates/workout/edit_workout.html:23
 msgid "Duration:"
 msgstr "Durée :"
 
@@ -189,7 +189,7 @@ msgid "Select a type"
 msgstr "Sélectionner un type"
 
 #: apps/workout/templates/workout/add_workout.html:39
-#: apps/workout/templates/workout/edit_workout.html:30
+#: apps/workout/templates/workout/edit_workout.html:32
 msgid "Add Exercise"
 msgstr "Ajouter un exercice"
 
@@ -201,9 +201,13 @@ msgstr "Enregistrer Séance"
 msgid "Edit Workout"
 msgstr "Modification Séance"
 
-#: apps/workout/templates/workout/edit_workout.html:33
-msgid "Update Workout"
-msgstr "Modifier Séance"
+#: apps/workout/templates/workout/edit_workout.html:35
+msgid "Save Changes"
+msgstr "Sauvegarder les modifications"
+
+#: apps/workout/templates/workout/edit_workout.html:39
+msgid "Discard Changes"
+msgstr "Ignorer les modifications"
 
 #: apps/workout/templates/workout/workout.html:11
 msgid "Workout Sessions"
@@ -266,6 +270,9 @@ msgstr "Répétitions"
 #: apps/workout/views.py:137 apps/workout/views.py:291
 msgid "Duration (sec)"
 msgstr "Durée (sec)"
+
+#~ msgid "Update Workout"
+#~ msgstr "Sauvegarder Modifications"
 
 #~ msgid "Pull"
 #~ msgstr "Pull"

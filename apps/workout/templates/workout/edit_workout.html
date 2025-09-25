@@ -15,13 +15,15 @@
             <div id="add_workout_date_type">
                 <div class="form-group">
                     <label for="date" class="label_workout">{% trans "Date:" %}</label>
-                    <input type="date" id="add_workout_date" name="date" value="{{ workout.date|date:'Y-m-d' }}" required>
+                    <input type="date" id="add_workout_date" name="date" value="{{ workout.date|date:'Y-m-d' }}"
+                        required>
                 </div>
                 <div class="form-group">
                     <label for="duration" class="label_workout">
                         {% trans "Duration:" %}
                     </label>
-                    <input type="number" id="add_workout_duration" name="duration" value="{{ workout.duration }}" required>
+                    <input type="number" id="add_workout_duration" name="duration" value="{{ workout.duration }}"
+                        required>
                 </div>
             </div>
             <div id="exercises">
@@ -30,8 +32,14 @@
                 {% trans "Add Exercise" %}
             </button>
             <button type="submit" id="btn_add_workout" class="cliquable">
-                {% trans "Update Workout" %}
+                {% trans "Save Changes" %}
             </button>
+            <a href="/workout/">
+                <button type="button" id="btn_discard_workout" class="cliquable">
+                    {% trans "Discard Changes" %}
+                </button>
+            </a>
+
         </form>
     </div>
     {{ translations|json_script:"add-workout-translations" }}
