@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.utils import translation
+from django.core.management import call_command
+from django.conf import settings
+import os
+import tempfile
 
 from .models import Projet, Tag, Testimonial
-from apps.workout.models import TypeWorkout, Workout, Exercice, OneExercice
-import json
+from apps.workout.models import TypeWorkout, Workout, Exercice, OneExercice, StrengthExerciseLog, CardioExerciseLog
+
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 
@@ -16,128 +20,75 @@ def home(request):
     projets = Projet.objects.all()
     testimonial = Testimonial.objects.all()
     context = {"page":"home", "projets":projets, "lang":lang, "testimonials":testimonial}
-    return render(request, 'home.html', context)
+    return render(request, 'home/home.html', context)
 
 @login_required
 def download_data_json(request):
-    data = {
-        "tags": list(Tag.objects.values()),
-        "projects": [
-            {
-                "title_en": proj.title_en,
-                "description_en": proj.description_en,
-                "title_fr": proj.title_fr,
-                "description_fr": proj.description_fr,
-                "github_url": proj.github_url,
-                "tags": list(proj.tags.values_list("id", flat=True))
-            }
-            for proj in Projet.objects.all()
-        ],
-        "testimonials": list(Testimonial.objects.values()),
-        "type_workouts": list(TypeWorkout.objects.values()),
-        "workouts": [
-            {"date": workout.date.strftime("%Y-%m-%d"), "type_workout": workout.type_workout_id, "duration": workout.duration}
-            for workout in Workout.objects.all()
-        ],
-        "exercises": list(Exercice.objects.values()),
-        "one_exercises": [
-            {"name": one_ex.name_id, "seance": one_ex.seance.date.strftime("%Y-%m-%d"), "nb_series": one_ex.nb_series, "nb_repetition": one_ex.nb_repetition, "weight": one_ex.weight}
-            for one_ex in OneExercice.objects.all()
-        ]
-    }
+    try:
+        # Create a temporary file to store the exported data
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as temp_file:
+            temp_file_path = temp_file.name
 
-    response = HttpResponse(json.dumps(data, indent=4, ensure_ascii=False), content_type="application/json")
-    response["Content-Disposition"] = "attachment; filename=data.json"
-    return response
+        # Call the management command to export data
+        call_command('download_all_data', file=temp_file_path)
+
+        # Read the generated file and return as response
+        with open(temp_file_path, 'r', encoding='utf-8') as f:
+            data_content = f.read()
+
+        # Clean up the temporary file
+        os.unlink(temp_file_path)
+
+        response = HttpResponse(data_content, content_type="application/json")
+        response["Content-Disposition"] = "attachment; filename=data.json"
+        return response
+
+    except Exception as e:
+        return JsonResponse({"error": f"Export failed: {str(e)}"}, status=500)
 
 @login_required
 def import_data_json(request):
     if request.method == "POST" and request.FILES.get("file"):
         try:
             json_file = request.FILES["file"]
-            data = json.load(json_file)
 
-            tag_objects = {}
-            for tag in data.get("tags", []):
-                if "name" not in tag:
-                    raise ValueError(f"Tag with id {tag.get('id', 'unknown')} is missing 'name' field")
-                tag_objects[tag["id"]] = Tag.objects.get_or_create(id=tag["id"], defaults={"name": tag["name"]})[0]
+            # Create a temporary file to store the uploaded JSON
+            with tempfile.NamedTemporaryFile(mode='wb', suffix='.json', delete=False) as temp_file:
+                for chunk in json_file.chunks():
+                    temp_file.write(chunk)
+                temp_file_path = temp_file.name
 
-            for project in data.get("projects", []):
-                obj, _ = Projet.objects.update_or_create(
-                    title_en=project["title_en"],
-                    defaults={
-                        "description_en": project["description_en"],
-                        "title_fr": project["title_fr"],
-                        "description_fr": project["description_fr"],
-                        "github_url": project["github_url"]
-                    }
-                )
-                obj.tags.set([tag_objects[tag_id] for tag_id in project.get("tags", [])])
+            # Call the management command to import data
+            call_command('import_all_data', file=temp_file_path)
 
-
-            for testimonial in data.get("testimonials", []):
-                Testimonial.objects.update_or_create(
-                    author=testimonial["author"],
-                    defaults={
-                        "text_en": testimonial["text_en"],
-                        "text_fr": testimonial["text_fr"]
-                    }
-                )
-
-            type_workout_objects = {}
-            for tw in data.get("type_workouts", []):
-                if "name_workout_fr" not in tw:
-                    raise ValueError(f"TypeWorkout with id {tw.get('id', 'unknown')} is missing 'name_workout_fr' field")
-                defaults = {"name_workout_fr": tw["name_workout_fr"]}
-                if "name_workout_en" in tw:
-                    defaults["name_workout_en"] = tw["name_workout_en"]
-                type_workout_objects[tw["id"]] = TypeWorkout.objects.get_or_create(id=tw["id"], defaults=defaults)[0]
-
-            workout_objects = {}
-            for workout in data.get("workouts", []):
-                obj, created = Workout.objects.update_or_create(
-                    date=workout["date"],
-                    defaults={
-                        "type_workout": type_workout_objects.get(workout["type_workout"]),
-                        "duration": workout["duration"]
-                    }
-                )
-                workout_objects[workout["date"]] = obj
-
-            exercice_objects = {}
-            for ex in data.get("exercises", []):
-                if "name" not in ex:
-                    raise ValueError(f"Exercise with id {ex.get('id', 'unknown')} is missing 'name' field")
-                exercice_objects[ex["id"]] = Exercice.objects.get_or_create(id=ex["id"], defaults={"name": ex["name"]})[0]
-            for one_ex in data.get("one_exercises", []):
-                OneExercice.objects.update_or_create(
-                    name=exercice_objects[one_ex["name"]],
-                    seance=workout_objects.get(one_ex["seance"]),
-                    defaults={
-                        "nb_series": one_ex["nb_series"],
-                        "nb_repetition": one_ex["nb_repetition"],
-                        "weight": one_ex["weight"]
-                    }
-                )
+            # Clean up the temporary file
+            os.unlink(temp_file_path)
 
             return redirect('home')
 
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+            # Clean up the temporary file if it exists
+            if 'temp_file_path' in locals():
+                try:
+                    os.unlink(temp_file_path)
+                except:
+                    pass
+            return JsonResponse({"error": f"Import failed: {str(e)}"}, status=400)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 @login_required
 def reset_data(request):
     try:
-        Tag.objects.all().delete()
-        Projet.objects.all().delete()
-        Testimonial.objects.all().delete()
-        TypeWorkout.objects.all().delete()
-        Workout.objects.all().delete()
-        Exercice.objects.all().delete()
         OneExercice.objects.all().delete()
+        StrengthExerciseLog.objects.all().delete()
+        CardioExerciseLog.objects.all().delete()
+        Workout.objects.all().delete()
+        TypeWorkout.objects.all().delete()
+        Exercice.objects.all().delete()
+        Projet.objects.all().delete()
+        Tag.objects.all().delete()
+        Testimonial.objects.all().delete()
 
         return redirect('home')
     except Exception as e:

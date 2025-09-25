@@ -34,24 +34,53 @@ function loadMore() {
                     html += '</h2>';
 
                     if (data.exercises && data.exercises.length > 0) {
-                        var lang = document.body.getAttribute('data-lang');
+                        const translations = JSON.parse(document.getElementById('workout-translations').textContent);
+
+                        // Determine which exercise types are present
+                        var hasStrength = data.exercises.some(ex => ex.exercise_type === 'strength');
+                        var hasCardio = data.exercises.some(ex => ex.exercise_type === 'cardio');
+
                         html += '<table><thead><tr>';
-                        if (lang === "fr") {
-                            html += '<th>Exercice</th>';
-                            if (data.workout.type_workout !== "CrossFit") html += '<th>Séries</th>';
-                            html += '<th>Répétitions</th><th>Poids (kg)</th>';
-                        } else {
-                            html += '<th>Exercise</th>';
-                            if (data.workout.type_workout !== "CrossFit") html += '<th>Series</th>';
-                            html += '<th>Repetitions</th><th>Weight (kg)</th>';
+                        html += '<th>' + translations.exercise + '</th>';
+
+                        if (hasStrength) {
+                            html += '<th>' + translations.series + '</th>';
+                            html += '<th>' + translations.reps + '</th>';
+                            html += '<th>' + translations.weight_kg + '</th>';
                         }
+
+                        if (hasCardio) {
+                            html += '<th>' + translations.duration_min + '</th>';
+                            html += '<th>' + translations.distance_m + '</th>';
+                        }
+
                         html += '</tr></thead><tbody>';
+
                         data.exercises.forEach(function (exercise) {
                             html += '<tr>';
                             html += '<td>' + exercise.name + '</td>';
-                            if (data.workout.type_workout !== "CrossFit") html += '<td>' + exercise.nb_series + '</td>';
-                            html += '<td>' + exercise.nb_repetition + '</td>';
-                            html += '<td>' + exercise.weight + '</td>';
+
+                            if (exercise.exercise_type === 'strength') {
+                                if (hasStrength) {
+                                    html += '<td>' + (exercise.data.nb_series || '-') + '</td>';
+                                    html += '<td>' + (exercise.data.nb_repetition || '-') + '</td>';
+                                    html += '<td>' + (exercise.data.weight || '-') + '</td>';
+                                }
+                                if (hasCardio) {
+                                    html += '<td>-</td>';
+                                    html += '<td>-</td>';
+                                }
+                            } else if (exercise.exercise_type === 'cardio') {
+                                if (hasStrength) {
+                                    html += '<td>-</td>';
+                                    html += '<td>-</td>';
+                                    html += '<td>-</td>';
+                                }
+                                if (hasCardio) {
+                                    html += '<td>' + (exercise.data.duration_seconds ? Math.round(exercise.data.duration_seconds / 60) : '-') + '</td>';
+                                    html += '<td>' + (exercise.data.distance_m || '-') + '</td>';
+                                }
+                            }
                             html += '</tr>';
                         });
                         html += '</tbody></table>';

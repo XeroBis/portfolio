@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-18 21:43+0200\n"
+"POT-Creation-Date: 2025-09-25 19:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: apps/home/templates/home/header.html:10
-#: apps/home/templates/home/header.html:20
-#: apps/home/templates/home/header.html:25
+#: apps/home/templates/home/header.html:11
+#: apps/home/templates/home/header.html:21
+#: apps/home/templates/home/header.html:26
 msgid "Home"
 msgstr "Accueil"
 
-#: apps/home/templates/home/header.html:12
-#: apps/home/templates/home/header.html:17
-#: apps/home/templates/home/header.html:22
+#: apps/home/templates/home/header.html:13
+#: apps/home/templates/home/header.html:18
+#: apps/home/templates/home/header.html:23
 msgid "News"
 msgstr "Actualités"
 
-#: apps/home/templates/home/header.html:15
-#: apps/home/templates/home/header.html:27
+#: apps/home/templates/home/header.html:16
+#: apps/home/templates/home/header.html:28
 msgid "Workout"
 msgstr "Sports"
 
@@ -186,43 +186,11 @@ msgstr "Type de séance :"
 msgid "Select a type"
 msgstr "Sélectionner un type"
 
-#: apps/workout/templates/workout/add_workout.html:33
-msgid "Pull"
-msgstr "Pull"
-
-#: apps/workout/templates/workout/add_workout.html:34
-msgid "Push"
-msgstr "Push"
-
-#: apps/workout/templates/workout/add_workout.html:35
-msgid "Legs"
-msgstr "Jambes"
-
-#: apps/workout/templates/workout/add_workout.html:36
-msgid "CrossFit"
-msgstr ""
-
-#: apps/workout/templates/workout/add_workout.html:37
-msgid "Natation"
-msgstr ""
-
-#: apps/workout/templates/workout/add_workout.html:38
-msgid "Vélo"
-msgstr ""
-
 #: apps/workout/templates/workout/add_workout.html:39
-msgid "Push-Ups"
-msgstr "Pompes"
-
-#: apps/workout/templates/workout/add_workout.html:40
-msgid "Upper body"
-msgstr "Haut du corps"
-
-#: apps/workout/templates/workout/add_workout.html:47
 msgid "Add Exercise"
 msgstr "Ajouter un exercice"
 
-#: apps/workout/templates/workout/add_workout.html:50
+#: apps/workout/templates/workout/add_workout.html:42
 msgid "Save Workout"
 msgstr "Enregistrer Séance"
 
@@ -230,30 +198,71 @@ msgstr "Enregistrer Séance"
 msgid "Workout Sessions"
 msgstr "Séances de sports"
 
-#: apps/workout/templates/workout/workout.html:32
+#: apps/workout/templates/workout/workout.html:34
+#: apps/workout/templates/workout/workout.html:55 apps/workout/views.py:59
+#: apps/workout/views.py:60
 msgid "Exercise"
 msgstr "Exercice"
 
-#: apps/workout/templates/workout/workout.html:34
+#: apps/workout/templates/workout/workout.html:35 apps/workout/views.py:61
+#: apps/workout/views.py:133
 msgid "Series"
 msgstr "Séries"
 
-#: apps/workout/templates/workout/workout.html:36
-msgid "Repetitions"
-msgstr "Répétitions"
+#: apps/workout/templates/workout/workout.html:36 apps/workout/views.py:62
+#: apps/workout/views.py:134
+msgid "Reps"
+msgstr "Reps"
 
-#: apps/workout/templates/workout/workout.html:37
+#: apps/workout/templates/workout/workout.html:37 apps/workout/views.py:63
+#: apps/workout/views.py:136
 msgid "Weight (kg)"
 msgstr "Poids (kg)"
 
-#: apps/workout/templates/workout/workout.html:57
+#: apps/workout/templates/workout/workout.html:56 apps/workout/views.py:64
+msgid "Duration (min)"
+msgstr "Durée (min)"
+
+#: apps/workout/templates/workout/workout.html:57 apps/workout/views.py:65
+#: apps/workout/views.py:138
+msgid "Distance (m)"
+msgstr "Distance (m)"
+
+#: apps/workout/templates/workout/workout.html:76
 msgid "No workouts recorded."
 msgstr "Aucun workout enregistré."
 
-#: apps/workout/templates/workout/workout.html:64
+#: apps/workout/templates/workout/workout.html:83
 msgid "Load More"
 msgstr "Charger plus"
 
-#: apps/workout/templates/workout/workout.html:67
+#: apps/workout/templates/workout/workout.html:86
 msgid "Loading..."
 msgstr "Chargement..."
+
+#: apps/workout/views.py:132
+msgid "Sets"
+msgstr "Sets"
+
+#: apps/workout/views.py:135
+msgid "Repetitions"
+msgstr "Répétitions"
+
+#: apps/workout/views.py:137
+msgid "Duration (sec)"
+msgstr "Durée (sec)"
+
+#~ msgid "Pull"
+#~ msgstr "Pull"
+
+#~ msgid "Push"
+#~ msgstr "Push"
+
+#~ msgid "Legs"
+#~ msgstr "Jambes"
+
+#~ msgid "Push-Ups"
+#~ msgstr "Pompes"
+
+#~ msgid "Upper body"
+#~ msgstr "Haut du corps"

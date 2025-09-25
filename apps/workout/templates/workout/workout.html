@@ -26,30 +26,49 @@
                     {% endif %}
                 </h2>
                 {% if data.exercises %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>{% trans "Exercise" %}</th>
-                            {% if data.workout.type_workout != "CrossFit" %}
-                            <th>{% trans "Series" %}</th>
-                            {% endif %}
-                            <th>{% trans "Repetitions" %}</th>
-                            <th>{% trans "Weight (kg)" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for exercise in data.exercises %}
-                        <tr>
-                            <td>{{ exercise.name }}</td>
-                            {% if data.workout.type_workout != "CrossFit" %}
-                            <td>{{ exercise.nb_series }}</td>
-                            {% endif %}
-                            <td>{{ exercise.nb_repetition }}</td>
-                            <td>{{ exercise.weight }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                {% for group in data.exercises|group_consecutive_exercises %}
+                    {% if group.type == "strength" %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{% trans "Exercise" %}</th>
+                                <th>{% trans "Series" %}</th>
+                                <th>{% trans "Reps" %}</th>
+                                <th>{% trans "Weight (kg)" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exercise in group.exercises %}
+                            <tr>
+                                <td>{{ exercise.name }}</td>
+                                <td>{{ exercise.data.nb_series }}</td>
+                                <td>{{ exercise.data.nb_repetition }}</td>
+                                <td>{{ exercise.data.weight }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% elif group.type == "cardio" %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{% trans "Exercise" %}</th>
+                                <th>{% trans "Duration (min)" %}</th>
+                                <th>{% trans "Distance (m)" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exercise in group.exercises %}
+                            <tr>
+                                <td>{{ exercise.name }}</td>
+                                <td>{{ exercise.data.duration_seconds|seconds_to_minutes }}</td>
+                                <td>{{ exercise.data.distance_m }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                {% endfor %}
                 {% endif %}
             </div>
             {% empty %}
@@ -69,6 +88,7 @@
         {% endif %}
     </div>
 
+    {{ translations|json_script:"workout-translations" }}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/workout.js' %}"></script>
 </body>

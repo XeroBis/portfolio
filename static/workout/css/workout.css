@@ -76,9 +76,30 @@ table tr td {
     box-sizing: border-box;
 }
 #add_workout_type_workout, #add_workout_date, #add_workout_duration {
-    border: 2px solid #888888;
-    border-radius: 4px;
-    font-size: 14px;
+    border: 2px solid rgb(143, 123, 120);
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 12px 16px;
+    background: rgb(255, 255, 255);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    color: #000000;
+    font-weight: 500;
+}
+
+#add_workout_type_workout:hover, #add_workout_date:hover, #add_workout_duration:hover {
+    border-color: rgb(126, 108, 105);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+#add_workout_type_workout:focus, #add_workout_date:focus, #add_workout_duration:focus {
+    border-color: rgb(126, 108, 105);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(126, 108, 105, 0.1);
+    transform: translateY(-2px);
+    background: rgb(255, 255, 255);
 }
 
 #name_add_workout {
@@ -92,14 +113,30 @@ table tr td {
     padding-top: 20px;
 }
 .label_workout {
-    font-weight: bold;
+    font-weight: 600;
+    color: #000000;
+    font-size: 15px;
+    letter-spacing: 0.025em;
+    text-transform: capitalize;
+    min-width: 120px;
+    text-align: right;
 }
-.exercise-header, .exercise {
+.exercise-header {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     padding: 12px;
     border-bottom: 1px solid #ddd;
+}
+.exercise {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fafafa;
 }
 
 .exercise-header {
@@ -123,24 +160,140 @@ table tr td {
     box-sizing: border-box;
 }
 
+.exercise-name-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    border: 1px solid #d0d0d0;
+}
+
+.exercise-search-container {
+    flex: 1;
+    position: relative;
+    margin-right: 10px;
+}
+
+.exercise-search-input {
+    width: 100%;
+    margin: 0;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.exercise-search-input:focus {
+    border-color: #b8a77c;
+    outline: none;
+}
+
+.exercise-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.exercise-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.exercise-option:hover {
+    background-color: #f8f9fa;
+}
+
+.exercise-option:last-child {
+    border-bottom: none;
+}
+
+.exercise-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-around;
+    padding: 0 8px;
+}
+
+.exercise-fields .workout_input {
+    margin: 5px 0;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 120px;
+    margin: 5px 0;
+}
+
+.input-label {
+    font-weight: bold;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group .workout_input {
+    margin: 0;
+    border: 2px solid #ddd;
+    transition: border-color 0.2s ease;
+}
+
+.input-group .workout_input:focus {
+    border-color: #b8a77c;
+    outline: none;
+}
+
 .workout_input:hover {
     background-color: #f1f1f1;
 }
 
 #add_workout_date_type {
     width: 100%;
-    display: grid;
-    align-items: center;
-    gap: 10px;
-    justify-items: center
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px;
+    background: rgb(255, 255, 255);
+    border-radius: 12px;
+    border: 2px solid rgb(143, 123, 120);
+    margin-bottom: 24px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 10px;
-    padding-top: 1%;
-    padding-bottom: 1%;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px 0;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.form-group:last-child {
+    margin-bottom: 24px;
 }
 /* BOUTON Delete row */
 .add_workout_btn_delete {
