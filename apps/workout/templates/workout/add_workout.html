@@ -30,14 +30,6 @@
                         <option value="">
                             {% trans "Select a type" %}
                         </option>
-                        <option value="Pull">{% trans "Pull" %}</option>
-                        <option value="Push">{% trans "Push" %}</option>
-                        <option value="Legs">{% trans "Legs" %}</option>
-                        <option value="CrossFit">{% trans "CrossFit" %}</option>
-                        <option value="Natation">{% trans "Natation" %}</option>
-                        <option value="Vélo">{% trans "Vélo" %}</option>
-                        <option value="Pompes">{% trans "Push-Ups" %}</option>
-                        <option value="Haut du corps">{% trans "Upper body" %}</option>
                     </select>
                 </div>
             </div>
@@ -51,5 +43,6 @@
             </button>
         </form>
     </div>
+    {{ translations|json_script:"add-workout-translations" }}
     <script src="{% static 'js/add_workout.js' %}"></script>
 </body>
