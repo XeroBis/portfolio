@@ -39,11 +39,8 @@ class Command(BaseCommand):
         self.import_tags(data.get('tags', []))
         self.import_projects(data.get('projects', []))
         self.import_testimonials(data.get('testimonials', []))
-
-        # Create type workout mapping for workouts to reference
-        type_workout_mapping = self.import_type_workouts(data.get('type_workouts', []))
-        self.import_workouts(data.get('workouts', []), type_workout_mapping)
-
+        self.import_type_workouts(data.get('type_workouts', []))
+        self.import_workouts(data.get('workouts', []))
         self.import_exercises(data.get('exercises', []))
         self.import_strength_exercise_logs(data.get('strength_exercise_logs', []))
         self.import_cardio_exercise_logs(data.get('cardio_exercise_logs', []))
@@ -107,29 +104,25 @@ class Command(BaseCommand):
                 self.stdout.write(f'Testimonial already exists by: {testimonial.author}')
 
     def import_type_workouts(self, type_workouts_data):
-        type_workout_mapping = {}
         for type_workout_data in type_workouts_data:
             type_workout, created = TypeWorkout.objects.get_or_create(
-                name_workout=type_workout_data['name_workout']
+                id=type_workout_data['id'],
+                defaults={'name_workout': type_workout_data['name_workout']}
             )
-            # Map old ID to new TypeWorkout instance
-            type_workout_mapping[type_workout_data['id']] = type_workout
-
             if created:
                 self.stdout.write(f'Created workout type: {type_workout.name_workout}')
             else:
                 self.stdout.write(f'Workout type already exists: {type_workout.name_workout}')
 
-        return type_workout_mapping
-
-    def import_workouts(self, workouts_data, type_workout_mapping):
+    def import_workouts(self, workouts_data):
         for workout_data in workouts_data:
-            # Use mapping to get the TypeWorkout instance
-            type_workout = type_workout_mapping.get(workout_data['type_workout'])
-            if not type_workout:
+            try:
+                type_workout = TypeWorkout.objects.get(id=workout_data['type_workout'])
+            except TypeWorkout.DoesNotExist:
                 self.stdout.write(
-                    self.style.WARNING(f'TypeWorkout with old id {workout_data["type_workout"]} not found in mapping')
+                    self.style.WARNING(f'TypeWorkout with id {workout_data["type_workout"]} does not exist')
                 )
+                type_workout = None
 
             workout, created = Workout.objects.get_or_create(
                 id=workout_data['id'],
