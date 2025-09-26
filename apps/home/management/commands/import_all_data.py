@@ -73,13 +73,13 @@ class Command(BaseCommand):
             )
 
             # Handle many-to-many relationships
-            for tag_name in project_data.get('tag_names', []):
+            for tag_id in project_data.get('tags', []):
                 try:
-                    tag = Tag.objects.get(name=tag_name)
+                    tag = Tag.objects.get(id=tag_id)
                     project.tags.add(tag)
                 except Tag.DoesNotExist:
                     self.stdout.write(
-                        self.style.WARNING(f'Tag with name "{tag_name}" does not exist')
+                        self.style.WARNING(f'Tag with id {tag_id} does not exist')
                     )
 
             if created:
@@ -114,10 +114,10 @@ class Command(BaseCommand):
     def import_workouts(self, workouts_data):
         for workout_data in workouts_data:
             try:
-                type_workout = TypeWorkout.objects.get(name_workout=workout_data['type_workout_name'])
+                type_workout = TypeWorkout.objects.get(id=workout_data['type_workout'])
             except TypeWorkout.DoesNotExist:
                 self.stdout.write(
-                    self.style.WARNING(f'TypeWorkout with name "{workout_data["type_workout_name"]}" does not exist')
+                    self.style.WARNING(f'TypeWorkout with id {workout_data["type_workout"]} does not exist')
                 )
                 type_workout = None
 
@@ -149,9 +149,8 @@ class Command(BaseCommand):
     def import_strength_exercise_logs(self, strength_logs_data):
         for log_data in strength_logs_data:
             try:
-                exercise = Exercice.objects.get(name=log_data['exercise_name'])
-                workout_date = datetime.strptime(log_data['workout_date'], '%Y-%m-%d').date()
-                workout = Workout.objects.get(date=workout_date)
+                exercise = Exercice.objects.get(id=log_data['exercise_id'])
+                workout = Workout.objects.get(id=log_data['workout_id'])
             except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
                 self.stdout.write(
                     self.style.WARNING(f'Missing exercise or workout: {e}')
@@ -176,9 +175,8 @@ class Command(BaseCommand):
     def import_cardio_exercise_logs(self, cardio_logs_data):
         for log_data in cardio_logs_data:
             try:
-                exercise = Exercice.objects.get(name=log_data['exercise_name'])
-                workout_date = datetime.strptime(log_data['workout_date'], '%Y-%m-%d').date()
-                workout = Workout.objects.get(date=workout_date)
+                exercise = Exercice.objects.get(id=log_data['exercise_id'])
+                workout = Workout.objects.get(id=log_data['workout_id'])
             except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
                 self.stdout.write(
                     self.style.WARNING(f'Missing exercise or workout: {e}')
@@ -202,9 +200,8 @@ class Command(BaseCommand):
     def import_one_exercises(self, one_exercises_data):
         for one_exercise_data in one_exercises_data:
             try:
-                exercise = Exercice.objects.get(name=one_exercise_data['exercise_name'])
-                workout_date = datetime.strptime(one_exercise_data['workout_date'], '%Y-%m-%d').date()
-                workout = Workout.objects.get(date=workout_date)
+                exercise = Exercice.objects.get(id=one_exercise_data['name_id'])
+                workout = Workout.objects.get(id=one_exercise_data['seance_id'])
 
                 # Handle both old format (content_type_id) and new format (app_label + model)
                 if 'content_type_id' in one_exercise_data:
