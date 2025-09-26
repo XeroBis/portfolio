@@ -5,9 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils import translation
 from django.utils.translation import gettext
 from django.db import transaction
+import logging
 
 from .models import Workout, OneExercice, TypeWorkout, Exercice, StrengthExerciseLog, CardioExerciseLog
 from django.contrib.contenttypes.models import ContentType
+
+logger = logging.getLogger(__name__)
 
 
 def redirect_workout(request):
@@ -105,17 +108,24 @@ def add_workout(request):
                             exercise_data[exercise_id][field_name] = value
 
                 # Create exercise logs for each unique exercise
+                logger.info(f"Processing {len(exercise_data)} exercises for workout {workout.id}")
                 for exercise_id, data in exercise_data.items():
+                    logger.info(f"Processing exercise_id: {exercise_id}, data: {data}")
+
                     if 'name' not in data:
+                        logger.warning(f"Exercise {exercise_id} missing name, skipping")
                         continue
 
                     try:
                         exercise_obj = Exercice.objects.get(name=data['name'])
+                        logger.info(f"Found exercise: {exercise_obj.name} (type: {exercise_obj.exercise_type})")
                     except Exercice.DoesNotExist:
+                        logger.warning(f"Exercise '{data['name']}' not found in database, skipping")
                         continue
 
                     # Create specific exercise log based on type
                     if exercise_obj.exercise_type == 'strength':
+                        logger.info(f"Creating StrengthExerciseLog for exercise: {exercise_obj.name}, workout: {workout.id}")
                         exercise_log, created = StrengthExerciseLog.objects.get_or_create(
                             exercise=exercise_obj,
                             workout=workout,
@@ -125,9 +135,11 @@ def add_workout(request):
                                 'weight': data.get('weight', 0),
                             }
                         )
+                        logger.info(f"StrengthExerciseLog {'created' if created else 'retrieved'}: {exercise_log.id}")
                         content_type = ContentType.objects.get_for_model(StrengthExerciseLog)
 
                     elif exercise_obj.exercise_type == 'cardio':
+                        logger.info(f"Creating CardioExerciseLog for exercise: {exercise_obj.name}, workout: {workout.id}")
                         exercise_log, created = CardioExerciseLog.objects.get_or_create(
                             exercise=exercise_obj,
                             workout=workout,
@@ -136,10 +148,12 @@ def add_workout(request):
                                 'distance_m': data.get('distance_m'),
                             }
                         )
+                        logger.info(f"CardioExerciseLog {'created' if created else 'retrieved'}: {exercise_log.id}")
                         content_type = ContentType.objects.get_for_model(CardioExerciseLog)
 
                     # Create the polymorphic OneExercice entry only if it doesn't exist
-                    OneExercice.objects.get_or_create(
+                    logger.info(f"Creating OneExercice entry for exercise: {exercise_obj.name}")
+                    one_exercice, created = OneExercice.objects.get_or_create(
                         name=exercise_obj,
                         seance=workout,
                         defaults={
@@ -147,9 +161,11 @@ def add_workout(request):
                             'object_id': exercise_log.id,
                         }
                     )
+                    logger.info(f"OneExercice {'created' if created else 'retrieved'}: {one_exercice.id}")
 
         except Exception as e:
             # If there's any error, redirect back to form with error handling
+            logger.error(f"Error creating workout: {str(e)}", exc_info=True)
             return redirect('/workout/add_workout/')
 
         return redirect('/workout/')
