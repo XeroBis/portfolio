@@ -195,8 +195,12 @@ LOGGING = {
             "level": "INFO",
             "propagate": True,
         },
-        # Your app’s logger
         "apps.newsfeed": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "apps.workout": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
