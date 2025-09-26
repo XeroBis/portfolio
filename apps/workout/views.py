@@ -335,10 +335,11 @@ def edit_workout(request, workout_id):
                                 distance_m=exercise_data['distance_m'],
                             )
                             content_type = ContentType.objects.get_for_model(CardioExerciseLog)
-
                         existing_exercise.content_type = content_type
                         existing_exercise.object_id = exercise_log.id
-                        existing_exercise.save()
+
+                # Save the existing_exercise after all updates are done
+                existing_exercise.save()
             else:
                 # Create new exercise
                 if exercise_obj.exercise_type == 'strength':
