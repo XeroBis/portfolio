@@ -39,8 +39,11 @@ class Command(BaseCommand):
         self.import_tags(data.get('tags', []))
         self.import_projects(data.get('projects', []))
         self.import_testimonials(data.get('testimonials', []))
-        self.import_type_workouts(data.get('type_workouts', []))
-        self.import_workouts(data.get('workouts', []))
+
+        # Create type workout mapping for workouts to reference
+        type_workout_mapping = self.import_type_workouts(data.get('type_workouts', []))
+        self.import_workouts(data.get('workouts', []), type_workout_mapping)
+
         self.import_exercises(data.get('exercises', []))
         self.import_strength_exercise_logs(data.get('strength_exercise_logs', []))
         self.import_cardio_exercise_logs(data.get('cardio_exercise_logs', []))
@@ -53,7 +56,8 @@ class Command(BaseCommand):
     def import_tags(self, tags_data):
         for tag_data in tags_data:
             tag, created = Tag.objects.get_or_create(
-                name=tag_data['name']
+                id=tag_data['id'],
+                defaults={'name': tag_data['name']}
             )
             if created:
                 self.stdout.write(f'Created tag: {tag.name}')
@@ -90,8 +94,9 @@ class Command(BaseCommand):
     def import_testimonials(self, testimonials_data):
         for testimonial_data in testimonials_data:
             testimonial, created = Testimonial.objects.get_or_create(
-                author=testimonial_data['author'],
+                id=testimonial_data['id'],
                 defaults={
+                    'author': testimonial_data['author'],
                     'text_en': testimonial_data['text_en'],
                     'text_fr': testimonial_data['text_fr']
                 }
@@ -102,29 +107,35 @@ class Command(BaseCommand):
                 self.stdout.write(f'Testimonial already exists by: {testimonial.author}')
 
     def import_type_workouts(self, type_workouts_data):
+        type_workout_mapping = {}
         for type_workout_data in type_workouts_data:
             type_workout, created = TypeWorkout.objects.get_or_create(
                 name_workout=type_workout_data['name_workout']
             )
+            # Map old ID to new TypeWorkout instance
+            type_workout_mapping[type_workout_data['id']] = type_workout
+
             if created:
                 self.stdout.write(f'Created workout type: {type_workout.name_workout}')
             else:
                 self.stdout.write(f'Workout type already exists: {type_workout.name_workout}')
 
-    def import_workouts(self, workouts_data):
+        return type_workout_mapping
+
+    def import_workouts(self, workouts_data, type_workout_mapping):
         for workout_data in workouts_data:
-            try:
-                type_workout = TypeWorkout.objects.get(id=workout_data['type_workout'])
-            except TypeWorkout.DoesNotExist:
+            # Use mapping to get the TypeWorkout instance
+            type_workout = type_workout_mapping.get(workout_data['type_workout'])
+            if not type_workout:
                 self.stdout.write(
-                    self.style.WARNING(f'TypeWorkout with id {workout_data["type_workout"]} does not exist')
+                    self.style.WARNING(f'TypeWorkout with old id {workout_data["type_workout"]} not found in mapping')
                 )
-                type_workout = None
 
             workout, created = Workout.objects.get_or_create(
-                date=datetime.strptime(workout_data['date'], '%Y-%m-%d').date(),
-                type_workout=type_workout,
+                id=workout_data['id'],
                 defaults={
+                    'date': datetime.strptime(workout_data['date'], '%Y-%m-%d').date(),
+                    'type_workout': type_workout,
                     'duration': workout_data['duration']
                 }
             )
@@ -136,8 +147,9 @@ class Command(BaseCommand):
     def import_exercises(self, exercises_data):
         for exercise_data in exercises_data:
             exercise, created = Exercice.objects.get_or_create(
-                name=exercise_data['name'],
+                id=exercise_data['id'],
                 defaults={
+                    'name': exercise_data['name'],
                     'exercise_type': exercise_data['exercise_type']
                 }
             )
@@ -158,9 +170,10 @@ class Command(BaseCommand):
                 continue
 
             log, created = StrengthExerciseLog.objects.get_or_create(
-                exercise=exercise,
-                workout=workout,
+                id=log_data['id'],
                 defaults={
+                    'exercise': exercise,
+                    'workout': workout,
                     'nb_series': log_data['nb_series'],
                     'nb_repetition': log_data['nb_repetition'],
                     'weight': log_data['weight'],
@@ -184,9 +197,10 @@ class Command(BaseCommand):
                 continue
 
             log, created = CardioExerciseLog.objects.get_or_create(
-                exercise=exercise,
-                workout=workout,
+                id=log_data['id'],
                 defaults={
+                    'exercise': exercise,
+                    'workout': workout,
                     'duration_seconds': log_data['duration_seconds'],
                     'distance_m': log_data['distance_m'],
                     'notes': log_data['notes']
@@ -221,9 +235,10 @@ class Command(BaseCommand):
                 continue
 
             one_exercise, created = OneExercice.objects.get_or_create(
-                name=exercise,
-                seance=workout,
+                id=one_exercise_data['id'],
                 defaults={
+                    'name': exercise,
+                    'seance': workout,
                     'content_type': content_type,
                     'object_id': one_exercise_data['object_id']
                 }
