@@ -116,30 +116,36 @@ def add_workout(request):
 
                     # Create specific exercise log based on type
                     if exercise_obj.exercise_type == 'strength':
-                        exercise_log = StrengthExerciseLog.objects.create(
+                        exercise_log, created = StrengthExerciseLog.objects.get_or_create(
                             exercise=exercise_obj,
                             workout=workout,
-                            nb_series=data.get('nb_series', 0),
-                            nb_repetition=data.get('nb_repetition', 0),
-                            weight=data.get('weight', 0),
+                            defaults={
+                                'nb_series': data.get('nb_series', 0),
+                                'nb_repetition': data.get('nb_repetition', 0),
+                                'weight': data.get('weight', 0),
+                            }
                         )
                         content_type = ContentType.objects.get_for_model(StrengthExerciseLog)
 
                     elif exercise_obj.exercise_type == 'cardio':
-                        exercise_log = CardioExerciseLog.objects.create(
+                        exercise_log, created = CardioExerciseLog.objects.get_or_create(
                             exercise=exercise_obj,
                             workout=workout,
-                            duration_seconds=data.get('duration_seconds'),
-                            distance_m=data.get('distance_m'),
+                            defaults={
+                                'duration_seconds': data.get('duration_seconds'),
+                                'distance_m': data.get('distance_m'),
+                            }
                         )
                         content_type = ContentType.objects.get_for_model(CardioExerciseLog)
 
-                    # Create the polymorphic OneExercice entry
-                    OneExercice.objects.create(
+                    # Create the polymorphic OneExercice entry only if it doesn't exist
+                    OneExercice.objects.get_or_create(
                         name=exercise_obj,
                         seance=workout,
-                        content_type=content_type,
-                        object_id=exercise_log.id,
+                        defaults={
+                            'content_type': content_type,
+                            'object_id': exercise_log.id,
+                        }
                     )
 
         except Exception as e:
