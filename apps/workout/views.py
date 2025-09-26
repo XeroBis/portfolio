@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.utils import translation
 from django.utils.translation import gettext
+from django.db import transaction
 
 from .models import Workout, OneExercice, TypeWorkout, Exercice, StrengthExerciseLog, CardioExerciseLog
 from django.contrib.contenttypes.models import ContentType
@@ -73,55 +74,77 @@ def add_workout(request):
     lang = translation.get_language()
 
     if request.method == 'POST':
-        date = request.POST['date']
-        type_workout = request.POST['type_workout']
-        duration = request.POST['duration']
+        try:
+            with transaction.atomic():
+                date = request.POST['date']
+                type_workout = request.POST['type_workout']
+                duration = request.POST['duration']
 
-        type, _= TypeWorkout.objects.get_or_create(name_workout=type_workout)
+                type_obj, _ = TypeWorkout.objects.get_or_create(name_workout=type_workout)
 
-        workout = Workout(date=date, type_workout=type, duration=duration)
-        workout.save()
-
-        for key, value in request.POST.items():
-            if key.startswith('exercise_') and key.endswith('_name'):
-                exercise_id = key.split('_')[1]
-                exercise_name = value
-                exercise_obj = Exercice.objects.get(name=exercise_name)
-
-                # Create specific exercise log based on type
-                if exercise_obj.exercise_type == 'strength':
-                    nb_series = request.POST.get(f'exercise_{exercise_id}_nb_series')
-                    nb_repetition = request.POST.get(f'exercise_{exercise_id}_nb_repetition')
-                    weight = request.POST.get(f'exercise_{exercise_id}_weight')
-
-                    exercise_log = StrengthExerciseLog.objects.create(
-                        exercise=exercise_obj,
-                        workout=workout,
-                        nb_series=nb_series,
-                        nb_repetition=nb_repetition,
-                        weight=weight,
-                    )
-                    content_type = ContentType.objects.get_for_model(StrengthExerciseLog)
-
-                elif exercise_obj.exercise_type == 'cardio':
-                    duration_seconds = request.POST.get(f'exercise_{exercise_id}_duration_seconds')
-                    distance_m = request.POST.get(f'exercise_{exercise_id}_distance_m')
-
-                    exercise_log = CardioExerciseLog.objects.create(
-                        exercise=exercise_obj,
-                        workout=workout,
-                        duration_seconds=duration_seconds,
-                        distance_m=distance_m,
-                    )
-                    content_type = ContentType.objects.get_for_model(CardioExerciseLog)
-
-                # Create the polymorphic OneExercice entry
-                one_exercise = OneExercice.objects.create(
-                    name=exercise_obj,
-                    seance=workout,
-                    content_type=content_type,
-                    object_id=exercise_log.id,
+                workout = Workout.objects.create(
+                    date=date,
+                    type_workout=type_obj,
+                    duration=duration
                 )
+
+                # Process exercises in order to avoid duplicates
+                exercise_data = {}
+                for key, value in request.POST.items():
+                    if key.startswith('exercise_') and key.endswith('_name'):
+                        exercise_id = key.split('_')[1]
+                        if exercise_id not in exercise_data:
+                            exercise_data[exercise_id] = {'name': value}
+                    elif key.startswith('exercise_') and not key.endswith('_name'):
+                        parts = key.split('_')
+                        if len(parts) >= 3:
+                            exercise_id = parts[1]
+                            field_name = '_'.join(parts[2:])
+                            if exercise_id not in exercise_data:
+                                exercise_data[exercise_id] = {}
+                            exercise_data[exercise_id][field_name] = value
+
+                # Create exercise logs for each unique exercise
+                for exercise_id, data in exercise_data.items():
+                    if 'name' not in data:
+                        continue
+
+                    try:
+                        exercise_obj = Exercice.objects.get(name=data['name'])
+                    except Exercice.DoesNotExist:
+                        continue
+
+                    # Create specific exercise log based on type
+                    if exercise_obj.exercise_type == 'strength':
+                        exercise_log = StrengthExerciseLog.objects.create(
+                            exercise=exercise_obj,
+                            workout=workout,
+                            nb_series=data.get('nb_series', 0),
+                            nb_repetition=data.get('nb_repetition', 0),
+                            weight=data.get('weight', 0),
+                        )
+                        content_type = ContentType.objects.get_for_model(StrengthExerciseLog)
+
+                    elif exercise_obj.exercise_type == 'cardio':
+                        exercise_log = CardioExerciseLog.objects.create(
+                            exercise=exercise_obj,
+                            workout=workout,
+                            duration_seconds=data.get('duration_seconds'),
+                            distance_m=data.get('distance_m'),
+                        )
+                        content_type = ContentType.objects.get_for_model(CardioExerciseLog)
+
+                    # Create the polymorphic OneExercice entry
+                    OneExercice.objects.create(
+                        name=exercise_obj,
+                        seance=workout,
+                        content_type=content_type,
+                        object_id=exercise_log.id,
+                    )
+
+        except Exception as e:
+            # If there's any error, redirect back to form with error handling
+            return redirect('/workout/add_workout/')
 
         return redirect('/workout/')
 
