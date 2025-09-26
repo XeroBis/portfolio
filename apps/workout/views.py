@@ -23,7 +23,7 @@ def redirect_workout(request):
 
     workout_data = []
     for workout in page_obj:
-        exercises = OneExercice.objects.filter(seance=workout)
+        exercises = OneExercice.objects.filter(seance=workout).order_by('position')
         type_workout = workout.type_workout.name_workout
         workout_data.append({
             'workout': {
@@ -109,8 +109,12 @@ def add_workout(request):
 
                 # Create exercise logs for each unique exercise
                 logger.info(f"Processing {len(exercise_data)} exercises for workout {workout.id}")
-                for exercise_id, data in exercise_data.items():
-                    logger.info(f"Processing exercise_id: {exercise_id}, data: {data}")
+
+                # Sort exercises by their ID to maintain order
+                sorted_exercises = sorted(exercise_data.items(), key=lambda x: int(x[0]))
+
+                for position, (exercise_id, data) in enumerate(sorted_exercises, start=1):
+                    logger.info(f"Processing exercise_id: {exercise_id}, data: {data}, position: {position}")
 
                     if 'name' not in data:
                         logger.warning(f"Exercise {exercise_id} missing name, skipping")
@@ -152,10 +156,11 @@ def add_workout(request):
                         content_type = ContentType.objects.get_for_model(CardioExerciseLog)
 
                     # Create the polymorphic OneExercice entry only if it doesn't exist
-                    logger.info(f"Creating OneExercice entry for exercise: {exercise_obj.name}")
+                    logger.info(f"Creating OneExercice entry for exercise: {exercise_obj.name} at position {position}")
                     one_exercice, created = OneExercice.objects.get_or_create(
                         name=exercise_obj,
                         seance=workout,
+                        position=position,
                         defaults={
                             'content_type': content_type,
                             'object_id': exercise_log.id,
@@ -195,7 +200,7 @@ def get_last_workout(request):
     all_exercises = Exercice.objects.all().order_by("name").values('name', 'exercise_type')
 
     if last_workout:
-        exercises = OneExercice.objects.filter(seance=last_workout)
+        exercises = OneExercice.objects.filter(seance=last_workout).order_by('position')
         exercises_data = []
         for exercise in exercises:
             exercise_data = {
@@ -243,172 +248,10 @@ def get_workout_types(request):
 
 @login_required
 def edit_workout(request, workout_id):
-    lang = translation.get_language()
-
     try:
         workout = Workout.objects.get(id=workout_id)
     except Workout.DoesNotExist:
         return redirect('/workout/')
 
-    if request.method == 'POST':
-        # Update workout basic info
-        workout.date = request.POST['date']
-        workout.duration = request.POST['duration']
-        workout.save()
-
-        # Update existing exercises in place
-        existing_exercises = list(OneExercice.objects.filter(seance=workout))
-        new_exercise_data = []
-
-        # Collect new exercise data from POST
-        for key, value in request.POST.items():
-            if key.startswith('exercise_') and key.endswith('_name'):
-                exercise_id = key.split('_')[1]
-                exercise_name = value
-                exercise_obj = Exercice.objects.get(name=exercise_name)
-
-                exercise_data = {
-                    'exercise_id': exercise_id,
-                    'exercise_obj': exercise_obj,
-                    'exercise_name': exercise_name
-                }
-
-                if exercise_obj.exercise_type == 'strength':
-                    exercise_data.update({
-                        'nb_series': request.POST.get(f'exercise_{exercise_id}_nb_series'),
-                        'nb_repetition': request.POST.get(f'exercise_{exercise_id}_nb_repetition'),
-                        'weight': request.POST.get(f'exercise_{exercise_id}_weight'),
-                    })
-                elif exercise_obj.exercise_type == 'cardio':
-                    exercise_data.update({
-                        'duration_seconds': request.POST.get(f'exercise_{exercise_id}_duration_seconds'),
-                        'distance_m': request.POST.get(f'exercise_{exercise_id}_distance_m'),
-                    })
-
-                new_exercise_data.append(exercise_data)
-
-        # Update existing exercises or create new ones
-        for i, exercise_data in enumerate(new_exercise_data):
-            exercise_obj = exercise_data['exercise_obj']
-
-            if i < len(existing_exercises):
-                # Update existing exercise
-                existing_exercise = existing_exercises[i]
-                existing_exercise.name = exercise_obj
-                existing_exercise.save()
-
-                # Update the associated exercise log
-                if existing_exercise.exercise_log:
-                    if exercise_obj.exercise_type == 'strength' and isinstance(existing_exercise.exercise_log, StrengthExerciseLog):
-                        # Update existing strength log
-                        strength_log = existing_exercise.exercise_log
-                        strength_log.exercise = exercise_obj
-                        strength_log.nb_series = exercise_data['nb_series']
-                        strength_log.nb_repetition = exercise_data['nb_repetition']
-                        strength_log.weight = exercise_data['weight']
-                        strength_log.save()
-                    elif exercise_obj.exercise_type == 'cardio' and isinstance(existing_exercise.exercise_log, CardioExerciseLog):
-                        # Update existing cardio log
-                        cardio_log = existing_exercise.exercise_log
-                        cardio_log.exercise = exercise_obj
-                        cardio_log.duration_seconds = exercise_data['duration_seconds']
-                        cardio_log.distance_m = exercise_data['distance_m']
-                        cardio_log.save()
-                    else:
-                        # Exercise type changed, delete old log and create new one
-                        existing_exercise.exercise_log.delete()
-
-                        if exercise_obj.exercise_type == 'strength':
-                            exercise_log = StrengthExerciseLog.objects.create(
-                                exercise=exercise_obj,
-                                workout=workout,
-                                nb_series=exercise_data['nb_series'],
-                                nb_repetition=exercise_data['nb_repetition'],
-                                weight=exercise_data['weight'],
-                            )
-                            content_type = ContentType.objects.get_for_model(StrengthExerciseLog)
-                        else:
-                            exercise_log = CardioExerciseLog.objects.create(
-                                exercise=exercise_obj,
-                                workout=workout,
-                                duration_seconds=exercise_data['duration_seconds'],
-                                distance_m=exercise_data['distance_m'],
-                            )
-                            content_type = ContentType.objects.get_for_model(CardioExerciseLog)
-                        existing_exercise.content_type = content_type
-                        existing_exercise.object_id = exercise_log.id
-
-                # Save the existing_exercise after all updates are done
-                existing_exercise.save()
-            else:
-                # Create new exercise
-                if exercise_obj.exercise_type == 'strength':
-                    exercise_log = StrengthExerciseLog.objects.create(
-                        exercise=exercise_obj,
-                        workout=workout,
-                        nb_series=exercise_data['nb_series'],
-                        nb_repetition=exercise_data['nb_repetition'],
-                        weight=exercise_data['weight'],
-                    )
-                    content_type = ContentType.objects.get_for_model(StrengthExerciseLog)
-                else:
-                    exercise_log = CardioExerciseLog.objects.create(
-                        exercise=exercise_obj,
-                        workout=workout,
-                        duration_seconds=exercise_data['duration_seconds'],
-                        distance_m=exercise_data['distance_m'],
-                    )
-                    content_type = ContentType.objects.get_for_model(CardioExerciseLog)
-
-                OneExercice.objects.create(
-                    name=exercise_obj,
-                    seance=workout,
-                    content_type=content_type,
-                    object_id=exercise_log.id,
-                )
-
-        # Delete any remaining existing exercises that weren't updated
-        if len(existing_exercises) > len(new_exercise_data):
-            exercises_to_delete = existing_exercises[len(new_exercise_data):]
-            for exercise in exercises_to_delete:
-                if exercise.exercise_log:
-                    exercise.exercise_log.delete()
-                exercise.delete()
-
-        return redirect('/workout/')
-
-    # GET request - prepare data for editing
-    exercises = OneExercice.objects.filter(seance=workout)
-    exercises_data = []
-    for exercise in exercises:
-        exercise_data = {
-            'name': exercise.name.name,
-            'exercise_type': exercise.name.exercise_type,
-            'data': exercise.get_display_data()
-        }
-        exercises_data.append(exercise_data)
-
-    workout_data = {
-        'id': workout.id,
-        'date': workout.date,
-        'duration': workout.duration,
-        'type_workout': workout.type_workout.name_workout,
-        'exercises': exercises_data
-    }
-
-    context = {
-        "page": "edit_workout",
-        "lang": lang,
-        "workout": workout,
-        "workout_data": workout_data,
-        "translations": {
-            "sets": gettext("Sets"),
-            "series": gettext("Series"),
-            "reps": gettext("Reps"),
-            "repetitions": gettext("Repetitions"),
-            "weight_kg": gettext("Weight (kg)"),
-            "duration_sec": gettext("Duration (sec)"),
-            "distance_m": gettext("Distance (m)")
-        }
-    }
-    return render(request, 'edit_workout.html', context)
+    # Redirect to Django admin page for this workout
+    return redirect(f'/admin/workout/workout/{workout_id}/change/')

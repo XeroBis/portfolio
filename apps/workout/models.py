@@ -91,11 +91,15 @@ class OneExercice(models.Model):
     """
     name = models.ForeignKey(Exercice, on_delete=models.CASCADE)
     seance = models.ForeignKey(Workout, on_delete=models.CASCADE)
+    position = models.IntegerField(default=1)
 
     # Generic foreign key to point to specific exercise log
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id = models.PositiveIntegerField(null=True)
     exercise_log = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        ordering = ['seance', 'position']
 
     def get_display_data(self):
         """Get display data from the specific exercise log"""
@@ -107,4 +111,4 @@ class OneExercice(models.Model):
         exercice_name = self.name.name if self.name else "No Exercice"
         seance_date = self.seance.date.strftime('%Y-%m-%d') if self.seance else "No Seance"
 
-        return f"{exercice_name} - {seance_date}"
+        return f"{self.position}. {exercice_name} - {seance_date}"

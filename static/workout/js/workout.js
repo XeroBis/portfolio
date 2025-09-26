@@ -23,8 +23,9 @@ function loadMore() {
                 var html = '';
                 response.workout_data.forEach(function (data) {
                     html += '<div>';
+                    html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
                     html += '<h2 class="workout_date_type">' + data.workout.date + ' - ' + data.workout.type_workout;
-                    
+
                     if (data.workout.duration > 0) {
                         var hours = Math.floor(data.workout.duration / 60);
                         var minutes = data.workout.duration % 60;
@@ -32,6 +33,10 @@ function loadMore() {
                         html += ' - ' + timeStr.trim();
                     }
                     html += '</h2>';
+                    html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
+                    html += '<button id="btn_edit_workout" class="cliquable">Edit</button>';
+                    html += '</a>';
+                    html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
                         const translations = JSON.parse(document.getElementById('workout-translations').textContent);
