@@ -10,6 +10,29 @@ class TypeWorkout(models.Model):
         return self.name_workout
 
 
+class MuscleGroup(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+
+class Equipment(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = "Equipment"
+
+    def __str__(self):
+        return self.name
+
+
 class Workout(models.Model):
     date = models.DateField()
     type_workout = models.ForeignKey(TypeWorkout, null=True, on_delete=models.SET_NULL)
@@ -26,11 +49,39 @@ class Exercice(models.Model):
     """
     Exercice global
     """
+    DIFFICULTY_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
+
     name = models.CharField(max_length=50)
     exercise_type = models.CharField(max_length=20, choices=[
         ('strength', 'Strength'),
         ('cardio', 'Cardio')
     ], default='strength')
+
+    # Many-to-many relationships for exercise library
+    muscle_groups = models.ManyToManyField(
+        MuscleGroup,
+        blank=True,
+        related_name='exercises',
+        help_text="Muscle groups targeted by this exercise"
+    )
+    equipment = models.ManyToManyField(
+        Equipment,
+        blank=True,
+        related_name='exercises',
+        help_text="Equipment required for this exercise"
+    )
+
+    # Exercise details
+    difficulty = models.CharField(
+        max_length=20,
+        choices=DIFFICULTY_CHOICES,
+        default='beginner',
+        help_text="Exercise difficulty level"
+    )
 
     def __str__(self):
         return self.name

@@ -34,7 +34,7 @@ function loadMore() {
                     }
                     html += '</h2>';
                     html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
-                    html += '<button id="btn_edit_workout" class="cliquable">Edit</button>';
+                    html += '<button class="cliquable button_workout">Edit</button>';
                     html += '</a>';
                     html += '</div>';
 

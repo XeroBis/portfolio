@@ -1,13 +1,19 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.utils import translation
 from django.utils.translation import gettext
 from django.db import transaction
+from django.views.decorators.csrf import csrf_exempt
+from django.core.management import call_command
 import logging
+import json
+from datetime import datetime
+import os
+import tempfile
 
-from .models import Workout, OneExercice, TypeWorkout, Exercice, StrengthExerciseLog, CardioExerciseLog
+from .models import Workout, OneExercice, TypeWorkout, Exercice, StrengthExerciseLog, CardioExerciseLog, MuscleGroup, Equipment
 from django.contrib.contenttypes.models import ContentType
 
 logger = logging.getLogger(__name__)
@@ -255,3 +261,121 @@ def edit_workout(request, workout_id):
 
     # Redirect to Django admin page for this workout
     return redirect(f'/admin/workout/workout/{workout_id}/change/')
+
+
+def exercise_library(request):
+    lang = translation.get_language()
+
+    # Get filter parameters
+    muscle_group_id = request.GET.get('muscle_group', '')
+    difficulty = request.GET.get('difficulty', '')
+    equipment_id = request.GET.get('equipment', '')
+
+    # Start with all exercises
+    exercises = Exercice.objects.all().prefetch_related('muscle_groups', 'equipment').order_by('name')
+
+    # Apply filters
+    if muscle_group_id:
+        exercises = exercises.filter(muscle_groups__id=muscle_group_id)
+    if difficulty:
+        exercises = exercises.filter(difficulty=difficulty)
+    if equipment_id:
+        exercises = exercises.filter(equipment__id=equipment_id)
+
+    # Get all muscle groups and equipment for filter dropdowns
+    muscle_groups = MuscleGroup.objects.all().order_by('name')
+    difficulties = Exercice.DIFFICULTY_CHOICES
+    equipments = Equipment.objects.all().order_by('name')
+
+    context = {
+        "page": "exercise_library",
+        "lang": lang,
+        "exercises": exercises,
+        "muscle_groups": muscle_groups,
+        "difficulties": difficulties,
+        "equipments": equipments,
+        "selected_muscle_group": muscle_group_id,
+        "selected_difficulty": difficulty,
+        "selected_equipment": equipment_id,
+        "translations": {
+            "exercise_library": gettext("Exercise Library"),
+            "filters": gettext("Filters"),
+            "muscle_group": gettext("Muscle Group"),
+            "difficulty": gettext("Difficulty"),
+            "equipment": gettext("Equipment"),
+            "all": gettext("All"),
+            "no_exercises": gettext("No exercises found."),
+        }
+    }
+    return render(request, 'exercise_library.html', context)
+
+
+@login_required
+def export_data(request):
+    """Export all workout data to JSON file"""
+    try:
+        # Create temporary file
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as tmp_file:
+            tmp_path = tmp_file.name
+
+        # Call the export command
+        call_command('export_workout_data', output=tmp_path)
+
+        # Read the file and return as download
+        with open(tmp_path, 'r', encoding='utf-8') as f:
+            response = HttpResponse(f.read(), content_type='application/json')
+            today_date = datetime.today().strftime('%Y-%m-%d')
+            response['Content-Disposition'] = f'attachment; filename="workout_data_{today_date}.json"'
+
+        # Clean up temp file
+        os.unlink(tmp_path)
+
+        return response
+    except Exception as e:
+        logger.error(f"Error exporting data: {str(e)}", exc_info=True)
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def import_data(request):
+    """Import workout data from JSON file"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST request required'}, status=400)
+
+    if 'file' not in request.FILES:
+        return JsonResponse({'error': 'No file provided'}, status=400)
+
+    try:
+        uploaded_file = request.FILES['file']
+
+        # Save uploaded file temporarily
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.json') as tmp_file:
+            for chunk in uploaded_file.chunks():
+                tmp_file.write(chunk)
+            tmp_path = tmp_file.name
+
+        # Call the import command
+        call_command('import_workout_data', file=tmp_path)
+
+        # Clean up temp file
+        os.unlink(tmp_path)
+
+        return JsonResponse({'success': True, 'message': 'Data imported successfully'})
+    except Exception as e:
+        logger.error(f"Error importing data: {str(e)}", exc_info=True)
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def clear_data(request):
+    """Clear all workout data"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST request required'}, status=400)
+
+    try:
+        # Call the clear command with no-input flag
+        call_command('clear_workout_data', no_input=True)
+        return JsonResponse({'success': True, 'message': 'All data cleared successfully'})
+    except Exception as e:
+        logger.error(f"Error clearing data: {str(e)}", exc_info=True)
+        return JsonResponse({'error': str(e)}, status=500)

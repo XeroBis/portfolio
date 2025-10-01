@@ -3,7 +3,8 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 from .models import (
     TypeWorkout, Workout, Exercice, OneExercice,
-    StrengthExerciseLog, CardioExerciseLog
+    StrengthExerciseLog, CardioExerciseLog,
+    MuscleGroup, Equipment
 )
 
 
@@ -21,6 +22,24 @@ class OneExerciceForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Determine exercise type
+        exercise_type = None
+        if self.instance and self.instance.pk and self.instance.name:
+            exercise_type = self.instance.name.exercise_type
+
+        # Hide fields based on exercise type
+        if exercise_type == 'strength':
+            # Hide cardio fields
+            self.fields['duration_seconds'].widget = forms.HiddenInput()
+            self.fields['distance_m'].widget = forms.HiddenInput()
+        elif exercise_type == 'cardio':
+            # Hide strength fields
+            self.fields['nb_series'].widget = forms.HiddenInput()
+            self.fields['nb_repetition'].widget = forms.HiddenInput()
+            self.fields['weight'].widget = forms.HiddenInput()
+
+        # Populate initial values from existing log
         if self.instance and self.instance.pk and self.instance.exercise_log:
             log = self.instance.exercise_log
             if hasattr(log, 'nb_series'):
@@ -95,6 +114,20 @@ class TypeWorkoutAdmin(admin.ModelAdmin):
     ordering = ('name_workout',)
 
 
+@admin.register(MuscleGroup)
+class MuscleGroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description')
+    search_fields = ('name', 'description')
+    ordering = ('name',)
+
+
+@admin.register(Equipment)
+class EquipmentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description')
+    search_fields = ('name', 'description')
+    ordering = ('name',)
+
+
 class OneExerciceInline(admin.TabularInline):
     model = OneExercice
     form = OneExerciceForm
@@ -122,10 +155,27 @@ class WorkoutAdmin(admin.ModelAdmin):
 
 @admin.register(Exercice)
 class ExerciceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'exercise_type')
-    list_filter = ('exercise_type',)
+    list_display = ('id', 'name', 'exercise_type', 'difficulty', 'display_muscle_groups', 'display_equipment')
+    list_filter = ('exercise_type', 'difficulty', 'muscle_groups', 'equipment')
     search_fields = ('name',)
     ordering = ('name',)
+    filter_horizontal = ('muscle_groups', 'equipment')
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'exercise_type')
+        }),
+        ('Exercise Details', {
+            'fields': ('muscle_groups', 'difficulty', 'equipment')
+        }),
+    )
+
+    def display_muscle_groups(self, obj):
+        return ", ".join([mg.name for mg in obj.muscle_groups.all()[:3]]) if obj.muscle_groups.exists() else "-"
+    display_muscle_groups.short_description = 'Muscle Groups'
+
+    def display_equipment(self, obj):
+        return ", ".join([eq.name for eq in obj.equipment.all()[:3]]) if obj.equipment.exists() else "-"
+    display_equipment.short_description = 'Equipment'
 
 
 @admin.register(OneExercice)
@@ -135,6 +185,15 @@ class OneExerciceAdmin(admin.ModelAdmin):
     search_fields = ('name__name', 'seance__date')
     raw_id_fields = ('name', 'seance')
     ordering = ('-seance__date', 'position')
+    form = OneExerciceForm
+    fieldsets = (
+        ('Exercise Information', {
+            'fields': ('seance', 'name', 'position')
+        }),
+        ('Exercise Details', {
+            'fields': ('nb_series', 'nb_repetition', 'weight', 'duration_seconds', 'distance_m', 'exercise_notes'),
+        }),
+    )
 
     def seance_date(self, obj):
         return obj.seance.date if obj.seance else "No Date"
@@ -151,31 +210,3 @@ class OneExerciceAdmin(admin.ModelAdmin):
     exercise_details.short_description = 'Details'
 
 
-@admin.register(StrengthExerciseLog)
-class StrengthExerciseLogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'exercise', 'workout', 'workout_date', 'nb_series', 'nb_repetition', 'weight')
-    list_filter = ('workout__date', 'exercise')
-    search_fields = ('exercise__name', 'workout__date')
-    raw_id_fields = ('exercise', 'workout')
-    ordering = ('-workout__date',)
-
-    def workout_date(self, obj):
-        return obj.workout.date if obj.workout else "No Date"
-    workout_date.short_description = 'Workout Date'
-
-
-@admin.register(CardioExerciseLog)
-class CardioExerciseLogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'exercise', 'workout', 'workout_date', 'duration_minutes', 'distance_m')
-    list_filter = ('workout__date', 'exercise')
-    search_fields = ('exercise__name', 'workout__date')
-    raw_id_fields = ('exercise', 'workout')
-    ordering = ('-workout__date',)
-
-    def workout_date(self, obj):
-        return obj.workout.date if obj.workout else "No Date"
-    workout_date.short_description = 'Workout Date'
-
-    def duration_minutes(self, obj):
-        return f"{obj.duration_seconds}s" if obj.duration_seconds else "No duration"
-    duration_minutes.short_description = 'Duration'
