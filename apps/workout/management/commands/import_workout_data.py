@@ -1,5 +1,6 @@
 import json
 from django.core.management.base import BaseCommand
+from django.db import connection
 from apps.workout.models import (
     TypeWorkout, MuscleGroup, Equipment, Workout,
     Exercice, StrengthExerciseLog, CardioExerciseLog, OneExercice
@@ -42,6 +43,8 @@ class Command(BaseCommand):
         self.import_strength_logs(data.get('strength_exercise_logs', []))
         self.import_cardio_logs(data.get('cardio_exercise_logs', []))
         self.import_one_exercises(data.get('one_exercises', []))
+
+        self.fix_sequences()
 
         self.stdout.write(self.style.SUCCESS(
             f'All workout data imported successfully from {input_path}'
@@ -191,3 +194,35 @@ class Command(BaseCommand):
                     f"  Skipping one exercise {oe_data['id']}: {e}"
                 ))
         self.stdout.write(self.style.SUCCESS(f'  Imported {len(one_exercises)} one exercises'))
+
+    def fix_sequences(self):
+        """Fix PostgreSQL sequences after importing data with explicit IDs"""
+        self.stdout.write('Fixing PostgreSQL sequences...')
+
+        sql_commands = [
+            "SELECT setval(pg_get_serial_sequence('\"workout_typeworkout\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_typeworkout\";",
+            "SELECT setval(pg_get_serial_sequence('\"workout_musclegroup\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_musclegroup\";",
+            "SELECT setval(pg_get_serial_sequence('\"workout_equipment\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_equipment\";",
+            "SELECT setval(pg_get_serial_sequence('\"workout_exercice\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_exercice\";",
+            "SELECT setval(pg_get_serial_sequence('\"workout_workout\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_workout\";",
+            "SELECT setval(pg_get_serial_sequence('\"workout_strengthexerciselog\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_strengthexerciselog\";",
+            "SELECT setval(pg_get_serial_sequence('\"workout_cardioexerciselog\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_cardioexerciselog\";",
+            "SELECT setval(pg_get_serial_sequence('\"workout_oneexercice\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"workout_oneexercice\";"
+        ]
+
+        with connection.cursor() as cursor:
+            for sql in sql_commands:
+                try:
+                    cursor.execute(sql)
+                    result = cursor.fetchone()
+                    if result:
+                        table_name = sql.split('"')[1]
+                        self.stdout.write(f'Fixed sequence for {table_name}: next ID will be {result[0] + 1}')
+                except Exception as e:
+                    self.stdout.write(
+                        self.style.WARNING(f'Could not fix sequence: {sql} - Error: {e}')
+                    )
+
+        self.stdout.write(
+            self.style.SUCCESS('Successfully fixed all sequences!')
+        )
