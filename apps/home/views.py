@@ -6,7 +6,6 @@ import os
 import tempfile
 
 from .models import Projet, Tag, Testimonial
-from apps.workout.models import TypeWorkout, Workout, Exercice, OneExercice, StrengthExerciseLog, CardioExerciseLog
 
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -30,7 +29,7 @@ def download_data_json(request):
             temp_file_path = temp_file.name
 
         # Call the management command to export data
-        call_command('download_all_data', file=temp_file_path)
+        call_command('download_home_data', file=temp_file_path)
 
         # Read the generated file and return as response
         with open(temp_file_path, 'r', encoding='utf-8') as f:
@@ -59,7 +58,7 @@ def import_data_json(request):
                 temp_file_path = temp_file.name
 
             # Call the management command to import data
-            call_command('import_all_data', file=temp_file_path)
+            call_command('import_home_data', file=temp_file_path)
 
             # Clean up the temporary file
             os.unlink(temp_file_path)
@@ -80,16 +79,7 @@ def import_data_json(request):
 @login_required
 def reset_data(request):
     try:
-        OneExercice.objects.all().delete()
-        StrengthExerciseLog.objects.all().delete()
-        CardioExerciseLog.objects.all().delete()
-        Workout.objects.all().delete()
-        TypeWorkout.objects.all().delete()
-        Exercice.objects.all().delete()
-        Projet.objects.all().delete()
-        Tag.objects.all().delete()
-        Testimonial.objects.all().delete()
-
+        call_command('clear_home_data')
         return redirect('home')
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
