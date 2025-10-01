@@ -89,7 +89,7 @@
         </div>
 
         {% if has_next %}
-        <button class="cliquable button_workout" data-next-page="{{ next_page_number }}">
+        <button id="load-more" class="cliquable button_workout" data-next-page="{{ next_page_number }}">
             {% trans "Load More" %}
         </button>
         <div id="loading-indicator" style="display: none; text-align: center; padding: 20px;">
