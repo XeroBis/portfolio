@@ -44,10 +44,10 @@ table tr:hover {
 table tr td {
     color: #555;
 }
-#load-more, #btn_add_workout, #btn_add_exercise, #btn_edit_workout, #btn_discard_workout{
+.button_workout{
     display: block;
 }
-#load-more, #btn_add_workout, #btn_add_exercise, #btn_edit_workout, #btn_discard_workout {
+.button_workout{
     margin: 20px auto;
     padding: 10px 20px;
     font-size: 16px;
@@ -68,23 +68,12 @@ table tr td {
 
 
 /* Hover effect */
-#load-more:hover, #btn_add_workout:hover, #btn_add_exercise:hover, #btn_edit_workout:hover {
+.button_workout:hover {
     background-color: #b8ab8aac;
 }
 
-#load-more:active, #btn_add_workout:active, #btn_add_exercise:active, #btn_edit_workout:active {
+.button_workout:active {
     transform: scale(0.95);
-}
-
-/* Discard button hover and active states */
-#btn_discard_workout:hover {
-    background-color: #ff6161;
-    border-color: #fa3131;
-}
-
-#btn_discard_workout:active {
-    transform: scale(0.95);
-    background-color: #ff6161;
 }
 
 /* ADD MORE WORKOUT */

@@ -12,7 +12,10 @@
         </h1>
         {% if user.is_authenticated %}
         <a href="/workout/add_workout/">
-            <button id="btn_add_workout" class="cliquable">{% trans "Add Workout" %}</button>
+            <button class="cliquable button_workout">{% trans "Add Workout" %}</button>
+        </a>
+        <a href="/workout/library/">
+            <button class="cliquable button_workout">{% trans "Go to Library" %}</button>
         </a>
         {% endif %}
 
@@ -28,7 +31,7 @@
                     </h2>
                     {% if user.is_authenticated %}
                     <a href="/workout/edit_workout/{{ data.workout.id }}/">
-                        <button id="btn_edit_workout" class="cliquable">{% trans "Edit" %}</button>
+                        <button class="cliquable button_workout">{% trans "Edit" %}</button>
                     </a>
                     {% endif %}
                 </div>
@@ -86,7 +89,7 @@
         </div>
 
         {% if has_next %}
-        <button id="load-more" class="cliquable" data-next-page="{{ next_page_number }}">
+        <button class="cliquable button_workout" data-next-page="{{ next_page_number }}">
             {% trans "Load More" %}
         </button>
         <div id="loading-indicator" style="display: none; text-align: center; padding: 20px;">
