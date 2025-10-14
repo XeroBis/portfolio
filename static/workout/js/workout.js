@@ -16,6 +16,7 @@ const muscleMapping = {
     'triceps': ['triceps', 'forearms'],
     'legs': ['quads', 'hamstrings', 'calves', 'glutes'],
     'quads': ['quads'],
+    'core': ['abdominals', 'obliques', 'lowerback'],
     'quadriceps': ['quads'],
     'hamstrings': ['hamstrings'],
     'calves': ['calves'],
