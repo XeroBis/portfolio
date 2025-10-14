@@ -44,6 +44,7 @@ def redirect_workout(request):
                     'name': exercise.name.name if exercise else None,
                     'exercise_type': exercise.name.exercise_type,
                     'data': exercise.get_display_data(),
+                    'muscle_groups': list(exercise.name.muscle_groups.all().values_list('name', flat=True))
                 }
                 for exercise in exercises
             ]

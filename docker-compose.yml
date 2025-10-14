@@ -21,8 +21,8 @@ services:
    volumes:
       - .:/app
       - static_volume:/app/staticfiles
-   expose:
-     - "8000"
+   ports:
+      - 8000:8000
    depends_on:
      - db
    environment:
@@ -40,18 +40,6 @@ services:
      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
    env_file:
      - .env
- nginx:
-  build:
-    context: .
-    dockerfile: dockerfiles/nginx/Dockerfile
-  container_name: nginx-docker
-  ports:
-    - 8080:80
-  volumes:
-    - static_volume:/app/staticfiles
-  depends_on:
-    - django-web
-  restart: always
 
 
 volumes:

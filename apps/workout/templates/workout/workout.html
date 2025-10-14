@@ -21,7 +21,7 @@
 
         <div id="workout-list">
             {% for data in workout_data %}
-            <div>
+            <div class="workout-item" data-muscle-groups="{{ data.muscle_groups|join:',' }}">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h2 class="workout_date_type">
                         {{ data.workout.date }} - {{ data.workout.type_workout }}
@@ -49,7 +49,7 @@
                         </thead>
                         <tbody>
                             {% for exercise in group.exercises %}
-                            <tr>
+                            <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
                                 <td>{{ exercise.name }}</td>
                                 <td>{{ exercise.data.nb_series }}</td>
                                 <td>{{ exercise.data.nb_repetition }}</td>
@@ -69,7 +69,7 @@
                         </thead>
                         <tbody>
                             {% for exercise in group.exercises %}
-                            <tr>
+                            <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
                                 <td>{{ exercise.name }}</td>
                                 <td>{{ exercise.data.duration_seconds|seconds_to_minutes }}</td>
                                 <td>{{ exercise.data.distance_m }}</td>
