@@ -2,6 +2,67 @@ let isLoading = false;
 let hasMoreContent = document.getElementById('load-more') ? true : false;
 let currentPage = document.getElementById('load-more') ? parseInt(document.getElementById('load-more').getAttribute('data-next-page')) : null;
 
+// Create and append modal for muscle groups
+function createMuscleModal() {
+    const modal = document.createElement('div');
+    modal.id = 'muscle-modal';
+    modal.className = 'muscle-modal';
+    modal.innerHTML = '<div class="muscle-modal-content"></div>';
+    document.body.appendChild(modal);
+    return modal;
+}
+
+// Show muscle modal
+function showMuscleModal(exerciseRow, muscleGroups) {
+    const modal = document.getElementById('muscle-modal') || createMuscleModal();
+    const modalContent = modal.querySelector('.muscle-modal-content');
+
+    if (!muscleGroups || muscleGroups.trim() === '') {
+        modalContent.innerHTML = '<p>No muscle groups specified</p>';
+    } else {
+        const muscleList = muscleGroups.split(',').map(m => m.trim()).filter(m => m);
+        modalContent.innerHTML = '<h3>Muscle Groups</h3><ul>' +
+            muscleList.map(muscle => '<li>' + muscle + '</li>').join('') +
+            '</ul>';
+    }
+
+    // Position the modal near the cursor
+    modal.style.display = 'block';
+
+    // Position the modal relative to the row
+    const rect = exerciseRow.getBoundingClientRect();
+    modal.style.top = (rect.top + window.scrollY - 10) + 'px';
+    modal.style.left = (rect.right + 20) + 'px';
+}
+
+// Hide muscle modal
+function hideMuscleModal() {
+    const modal = document.getElementById('muscle-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Attach hover listeners to exercise rows
+function attachHoverListeners() {
+    document.querySelectorAll('.exercise-row').forEach(row => {
+        row.removeEventListener('mouseenter', handleMouseEnter);
+        row.removeEventListener('mouseleave', handleMouseLeave);
+
+        row.addEventListener('mouseenter', handleMouseEnter);
+        row.addEventListener('mouseleave', handleMouseLeave);
+    });
+}
+
+function handleMouseEnter(e) {
+    const muscleGroups = this.getAttribute('data-muscle-groups');
+    showMuscleModal(this, muscleGroups);
+}
+
+function handleMouseLeave(e) {
+    hideMuscleModal();
+}
+
 function loadMore() {
     if (isLoading || !hasMoreContent) return;
     
@@ -62,7 +123,8 @@ function loadMore() {
                         html += '</tr></thead><tbody>';
 
                         data.exercises.forEach(function (exercise) {
-                            html += '<tr>';
+                            var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
+                            html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
                             html += '<td>' + exercise.name + '</td>';
 
                             if (exercise.exercise_type === 'strength') {
@@ -93,6 +155,9 @@ function loadMore() {
                     html += '</div>';
                 });
                 $('#workout-list').append(html);
+
+                // Attach hover listeners to newly added exercises
+                attachHoverListeners();
             }
 
             if (response.has_next) {
@@ -115,12 +180,15 @@ function loadMore() {
 }
 
 $(document).ready(function() {
+    // Initialize hover listeners for existing exercises
+    attachHoverListeners();
+
     $(window).scroll(function() {
         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
             loadMore();
         }
     });
-    
+
     $('#load-more').click(function() {
         loadMore();
     });
