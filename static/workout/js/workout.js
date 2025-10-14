@@ -2,6 +2,47 @@ let isLoading = false;
 let hasMoreContent = document.getElementById('load-more') ? true : false;
 let currentPage = document.getElementById('load-more') ? parseInt(document.getElementById('load-more').getAttribute('data-next-page')) : null;
 
+// Cache for SVG content
+let frontSvgContent = null;
+let backSvgContent = null;
+
+// Muscle name to SVG ID mapping
+const muscleMapping = {
+    // Common mappings
+    'chest': ['chest'],
+    'back': ['lats', 'traps', 'traps-middle'],
+    'shoulders': ['front-shoulders', 'rear-shoulders'],
+    'biceps': ['forearms'],
+    'triceps': ['triceps', 'forearms'],
+    'legs': ['quads', 'hamstrings', 'calves', 'glutes'],
+    'quads': ['quads'],
+    'quadriceps': ['quads'],
+    'hamstrings': ['hamstrings'],
+    'calves': ['calves'],
+    'glutes': ['glutes'],
+    'abs': ['abdominals'],
+    'abdominals': ['abdominals'],
+    'obliques': ['obliques'],
+    'forearms': ['forearms'],
+    'traps': ['traps', 'traps-middle'],
+    'lats': ['lats'],
+    'lower back': ['lowerback'],
+    'lowerback': ['lowerback'],
+    'full body': ['chest', 'lats', 'traps', 'quads', 'hamstrings', 'calves', 'glutes', 'abdominals', 'obliques']
+};
+
+// Load SVG content
+async function loadSvgContent() {
+    if (!frontSvgContent) {
+        const frontResponse = await fetch('/static/images/front.svg');
+        frontSvgContent = await frontResponse.text();
+    }
+    if (!backSvgContent) {
+        const backResponse = await fetch('/static/images/back.svg');
+        backSvgContent = await backResponse.text();
+    }
+}
+
 // Create and append modal for muscle groups
 function createMuscleModal() {
     const modal = document.createElement('div');
@@ -13,14 +54,27 @@ function createMuscleModal() {
 }
 
 // Show muscle modal
-function showMuscleModal(exerciseRow, muscleGroups) {
+async function showMuscleModal(exerciseRow, muscleGroups) {
     const modal = document.getElementById('muscle-modal') || createMuscleModal();
     const modalContent = modal.querySelector('.muscle-modal-content');
 
     if (!muscleGroups || muscleGroups.trim() === '') {
         modalContent.innerHTML = '<p>No muscle groups specified</p>';
     } else {
+        // Load SVG content if not already loaded
+        await loadSvgContent();
+
         const muscleList = muscleGroups.split(',').map(m => m.trim()).filter(m => m);
+
+        // Get SVG IDs to highlight
+        const svgIdsToHighlight = new Set();
+        muscleList.forEach(muscle => {
+            const muscleLower = muscle.toLowerCase();
+            if (muscleMapping[muscleLower]) {
+                muscleMapping[muscleLower].forEach(id => svgIdsToHighlight.add(id));
+            }
+        });
+
         modalContent.innerHTML = `
             <div class="muscle-modal-layout">
                 <div class="muscle-list-section">
@@ -30,15 +84,29 @@ function showMuscleModal(exerciseRow, muscleGroups) {
                 <div class="muscle-svg-section">
                     <div class="svg-container">
                         <h4>Front</h4>
-                        <img src="/static/images/front.svg" alt="Front body muscles" class="body-svg">
+                        <div class="body-svg">${frontSvgContent}</div>
                     </div>
                     <div class="svg-container">
                         <h4>Back</h4>
-                        <img src="/static/images/back.svg" alt="Back body muscles" class="body-svg">
+                        <div class="body-svg">${backSvgContent}</div>
                     </div>
                 </div>
             </div>
         `;
+
+        // Highlight muscles in both SVGs
+        svgIdsToHighlight.forEach(id => {
+            const allElements = modalContent.querySelectorAll(`.body-svg svg #${id}`);
+
+            allElements.forEach(element => {
+                // Apply color to all paths within the group
+                const paths = element.querySelectorAll('path');
+                paths.forEach(path => {
+                    path.style.fill = '#ff6b6b';
+                    path.style.opacity = '0.9';
+                });
+            });
+        });
     }
 
     // Position the modal near the cursor
@@ -195,6 +263,9 @@ function loadMore() {
 }
 
 $(document).ready(function() {
+    // Pre-load SVG content for faster display
+    loadSvgContent();
+
     // Initialize hover listeners for existing exercises
     attachHoverListeners();
 

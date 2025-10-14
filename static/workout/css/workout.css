@@ -883,6 +883,17 @@ table tr td {
     padding: 5px;
 }
 
+.body-svg svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    color: #d0d5d9;
+}
+
+.body-svg svg g path {
+    transition: fill 0.3s ease, opacity 0.3s ease;
+}
+
 .muscle-modal-content h3 {
     margin: 0 0 12px 0;
     font-size: 16px;
