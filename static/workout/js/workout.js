@@ -46,6 +46,18 @@ async function loadSvgContent() {
 
 // Create and append modal for muscle groups
 function createMuscleModal() {
+    // Create backdrop for mobile
+    if (isMobileDevice()) {
+        let backdrop = document.getElementById('muscle-modal-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.id = 'muscle-modal-backdrop';
+            backdrop.className = 'muscle-modal-backdrop';
+            backdrop.addEventListener('click', hideMuscleModal);
+            document.body.appendChild(backdrop);
+        }
+    }
+
     const modal = document.createElement('div');
     modal.id = 'muscle-modal';
     modal.className = 'muscle-modal';
@@ -113,10 +125,18 @@ async function showMuscleModal(exerciseRow, muscleGroups) {
     // Position the modal near the cursor
     modal.style.display = 'block';
 
-    // Position the modal relative to the row
-    const rect = exerciseRow.getBoundingClientRect();
-    modal.style.top = (rect.top + window.scrollY - 10) + 'px';
-    modal.style.left = (rect.right + 20) + 'px';
+    // Show backdrop on mobile
+    const backdrop = document.getElementById('muscle-modal-backdrop');
+    if (backdrop) {
+        backdrop.style.display = 'block';
+    }
+
+    // Position the modal relative to the row (only on desktop)
+    if (!isMobileDevice()) {
+        const rect = exerciseRow.getBoundingClientRect();
+        modal.style.top = (rect.top + window.scrollY - 10) + 'px';
+        modal.style.left = (rect.right + 20) + 'px';
+    }
 }
 
 // Hide muscle modal
@@ -125,16 +145,38 @@ function hideMuscleModal() {
     if (modal) {
         modal.style.display = 'none';
     }
+
+    // Hide backdrop on mobile
+    const backdrop = document.getElementById('muscle-modal-backdrop');
+    if (backdrop) {
+        backdrop.style.display = 'none';
+    }
 }
 
-// Attach hover listeners to exercise rows
+// Check if device is mobile
+function isMobileDevice() {
+    return window.matchMedia('(max-width: 768px)').matches ||
+           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Attach event listeners to exercise rows
 function attachHoverListeners() {
+    const isMobile = isMobileDevice();
+
     document.querySelectorAll('.exercise-row').forEach(row => {
+        // Remove all existing listeners
         row.removeEventListener('mouseenter', handleMouseEnter);
         row.removeEventListener('mouseleave', handleMouseLeave);
+        row.removeEventListener('click', handleClick);
 
-        row.addEventListener('mouseenter', handleMouseEnter);
-        row.addEventListener('mouseleave', handleMouseLeave);
+        if (isMobile) {
+            // On mobile: use click
+            row.addEventListener('click', handleClick);
+        } else {
+            // On desktop: use hover
+            row.addEventListener('mouseenter', handleMouseEnter);
+            row.addEventListener('mouseleave', handleMouseLeave);
+        }
     });
 }
 
@@ -145,6 +187,28 @@ function handleMouseEnter() {
 
 function handleMouseLeave() {
     hideMuscleModal();
+}
+
+function handleClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const muscleGroups = this.getAttribute('data-muscle-groups');
+    const modal = document.getElementById('muscle-modal');
+
+    // If modal is already visible for this row, hide it
+    if (modal && modal.style.display === 'block' && modal.dataset.currentRow === this.dataset.rowId) {
+        hideMuscleModal();
+    } else {
+        // Show modal for this row
+        if (!this.dataset.rowId) {
+            this.dataset.rowId = 'row-' + Math.random().toString(36).slice(2, 11);
+        }
+        showMuscleModal(this, muscleGroups);
+        if (modal) {
+            modal.dataset.currentRow = this.dataset.rowId;
+        }
+    }
 }
 
 function loadMore() {
