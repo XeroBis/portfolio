@@ -21,9 +21,24 @@ function showMuscleModal(exerciseRow, muscleGroups) {
         modalContent.innerHTML = '<p>No muscle groups specified</p>';
     } else {
         const muscleList = muscleGroups.split(',').map(m => m.trim()).filter(m => m);
-        modalContent.innerHTML = '<h3>Muscle Groups</h3><ul>' +
-            muscleList.map(muscle => '<li>' + muscle + '</li>').join('') +
-            '</ul>';
+        modalContent.innerHTML = `
+            <div class="muscle-modal-layout">
+                <div class="muscle-list-section">
+                    <h3>Muscle Groups</h3>
+                    <ul>${muscleList.map(muscle => '<li>' + muscle + '</li>').join('')}</ul>
+                </div>
+                <div class="muscle-svg-section">
+                    <div class="svg-container">
+                        <h4>Front</h4>
+                        <img src="/static/images/front.svg" alt="Front body muscles" class="body-svg">
+                    </div>
+                    <div class="svg-container">
+                        <h4>Back</h4>
+                        <img src="/static/images/back.svg" alt="Back body muscles" class="body-svg">
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     // Position the modal near the cursor
@@ -54,12 +69,12 @@ function attachHoverListeners() {
     });
 }
 
-function handleMouseEnter(e) {
+function handleMouseEnter() {
     const muscleGroups = this.getAttribute('data-muscle-groups');
     showMuscleModal(this, muscleGroups);
 }
 
-function handleMouseLeave(e) {
+function handleMouseLeave() {
     hideMuscleModal();
 }
 

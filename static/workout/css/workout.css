@@ -835,13 +835,52 @@ table tr td {
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     padding: 0;
-    min-width: 200px;
-    max-width: 300px;
+    min-width: 400px;
+    max-width: 600px;
     pointer-events: none;
 }
 
 .muscle-modal-content {
     padding: 15px 20px;
+}
+
+.muscle-modal-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.muscle-list-section {
+    flex: 1;
+    min-width: 150px;
+}
+
+.muscle-svg-section {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.svg-container {
+    text-align: center;
+}
+
+.svg-container h4 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.body-svg {
+    width: 80px;
+    height: auto;
+    display: block;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: #fafafa;
+    padding: 5px;
 }
 
 .muscle-modal-content h3 {
@@ -900,5 +939,15 @@ table tr td {
         left: 50% !important;
         transform: translate(-50%, -50%);
         max-width: 90vw;
+        min-width: 300px;
+    }
+
+    .muscle-modal-layout {
+        flex-direction: column;
+    }
+
+    .muscle-svg-section {
+        justify-content: center;
+        width: 100%;
     }
 }

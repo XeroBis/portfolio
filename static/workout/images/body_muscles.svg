@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+    <!-- Front View (Left Side) -->
+    <g id="front-view" transform="translate(50, 20)">
+        <!-- Head -->
+        <ellipse cx="150" cy="30" rx="25" ry="30" fill="#f0e6d2" stroke="#8b7355" stroke-width="2"/>
+        <text x="150" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">FRONT</text>
+
+        <!-- Shoulders -->
+        <g class="muscle-group" data-muscle="Shoulders">
+            <ellipse cx="110" cy="85" rx="28" ry="22" class="muscle-fill"/>
+            <ellipse cx="190" cy="85" rx="28" ry="22" class="muscle-fill"/>
+            <text x="150" y="85" text-anchor="middle" font-size="10" class="muscle-label">Shoulders</text>
+        </g>
+
+        <!-- Chest -->
+        <g class="muscle-group" data-muscle="Chest">
+            <path d="M 130 90 Q 150 110 170 90 L 170 130 Q 150 140 130 130 Z" class="muscle-fill"/>
+            <text x="150" y="115" text-anchor="middle" font-size="10" class="muscle-label">Chest</text>
+        </g>
+
+        <!-- Biceps -->
+        <g class="muscle-group" data-muscle="Biceps">
+            <ellipse cx="95" cy="130" rx="15" ry="30" class="muscle-fill"/>
+            <ellipse cx="205" cy="130" rx="15" ry="30" class="muscle-fill"/>
+            <text x="70" y="135" text-anchor="middle" font-size="9" class="muscle-label">Biceps</text>
+        </g>
+
+        <!-- Core/Abs -->
+        <g class="muscle-group" data-muscle="Core">
+            <rect x="130" y="140" width="40" height="60" rx="5" class="muscle-fill"/>
+            <line x1="145" y1="150" x2="155" y2="150" stroke="#8b7355" stroke-width="1"/>
+            <line x1="145" y1="165" x2="155" y2="165" stroke="#8b7355" stroke-width="1"/>
+            <line x1="145" y1="180" x2="155" y2="180" stroke="#8b7355" stroke-width="1"/>
+            <text x="150" y="172" text-anchor="middle" font-size="10" class="muscle-label">Core</text>
+        </g>
+
+        <!-- Forearms -->
+        <g class="muscle-group" data-muscle="Forearms">
+            <rect x="85" y="165" width="12" height="40" rx="3" class="muscle-fill"/>
+            <rect x="203" y="165" width="12" height="40" rx="3" class="muscle-fill"/>
+            <text x="70" y="190" text-anchor="middle" font-size="8" class="muscle-label">Forearms</text>
+        </g>
+
+        <!-- Quadriceps -->
+        <g class="muscle-group" data-muscle="Quadriceps">
+            <rect x="125" y="210" width="20" height="80" rx="8" class="muscle-fill"/>
+            <rect x="155" y="210" width="20" height="80" rx="8" class="muscle-fill"/>
+            <text x="150" y="250" text-anchor="middle" font-size="10" class="muscle-label">Quads</text>
+        </g>
+
+        <!-- Calves -->
+        <g class="muscle-group" data-muscle="Calves">
+            <ellipse cx="135" cy="320" rx="12" ry="35" class="muscle-fill"/>
+            <ellipse cx="165" cy="320" rx="12" ry="35" class="muscle-fill"/>
+            <text x="150" y="325" text-anchor="middle" font-size="9" class="muscle-label">Calves</text>
+        </g>
+    </g>
+
+    <!-- Back View (Right Side) -->
+    <g id="back-view" transform="translate(450, 20)">
+        <!-- Head -->
+        <ellipse cx="150" cy="30" rx="25" ry="30" fill="#f0e6d2" stroke="#8b7355" stroke-width="2"/>
+        <text x="150" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">BACK</text>
+
+        <!-- Shoulders/Traps (back) -->
+        <g class="muscle-group" data-muscle="Shoulders">
+            <ellipse cx="110" cy="85" rx="28" ry="22" class="muscle-fill"/>
+            <ellipse cx="190" cy="85" rx="28" ry="22" class="muscle-fill"/>
+        </g>
+
+        <!-- Back -->
+        <g class="muscle-group" data-muscle="Back">
+            <path d="M 120 95 L 100 110 L 105 170 L 130 180 L 170 180 L 195 170 L 200 110 L 180 95 Z" class="muscle-fill"/>
+            <text x="150" y="140" text-anchor="middle" font-size="10" class="muscle-label">Back</text>
+        </g>
+
+        <!-- Triceps -->
+        <g class="muscle-group" data-muscle="Triceps">
+            <ellipse cx="95" cy="130" rx="15" ry="30" class="muscle-fill"/>
+            <ellipse cx="205" cy="130" rx="15" ry="30" class="muscle-fill"/>
+            <text x="230" y="135" text-anchor="middle" font-size="9" class="muscle-label">Triceps</text>
+        </g>
+
+        <!-- Glutes -->
+        <g class="muscle-group" data-muscle="Glutes">
+            <ellipse cx="135" cy="205" rx="22" ry="25" class="muscle-fill"/>
+            <ellipse cx="165" cy="205" rx="22" ry="25" class="muscle-fill"/>
+            <text x="150" y="210" text-anchor="middle" font-size="10" class="muscle-label">Glutes</text>
+        </g>
+
+        <!-- Hamstrings -->
+        <g class="muscle-group" data-muscle="Hamstrings">
+            <rect x="125" y="235" width="20" height="55" rx="8" class="muscle-fill"/>
+            <rect x="155" y="235" width="20" height="55" rx="8" class="muscle-fill"/>
+            <text x="150" y="265" text-anchor="middle" font-size="10" class="muscle-label">Hamstrings</text>
+        </g>
+
+        <!-- Calves (back) -->
+        <g class="muscle-group" data-muscle="Calves">
+            <ellipse cx="135" cy="320" rx="12" ry="35" class="muscle-fill"/>
+            <ellipse cx="165" cy="320" rx="12" ry="35" class="muscle-fill"/>
+        </g>
+    </g>
+
+    <!-- CSS Styles embedded in SVG -->
+    <style>
+        /* Default muscle styling - inactive/not worked */
+        .muscle-fill {
+            fill: #e0e0e0;
+            stroke: #8b7355;
+            stroke-width: 1.5;
+            transition: all 0.3s ease;
+        }
+
+        .muscle-label {
+            fill: #666;
+            font-family: Arial, sans-serif;
+            font-weight: 500;
+            pointer-events: none;
+        }
+
+        /* Active muscle groups - muscles that were worked */
+        .muscle-group.active .muscle-fill {
+            fill: #ff6b6b;
+            stroke: #c92a2a;
+            stroke-width: 2;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .muscle-group.active .muscle-label {
+            fill: #000;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.8;
+                filter: brightness(1);
+            }
+            50% {
+                opacity: 1;
+                filter: brightness(1.2);
+            }
+        }
+    </style>
+</svg>
