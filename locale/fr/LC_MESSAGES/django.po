@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-01 22:28+0200\n"
+"POT-Creation-Date: 2025-10-15 18:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,7 +134,7 @@ msgstr "Résultats de recherche pour : \"<strong>%(search_query)s</strong>\""
 #: apps/workout/templates/workout/exercise_library.html:40
 #: apps/workout/templates/workout/exercise_library.html:50
 #: apps/workout/templates/workout/exercise_library.html:60
-#: apps/workout/views.py:306
+#: apps/workout/views.py:307
 msgid "All"
 msgstr "Tous"
 
@@ -199,7 +199,7 @@ msgid "Save Workout"
 msgstr "Enregistrer Séance"
 
 #: apps/workout/templates/workout/exercise_library.html:9
-#: apps/workout/views.py:301
+#: apps/workout/views.py:302
 msgid "Exercise Library"
 msgstr "Liste d'exercice"
 
@@ -224,25 +224,25 @@ msgid "Clear All Data"
 msgstr "Tout effacer"
 
 #: apps/workout/templates/workout/exercise_library.html:35
-#: apps/workout/views.py:302
+#: apps/workout/views.py:303
 msgid "Filters"
 msgstr "Filtres"
 
 #: apps/workout/templates/workout/exercise_library.html:38
 #: apps/workout/templates/workout/exercise_library.html:84
-#: apps/workout/views.py:303
+#: apps/workout/views.py:304
 msgid "Muscle Group"
 msgstr "Groupe de muscle"
 
 #: apps/workout/templates/workout/exercise_library.html:48
 #: apps/workout/templates/workout/exercise_library.html:97
-#: apps/workout/views.py:304
+#: apps/workout/views.py:305
 msgid "Difficulty"
 msgstr "Difficulté"
 
 #: apps/workout/templates/workout/exercise_library.html:58
 #: apps/workout/templates/workout/exercise_library.html:106
-#: apps/workout/views.py:305
+#: apps/workout/views.py:306
 msgid "Equipment"
 msgstr "Équipement"
 
@@ -251,7 +251,7 @@ msgid "Apply Filters"
 msgstr "Appliquer filtres"
 
 #: apps/workout/templates/workout/exercise_library.html:118
-#: apps/workout/views.py:307
+#: apps/workout/views.py:308
 msgid "No exercises found."
 msgstr "Aucun Exercice trouvé"
 
@@ -268,32 +268,32 @@ msgid "Edit"
 msgstr "Modifier"
 
 #: apps/workout/templates/workout/workout.html:44
-#: apps/workout/templates/workout/workout.html:65 apps/workout/views.py:69
-#: apps/workout/views.py:70
+#: apps/workout/templates/workout/workout.html:65 apps/workout/views.py:70
+#: apps/workout/views.py:71
 msgid "Exercise"
 msgstr "Exercice"
 
-#: apps/workout/templates/workout/workout.html:45 apps/workout/views.py:71
-#: apps/workout/views.py:189
+#: apps/workout/templates/workout/workout.html:45 apps/workout/views.py:72
+#: apps/workout/views.py:190
 msgid "Series"
 msgstr "Séries"
 
-#: apps/workout/templates/workout/workout.html:46 apps/workout/views.py:72
-#: apps/workout/views.py:190
+#: apps/workout/templates/workout/workout.html:46 apps/workout/views.py:73
+#: apps/workout/views.py:191
 msgid "Reps"
 msgstr "Reps"
 
-#: apps/workout/templates/workout/workout.html:47 apps/workout/views.py:73
-#: apps/workout/views.py:192
+#: apps/workout/templates/workout/workout.html:47 apps/workout/views.py:74
+#: apps/workout/views.py:193
 msgid "Weight (kg)"
 msgstr "Poids (kg)"
 
-#: apps/workout/templates/workout/workout.html:66 apps/workout/views.py:74
+#: apps/workout/templates/workout/workout.html:66 apps/workout/views.py:75
 msgid "Duration (min)"
 msgstr "Durée (min)"
 
-#: apps/workout/templates/workout/workout.html:67 apps/workout/views.py:75
-#: apps/workout/views.py:194
+#: apps/workout/templates/workout/workout.html:67 apps/workout/views.py:76
+#: apps/workout/views.py:195
 msgid "Distance (m)"
 msgstr "Distance (m)"
 
@@ -309,15 +309,15 @@ msgstr "Charger plus"
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: apps/workout/views.py:188
+#: apps/workout/views.py:189
 msgid "Sets"
 msgstr "Sets"
 
-#: apps/workout/views.py:191
+#: apps/workout/views.py:192
 msgid "Repetitions"
 msgstr "Répétitions"
 
-#: apps/workout/views.py:193
+#: apps/workout/views.py:194
 msgid "Duration (sec)"
 msgstr "Durée (sec)"
 

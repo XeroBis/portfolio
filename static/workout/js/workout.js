@@ -6,34 +6,24 @@ let currentPage = document.getElementById('load-more') ? parseInt(document.getEl
 let frontSvgContent = null;
 let backSvgContent = null;
 
-// Muscle name to SVG ID mapping
-const muscleMapping = {
-    // Common mappings
-    'chest': ['chest'],
-    'back': ['lats', 'traps', 'traps-middle'],
-    'shoulders': ['front-shoulders', 'rear-shoulders'],
-    'biceps': ['biceps'],
-    'triceps': ['triceps'],
-    'legs': ['quads', 'hamstrings', 'calves', 'glutes'],
-    'quads': ['quads'],
-    'core': ['abdominals', 'obliques', 'lowerback'],
-    'Lower Back': ['lowerback'],
-    'quadriceps': ['quads'],
-    'hamstrings': ['hamstrings'],
-    'calves': ['calves'],
-    'glutes': ['glutes'],
-    'abs': ['abdominals'],
-    'abdominals': ['abdominals'],
-    'obliques': ['obliques'],
-    'forearms': ['forearms'],
-    'traps': ['traps', 'traps-middle'],
-    'lats': ['lats'],
-    'lower back': ['lowerback'],
-    'lowerback': ['lowerback'],
-    'full body': ['chest', 'lats', 'traps', 'quads', 'hamstrings', 'calves', 'glutes', 'abdominals', 'obliques']
-};
+function muscleNameToSvgId(muscleName) {
+    let svgId = muscleName.toLowerCase().trim();
 
-// Load SVG content
+    if (svgId === 'lower back') {
+        return 'lowerback';
+    } else if (svgId === 'traps middle') {
+        return 'traps-middle';
+    } else if (svgId === 'rear shoulder') {
+        return 'rear-shoulder';
+    } else if (svgId === 'front shoulders') {
+        return 'front-shoulders';
+    } else if (svgId === 'hamstring') {
+        return 'hamstrings';
+    }
+
+    return svgId;
+}
+
 async function loadSvgContent() {
     if (!frontSvgContent) {
         const frontResponse = await fetch('/static/images/front.svg');
@@ -45,7 +35,7 @@ async function loadSvgContent() {
     }
 }
 
-// Create and append modal for muscle groups
+
 function createMuscleModal() {
     // Create backdrop for mobile
     if (isMobileDevice()) {
@@ -67,7 +57,7 @@ function createMuscleModal() {
     return modal;
 }
 
-// Show muscle modal
+
 async function showMuscleModal(exerciseRow, muscleGroups) {
     const modal = document.getElementById('muscle-modal') || createMuscleModal();
     const modalContent = modal.querySelector('.muscle-modal-content');
@@ -75,18 +65,14 @@ async function showMuscleModal(exerciseRow, muscleGroups) {
     if (!muscleGroups || muscleGroups.trim() === '') {
         modalContent.innerHTML = '<p>No muscle groups specified</p>';
     } else {
-        // Load SVG content if not already loaded
         await loadSvgContent();
 
         const muscleList = muscleGroups.split(',').map(m => m.trim()).filter(m => m);
 
-        // Get SVG IDs to highlight
         const svgIdsToHighlight = new Set();
         muscleList.forEach(muscle => {
-            const muscleLower = muscle.toLowerCase();
-            if (muscleMapping[muscleLower]) {
-                muscleMapping[muscleLower].forEach(id => svgIdsToHighlight.add(id));
-            }
+            const svgId = muscleNameToSvgId(muscle);
+            svgIdsToHighlight.add(svgId);
         });
 
         modalContent.innerHTML = `
@@ -135,8 +121,36 @@ async function showMuscleModal(exerciseRow, muscleGroups) {
     // Position the modal relative to the row (only on desktop)
     if (!isMobileDevice()) {
         const rect = exerciseRow.getBoundingClientRect();
-        modal.style.top = (rect.top + window.scrollY - 10) + 'px';
-        modal.style.left = (rect.right + 20) + 'px';
+        const modalWidth = 700; // max-width from CSS
+        const spaceOnRight = window.innerWidth - rect.right;
+
+        // Check if there's enough space on the right
+        if (spaceOnRight > modalWidth + 40) {
+            // Position to the right (original behavior)
+            modal.style.top = (rect.top + window.scrollY - 10) + 'px';
+            modal.style.left = (rect.right + 20) + 'px';
+            modal.style.transform = 'none';
+        } else {
+            // Position above/below the exercise (centered horizontally)
+            const rowCenter = rect.left + (rect.width / 2);
+            modal.style.left = rowCenter + 'px';
+            modal.style.transform = 'translateX(-50%)';
+
+            // Wait for modal to render to get accurate height
+            requestAnimationFrame(() => {
+                const modalHeight = modal.offsetHeight;
+                const spaceAbove = rect.top;
+                const spaceBelow = window.innerHeight - rect.bottom;
+
+                // Position above if there's more space above and enough room
+                if (spaceAbove > spaceBelow && spaceAbove > modalHeight + 20) {
+                    modal.style.top = (rect.top + window.scrollY - modalHeight - 10) + 'px';
+                } else {
+                    // Position below
+                    modal.style.top = (rect.bottom + window.scrollY + 10) + 'px';
+                }
+            });
+        }
     }
 }
 
@@ -230,6 +244,9 @@ function loadMore() {
         },
         success: function (response) {
             if (response.workout_data.length > 0) {
+                // Get translations once for all workouts
+                const translations = JSON.parse(document.getElementById('workout-translations').textContent);
+
                 var html = '';
                 response.workout_data.forEach(function (data) {
                     html += '<div>';
@@ -244,12 +261,11 @@ function loadMore() {
                     }
                     html += '</h2>';
                     html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
-                    html += '<button class="cliquable button_workout">Edit</button>';
+                    html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
                     html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
-                        const translations = JSON.parse(document.getElementById('workout-translations').textContent);
 
                         // Determine which exercise types are present
                         var hasStrength = data.exercises.some(ex => ex.exercise_type === 'strength');
