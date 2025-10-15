@@ -1,8 +1,7 @@
 
 .container_workout, .container_add_workout {
     max-width: 800px;
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin: 5% auto;
     padding: 20px;
     background: #fff;
     border-radius: 8px;
