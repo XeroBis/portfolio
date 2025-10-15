@@ -258,6 +258,9 @@ function loadMore() {
         },
         success: function (response) {
             if (response.workout_data.length > 0) {
+                // Get translations once for all workouts
+                const translations = JSON.parse(document.getElementById('workout-translations').textContent);
+
                 var html = '';
                 response.workout_data.forEach(function (data) {
                     html += '<div>';
@@ -272,12 +275,11 @@ function loadMore() {
                     }
                     html += '</h2>';
                     html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
-                    html += '<button class="cliquable button_workout">Edit</button>';
+                    html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
                     html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
-                        const translations = JSON.parse(document.getElementById('workout-translations').textContent);
 
                         // Determine which exercise types are present
                         var hasStrength = data.exercises.some(ex => ex.exercise_type === 'strength');
