@@ -266,56 +266,74 @@ function loadMore() {
                     html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
-
-                        // Determine which exercise types are present
-                        var hasStrength = data.exercises.some(ex => ex.exercise_type === 'strength');
-                        var hasCardio = data.exercises.some(ex => ex.exercise_type === 'cardio');
-
-                        html += '<table><thead><tr>';
-                        html += '<th>' + translations.exercise + '</th>';
-
-                        if (hasStrength) {
-                            html += '<th>' + translations.series + '</th>';
-                            html += '<th>' + translations.reps + '</th>';
-                            html += '<th>' + translations.weight_kg + '</th>';
-                        }
-
-                        if (hasCardio) {
-                            html += '<th>' + translations.duration_min + '</th>';
-                            html += '<th>' + translations.distance_m + '</th>';
-                        }
-
-                        html += '</tr></thead><tbody>';
+                        // Group consecutive exercises by type
+                        var groups = [];
+                        var currentGroup = [];
+                        var currentType = null;
 
                         data.exercises.forEach(function (exercise) {
-                            var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
-                            html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
-                            html += '<td>' + exercise.name + '</td>';
+                            if (currentType !== exercise.exercise_type) {
+                                if (currentGroup.length > 0) {
+                                    groups.push({
+                                        type: currentType,
+                                        exercises: currentGroup
+                                    });
+                                }
+                                currentGroup = [exercise];
+                                currentType = exercise.exercise_type;
+                            } else {
+                                currentGroup.push(exercise);
+                            }
+                        });
 
-                            if (exercise.exercise_type === 'strength') {
-                                if (hasStrength) {
+                        // Add the last group
+                        if (currentGroup.length > 0) {
+                            groups.push({
+                                type: currentType,
+                                exercises: currentGroup
+                            });
+                        }
+
+                        // Create a separate table for each group
+                        groups.forEach(function (group) {
+                            if (group.type === 'strength') {
+                                html += '<table><thead><tr>';
+                                html += '<th>' + translations.exercise + '</th>';
+                                html += '<th>' + translations.series + '</th>';
+                                html += '<th>' + translations.reps + '</th>';
+                                html += '<th>' + translations.weight_kg + '</th>';
+                                html += '</tr></thead><tbody>';
+
+                                group.exercises.forEach(function (exercise) {
+                                    var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
+                                    html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
+                                    html += '<td>' + exercise.name + '</td>';
                                     html += '<td>' + (exercise.data.nb_series || '-') + '</td>';
                                     html += '<td>' + (exercise.data.nb_repetition || '-') + '</td>';
                                     html += '<td>' + (exercise.data.weight || '-') + '</td>';
-                                }
-                                if (hasCardio) {
-                                    html += '<td>-</td>';
-                                    html += '<td>-</td>';
-                                }
-                            } else if (exercise.exercise_type === 'cardio') {
-                                if (hasStrength) {
-                                    html += '<td>-</td>';
-                                    html += '<td>-</td>';
-                                    html += '<td>-</td>';
-                                }
-                                if (hasCardio) {
-                                    html += '<td>' + (exercise.data.duration_seconds ? Math.round(exercise.data.duration_seconds / 60) : '-') + '</td>';
+                                    html += '</tr>';
+                                });
+
+                                html += '</tbody></table>';
+                            } else if (group.type === 'cardio') {
+                                html += '<table><thead><tr>';
+                                html += '<th>' + translations.exercise + '</th>';
+                                html += '<th>' + translations.duration_min + '</th>';
+                                html += '<th>' + translations.distance_m + '</th>';
+                                html += '</tr></thead><tbody>';
+
+                                group.exercises.forEach(function (exercise) {
+                                    var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
+                                    html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
+                                    html += '<td>' + exercise.name + '</td>';
+                                    html += '<td>' + (exercise.data.duration_seconds ? exercise.data.duration_seconds / 60 : '-') + '</td>';
                                     html += '<td>' + (exercise.data.distance_m || '-') + '</td>';
-                                }
+                                    html += '</tr>';
+                                });
+
+                                html += '</tbody></table>';
                             }
-                            html += '</tr>';
                         });
-                        html += '</tbody></table>';
                     }
                     html += '</div>';
                 });

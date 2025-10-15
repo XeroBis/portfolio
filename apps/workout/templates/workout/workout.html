@@ -51,9 +51,9 @@
                             {% for exercise in group.exercises %}
                             <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
                                 <td>{{ exercise.name }}</td>
-                                <td>{{ exercise.data.nb_series }}</td>
-                                <td>{{ exercise.data.nb_repetition }}</td>
-                                <td>{{ exercise.data.weight }}</td>
+                                <td>{% if exercise.data.nb_series %}{{ exercise.data.nb_series }}{% else %}-{% endif %}</td>
+                                <td>{% if exercise.data.nb_repetition %}{{ exercise.data.nb_repetition }}{% else %}-{% endif %}</td>
+                                <td>{% if exercise.data.weight %}{{ exercise.data.weight }}{% else %}-{% endif %}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -71,8 +71,8 @@
                             {% for exercise in group.exercises %}
                             <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
                                 <td>{{ exercise.name }}</td>
-                                <td>{{ exercise.data.duration_seconds|seconds_to_minutes }}</td>
-                                <td>{{ exercise.data.distance_m }}</td>
+                                <td>{% if exercise.data.duration_seconds %}{{ exercise.data.duration_seconds|seconds_to_minutes }}{% else %}-{% endif %}</td>
+                                <td>{% if exercise.data.distance_m %}{{ exercise.data.distance_m }}{% else %}-{% endif %}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -154,7 +154,7 @@ function changeWorkoutType() {
 
                         for (let field in exercise) {
                             if (['name', 'exercise_type', 'type'].includes(field)) continue;
-                            const value = exercise[field] || '';
+                            const value = exercise[field] || 0;
 
                             let labelText = field;
                             if (field === 'nb_series') {
