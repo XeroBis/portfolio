@@ -6,34 +6,24 @@ let currentPage = document.getElementById('load-more') ? parseInt(document.getEl
 let frontSvgContent = null;
 let backSvgContent = null;
 
-// Muscle name to SVG ID mapping
-const muscleMapping = {
-    // Common mappings
-    'chest': ['chest'],
-    'back': ['lats', 'traps', 'traps-middle'],
-    'shoulders': ['front-shoulders', 'rear-shoulders'],
-    'biceps': ['biceps'],
-    'triceps': ['triceps'],
-    'legs': ['quads', 'hamstrings', 'calves', 'glutes'],
-    'quads': ['quads'],
-    'core': ['abdominals', 'obliques', 'lowerback'],
-    'Lower Back': ['lowerback'],
-    'quadriceps': ['quads'],
-    'hamstrings': ['hamstrings'],
-    'calves': ['calves'],
-    'glutes': ['glutes'],
-    'abs': ['abdominals'],
-    'abdominals': ['abdominals'],
-    'obliques': ['obliques'],
-    'forearms': ['forearms'],
-    'traps': ['traps', 'traps-middle'],
-    'lats': ['lats'],
-    'lower back': ['lowerback'],
-    'lowerback': ['lowerback'],
-    'full body': ['chest', 'lats', 'traps', 'quads', 'hamstrings', 'calves', 'glutes', 'abdominals', 'obliques']
-};
+function muscleNameToSvgId(muscleName) {
+    let svgId = muscleName.toLowerCase().trim();
 
-// Load SVG content
+    if (svgId === 'lower back') {
+        return 'lowerback';
+    } else if (svgId === 'traps middle') {
+        return 'traps-middle';
+    } else if (svgId === 'rear shoulder') {
+        return 'rear-shoulder';
+    } else if (svgId === 'front shoulders') {
+        return 'front-shoulders';
+    } else if (svgId === 'hamstring') {
+        return 'hamstrings';
+    }
+
+    return svgId;
+}
+
 async function loadSvgContent() {
     if (!frontSvgContent) {
         const frontResponse = await fetch('/static/images/front.svg');
@@ -45,7 +35,7 @@ async function loadSvgContent() {
     }
 }
 
-// Create and append modal for muscle groups
+
 function createMuscleModal() {
     // Create backdrop for mobile
     if (isMobileDevice()) {
@@ -67,7 +57,7 @@ function createMuscleModal() {
     return modal;
 }
 
-// Show muscle modal
+
 async function showMuscleModal(exerciseRow, muscleGroups) {
     const modal = document.getElementById('muscle-modal') || createMuscleModal();
     const modalContent = modal.querySelector('.muscle-modal-content');
@@ -75,18 +65,14 @@ async function showMuscleModal(exerciseRow, muscleGroups) {
     if (!muscleGroups || muscleGroups.trim() === '') {
         modalContent.innerHTML = '<p>No muscle groups specified</p>';
     } else {
-        // Load SVG content if not already loaded
         await loadSvgContent();
 
         const muscleList = muscleGroups.split(',').map(m => m.trim()).filter(m => m);
 
-        // Get SVG IDs to highlight
         const svgIdsToHighlight = new Set();
         muscleList.forEach(muscle => {
-            const muscleLower = muscle.toLowerCase();
-            if (muscleMapping[muscleLower]) {
-                muscleMapping[muscleLower].forEach(id => svgIdsToHighlight.add(id));
-            }
+            const svgId = muscleNameToSvgId(muscle);
+            svgIdsToHighlight.add(svgId);
         });
 
         modalContent.innerHTML = `
