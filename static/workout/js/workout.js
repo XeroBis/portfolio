@@ -135,8 +135,36 @@ async function showMuscleModal(exerciseRow, muscleGroups) {
     // Position the modal relative to the row (only on desktop)
     if (!isMobileDevice()) {
         const rect = exerciseRow.getBoundingClientRect();
-        modal.style.top = (rect.top + window.scrollY - 10) + 'px';
-        modal.style.left = (rect.right + 20) + 'px';
+        const modalWidth = 700; // max-width from CSS
+        const spaceOnRight = window.innerWidth - rect.right;
+
+        // Check if there's enough space on the right
+        if (spaceOnRight > modalWidth + 40) {
+            // Position to the right (original behavior)
+            modal.style.top = (rect.top + window.scrollY - 10) + 'px';
+            modal.style.left = (rect.right + 20) + 'px';
+            modal.style.transform = 'none';
+        } else {
+            // Position above/below the exercise (centered horizontally)
+            const rowCenter = rect.left + (rect.width / 2);
+            modal.style.left = rowCenter + 'px';
+            modal.style.transform = 'translateX(-50%)';
+
+            // Wait for modal to render to get accurate height
+            requestAnimationFrame(() => {
+                const modalHeight = modal.offsetHeight;
+                const spaceAbove = rect.top;
+                const spaceBelow = window.innerHeight - rect.bottom;
+
+                // Position above if there's more space above and enough room
+                if (spaceAbove > spaceBelow && spaceAbove > modalHeight + 20) {
+                    modal.style.top = (rect.top + window.scrollY - modalHeight - 10) + 'px';
+                } else {
+                    // Position below
+                    modal.style.top = (rect.bottom + window.scrollY + 10) + 'px';
+                }
+            });
+        }
     }
 }
 
