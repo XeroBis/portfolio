@@ -9,25 +9,13 @@
         <span id="span_point">•</span>
         {% if page == "workout" %}
         <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-        <span id="span_point">•</span>
-        <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "home" %}
         <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
-        <span id="span_point">•</span>
-        <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
         {% if page == "add_workout" or page == "edit_workout" or page == "exercise_library" %}
         <a href="{% url 'home' %}" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-        <span id="span_point">•</span>
-        <a href="/news/?sort=date" id="news_link" class="cliquable">{% trans "News" %}</a>
         {% endif %}
-        {% if page == "news" %}
-        <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-        <span id="span_point">•</span>
-        <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
-        {% endif %}
-
         <span id="span_point">•</span>
 
         <div class="flag cliquable">
