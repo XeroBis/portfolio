@@ -35,6 +35,11 @@
             <h2>{% trans "Filters" %}</h2>
             <form method="get" id="filter-form" class="filter-form">
                 <div class="filter-group">
+                    <label for="name">{% trans "Exercise Name" %}:</label>
+                    <input type="text" name="name" id="name" class="filter-input" placeholder="{% trans "Search by name..." %}" value="{{ selected_name }}">
+                </div>
+
+                <div class="filter-group">
                     <label for="muscle_group">{% trans "Muscle Group" %}:</label>
                     <select name="muscle_group" id="muscle_group" class="filter-select">
                         <option value="">{% trans "All" %}</option>
@@ -64,7 +69,10 @@
                     </select>
                 </div>
 
-                <button type="submit" class="cliquable filter-button">{% trans "Apply Filters" %}</button>
+                <div class="filter-buttons">
+                    <button type="submit" class="cliquable data-button">{% trans "Apply Filters" %}</button>
+                    <button type="button" id="reset-filters" class="cliquable data-button">{% trans "Reset Filters" %}</button>
+                </div>
             </form>
         </div>
 
