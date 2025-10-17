@@ -151,7 +151,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/home'),
     os.path.join(BASE_DIR, 'static/workout'),
-    os.path.join(BASE_DIR, 'static/newsfeed'),
     os.path.join(BASE_DIR, 'locale'),
 )
 
