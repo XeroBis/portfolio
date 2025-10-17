@@ -61,29 +61,16 @@
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">🏋️</div>
                     <div class="stat-value">{{ total_workouts }}</div>
                     <div class="stat-label">{% trans "Total Workouts" %}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">💪</div>
                     <div class="stat-value">{{ total_exercises }}</div>
                     <div class="stat-label">{% trans "Total Exercises" %}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">⚡</div>
                     <div class="stat-value">{{ total_volume|floatformat:0 }} kg</div>
                     <div class="stat-label">{% trans "Total Volume" %}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🔥</div>
-                    <div class="stat-value">{{ current_streak }}</div>
-                    <div class="stat-label">{% trans "Current Streak" %}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🏆</div>
-                    <div class="stat-value">{{ longest_streak }}</div>
-                    <div class="stat-label">{% trans "Longest Streak" %}</div>
                 </div>
             </div>
 
@@ -103,7 +90,7 @@
 
                 <!-- Top Exercises -->
                 <div class="chart-card">
-                    <h3>{% trans "Top 5 Exercises" %}</h3>
+                    <h3>{% trans "Top 10 Exercises" %}</h3>
                     <canvas id="topExercisesChart"></canvas>
                 </div>
             </div>
@@ -118,12 +105,9 @@
                 {% for pr in personal_records %}
                 <div class="record-card">
                     <div class="record-exercise">{{ pr.exercise.name }}</div>
-                    <div class="record-type">{{ pr.get_record_type_display }}</div>
+                    <div class="record-type">{{ pr.display_name }}</div>
                     <div class="record-value">{{ pr.value|floatformat:0 }}{% if pr.record_type == 'max_weight' %} kg{% elif pr.record_type == 'max_volume' %} kg{% else %} reps{% endif %}</div>
                     <div class="record-date">{{ pr.date_achieved|date:"M d, Y" }}</div>
-                    {% if pr.notes %}
-                    <div class="record-notes">{{ pr.notes }}</div>
-                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
@@ -137,7 +121,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        // Pass data from Django to JavaScript
         const weeklyWorkouts = {{ weekly_workouts|safe }};
         const workoutsByType = {{ workouts_by_type|safe }};
         const topExercises = {{ top_exercises|safe }};

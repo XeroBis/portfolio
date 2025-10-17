@@ -2,7 +2,7 @@ import logging
 import os
 import tempfile
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Any, Union
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -20,7 +20,6 @@ from .models import (
     Exercice,
     MuscleGroup,
     OneExercice,
-    PersonalRecord,
     StrengthExerciseLog,
     TypeWorkout,
     Workout,
@@ -480,6 +479,90 @@ def clear_data(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 
+def calculate_personal_records(limit=10):
+    """
+    Calculate personal records at runtime from StrengthExerciseLog data.
+
+    Returns a list of personal records sorted by date achieved (most recent first).
+    """
+    from django.db.models import F
+
+    # Get all strength exercise logs with calculated volume
+    logs = (
+        StrengthExerciseLog.objects.select_related("exercise", "workout")
+        .annotate(volume=F("nb_series") * F("nb_repetition") * F("weight"))
+        .order_by("-workout__date")
+    )
+
+    # Track personal records for each exercise
+    records_by_exercise: dict[int, dict[str, Any]] = {}
+    all_records: list[dict[str, Any]] = []
+
+    for log in logs:
+        exercise_id = log.exercise.id
+
+        if exercise_id not in records_by_exercise:
+            records_by_exercise[exercise_id] = {
+                "max_weight": None,
+                "max_reps": None,
+                "max_volume": None,
+            }
+
+        exercise_records = records_by_exercise[exercise_id]
+
+        # Check for max weight record
+        if (
+            exercise_records["max_weight"] is None
+            or log.weight > exercise_records["max_weight"]["value"]
+        ):
+            exercise_records["max_weight"] = {
+                "exercise": log.exercise,
+                "record_type": "max_weight",
+                "value": log.weight,
+                "date_achieved": log.workout.date,
+                "workout": log.workout,
+                "display_name": "Max Weight",
+            }
+
+        # Check for max reps record
+        if (
+            exercise_records["max_reps"] is None
+            or log.nb_repetition > exercise_records["max_reps"]["value"]
+        ):
+            exercise_records["max_reps"] = {
+                "exercise": log.exercise,
+                "record_type": "max_reps",
+                "value": log.nb_repetition,
+                "date_achieved": log.workout.date,
+                "workout": log.workout,
+                "display_name": "Max Reps",
+            }
+
+        # Check for max volume record
+        if (
+            exercise_records["max_volume"] is None
+            or log.volume > exercise_records["max_volume"]["value"]
+        ):
+            exercise_records["max_volume"] = {
+                "exercise": log.exercise,
+                "record_type": "max_volume",
+                "value": log.volume,
+                "date_achieved": log.workout.date,
+                "workout": log.workout,
+                "display_name": "Max Volume",
+            }
+
+    # Collect all records
+    for _exercise_id, records in records_by_exercise.items():
+        for _record_type, record_data in records.items():
+            if record_data:
+                all_records.append(record_data)
+
+    # Sort by date achieved (most recent first) and limit
+    all_records.sort(key=lambda x: x["date_achieved"], reverse=True)
+    return all_records[:limit]
+
+
 def analytics(request):
     """Analytics page with calendar view, progress dashboard, and PR tracking"""
     import calendar as cal
@@ -514,39 +597,6 @@ def analytics(request):
             }
         )
 
-    # Calculate workout streaks
-    all_workout_dates = list(
-        Workout.objects.order_by("date").values_list("date", flat=True)
-    )
-    current_streak = 0
-    longest_streak = 0
-
-    if all_workout_dates:
-        streak = 1
-        for i in range(len(all_workout_dates) - 1):
-            diff = (all_workout_dates[i + 1] - all_workout_dates[i]).days
-            if diff == 1:
-                streak += 1
-            else:
-                longest_streak = max(longest_streak, streak)
-                streak = 1
-        longest_streak = max(longest_streak, streak)
-
-        # Calculate current streak
-        today = datetime.now().date()
-        if all_workout_dates:
-            last_workout = all_workout_dates[-1]
-            diff = (today - last_workout).days
-            if diff <= 1:
-                streak = 1
-                for i in range(len(all_workout_dates) - 1, 0, -1):
-                    diff = (all_workout_dates[i] - all_workout_dates[i - 1]).days
-                    if diff == 1:
-                        streak += 1
-                    else:
-                        break
-                current_streak = streak
-
     # Dashboard statistics
     total_workouts = Workout.objects.count()
     total_exercises = OneExercice.objects.count()
@@ -565,7 +615,6 @@ def analytics(request):
         .annotate(count=Count("id"))
         .order_by("-count")
     )
-
     twelve_weeks_ago = datetime.now().date() - timedelta(weeks=12)
     weekly_workouts = []
 
@@ -581,10 +630,8 @@ def analytics(request):
             }
         )
 
-    # Personal Records
-    personal_records = PersonalRecord.objects.select_related(
-        "exercise", "workout"
-    ).order_by("-date_achieved")[:10]
+    # Personal Records (calculated at runtime)
+    personal_records = calculate_personal_records(limit=10)
 
     # Top exercises by frequency
     top_exercises = list(
@@ -627,8 +674,6 @@ def analytics(request):
         "total_workouts": total_workouts,
         "total_exercises": total_exercises,
         "total_volume": int(total_volume),
-        "current_streak": current_streak,
-        "longest_streak": longest_streak,
         "workouts_by_type": json.dumps(workouts_by_type),
         "weekly_workouts": json.dumps(weekly_workouts),
         "personal_records": personal_records,

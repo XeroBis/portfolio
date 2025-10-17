@@ -81,6 +81,7 @@ function initializeCharts() {
             },
             options: {
                 ...commonOptions,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,

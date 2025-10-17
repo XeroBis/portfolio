@@ -39,8 +39,8 @@
 }
 
 .tab-button.active {
-    color: #007bff;
-    border-bottom-color: #007bff;
+    color: #b8a77c;
+    border-bottom-color: #b8a77c;
 }
 
 /* Analytics Sections */
@@ -87,8 +87,8 @@
 }
 
 .calendar-month.current-month {
-    border: 2px solid #007bff;
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    border: 2px solid #b8a77c;
+    box-shadow: 0 4px 8px rgba(184, 167, 124, 0.2);
 }
 
 .calendar-month h3 {
@@ -137,7 +137,7 @@
 }
 
 .calendar-day.has-workout {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #b8a77c 0%, #a89568 100%);
     color: white;
     font-weight: bold;
     cursor: pointer;
@@ -158,24 +158,20 @@
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #b8a77c 0%, #a89568 100%);
     border-radius: 12px;
     padding: 30px;
     text-align: center;
     color: white;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(184, 167, 124, 0.3);
     transition: transform 0.3s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 16px rgba(184, 167, 124, 0.4);
 }
 
-.stat-icon {
-    font-size: 48px;
-    margin-bottom: 10px;
-}
 
 .stat-value {
     font-size: 36px;
@@ -226,17 +222,17 @@
 }
 
 .record-card {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: linear-gradient(135deg, #b8a77c 0%, #a89568 100%);
     border-radius: 12px;
     padding: 20px;
     color: white;
-    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+    box-shadow: 0 4px 12px rgba(184, 167, 124, 0.3);
     transition: transform 0.3s ease;
 }
 
 .record-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(245, 87, 108, 0.4);
+    box-shadow: 0 8px 16px rgba(184, 167, 124, 0.4);
 }
 
 .record-exercise {
@@ -312,10 +308,6 @@
 
     .stat-card {
         padding: 20px;
-    }
-
-    .stat-icon {
-        font-size: 36px;
     }
 
     .stat-value {
