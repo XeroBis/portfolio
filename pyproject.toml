@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "portfolio"
 version = "0.1.0"
@@ -102,3 +106,9 @@ skips = ["B101", "B601"]
 
 [tool.bandit.assert_used]
 skips = ["*/test_*.py", "*/tests.py"]
+
+[tool.setuptools]
+packages = ["apps", "mysite"]
+
+[tool.setuptools.package-data]
+"*" = ["*.html", "*.css", "*.js", "*.json", "*.txt", "*.po", "*.mo"]
