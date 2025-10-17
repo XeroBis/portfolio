@@ -13,7 +13,7 @@
         {% if page == "home" %}
         <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
         {% endif %}
-        {% if page == "add_workout" or page == "edit_workout" or page == "exercise_library" %}
+        {% if page == "add_workout" or page == "edit_workout" or page == "exercise_library" or page == "analytics" %}
         <a href="{% url 'home' %}" id="my_projects" class="cliquable">{% trans "Home" %}</a>
         {% endif %}
         <span id="span_point">•</span>

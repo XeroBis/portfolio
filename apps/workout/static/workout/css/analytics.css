@@ -186,6 +186,140 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Date Filter */
+.date-filter-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.date-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-width: 1000px;
+    width: 100%;
+}
+
+.quick-select-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.quick-select-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quick-select-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.quick-select-btn {
+    padding: 8px 16px;
+    border: 2px solid #b8a77c;
+    border-radius: 20px;
+    background: #fff;
+    color: #b8a77c;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.quick-select-btn:hover {
+    background: linear-gradient(135deg, #b8a77c 0%, #a89568 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(184, 167, 124, 0.3);
+}
+
+.quick-select-btn:active {
+    transform: translateY(0);
+}
+
+.date-inputs-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.date-filter label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.date-filter input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #333;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.date-filter input[type="date"]:focus {
+    outline: none;
+    border-color: #b8a77c;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(184, 167, 124, 0.1);
+}
+
+.filter-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #b8a77c 0%, #a89568 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(184, 167, 124, 0.3);
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(184, 167, 124, 0.4);
+}
+
+.filter-btn:active {
+    transform: translateY(0);
+}
+
+.filter-btn.reset-btn {
+    background: #6c757d;
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.filter-btn.reset-btn:hover {
+    background: #5a6268;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
 /* Stats Grid */
 .stats-grid {
     display: grid;
@@ -331,6 +465,42 @@
     .tab-button {
         padding: 10px 15px;
         font-size: 14px;
+    }
+
+    .date-filter {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .quick-select-buttons {
+        gap: 6px;
+    }
+
+    .quick-select-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .date-inputs-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .date-filter label {
+        width: 100%;
+        text-align: left;
+    }
+
+    .date-filter input[type="date"] {
+        width: 100%;
+    }
+
+    .filter-actions {
+        flex-direction: column;
+    }
+
+    .filter-btn {
+        width: 100%;
     }
 
     .calendar-grid {

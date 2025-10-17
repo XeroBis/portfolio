@@ -70,6 +70,36 @@
         <div class="analytics-section" id="dashboard-section">
             <h2>{% trans "Progress Dashboard" %}</h2>
 
+            <!-- Date Filter -->
+            <div class="date-filter-container">
+                <div class="date-filter">
+                    <div class="quick-select-section">
+                        <span class="quick-select-label">{% trans "Quick Select" %}:</span>
+                        <div class="quick-select-buttons">
+                            <button class="quick-select-btn" data-range="7days">{% trans "Last 7 Days" %}</button>
+                            <button class="quick-select-btn" data-range="1month">{% trans "Last Month" %}</button>
+                            <button class="quick-select-btn" data-range="3months">{% trans "Last 3 Months" %}</button>
+                            <button class="quick-select-btn" data-range="6months">{% trans "Last 6 Months" %}</button>
+                            <button class="quick-select-btn" data-range="1year">{% trans "Last Year" %}</button>
+                            <button class="quick-select-btn" data-range="ytd">{% trans "Year to Date" %}</button>
+                        </div>
+                    </div>
+
+                    <div class="date-inputs-section">
+                        <label for="start-date">{% trans "Start Date" %}:</label>
+                        <input type="date" id="start-date" name="start_date" value="{{ start_date|default:'' }}">
+
+                        <label for="end-date">{% trans "End Date" %}:</label>
+                        <input type="date" id="end-date" name="end_date" value="{{ end_date|default:'' }}">
+                    </div>
+
+                    <div class="filter-actions">
+                        <button id="apply-filter" class="filter-btn">{% trans "Apply Filter" %}</button>
+                        <button id="reset-filter" class="filter-btn reset-btn">{% trans "Reset" %}</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">

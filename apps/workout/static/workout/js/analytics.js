@@ -78,12 +78,164 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('dashboard-section').classList.contains('active')) {
         initializeCharts();
     }
+
+    // Date filter functionality
+    const applyFilterBtn = document.getElementById('apply-filter');
+    const resetFilterBtn = document.getElementById('reset-filter');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const quickSelectButtons = document.querySelectorAll('.quick-select-btn');
+
+    // Function to format date as YYYY-MM-DD
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Function to calculate date range
+    function getDateRange(range) {
+        const today = new Date();
+        const endDate = formatDate(today);
+        let startDate;
+
+        switch(range) {
+            case '7days':
+                const sevenDaysAgo = new Date(today);
+                sevenDaysAgo.setDate(today.getDate() - 7);
+                startDate = formatDate(sevenDaysAgo);
+                break;
+            case '1month':
+                const oneMonthAgo = new Date(today);
+                oneMonthAgo.setMonth(today.getMonth() - 1);
+                startDate = formatDate(oneMonthAgo);
+                break;
+            case '3months':
+                const threeMonthsAgo = new Date(today);
+                threeMonthsAgo.setMonth(today.getMonth() - 3);
+                startDate = formatDate(threeMonthsAgo);
+                break;
+            case '6months':
+                const sixMonthsAgo = new Date(today);
+                sixMonthsAgo.setMonth(today.getMonth() - 6);
+                startDate = formatDate(sixMonthsAgo);
+                break;
+            case '1year':
+                const oneYearAgo = new Date(today);
+                oneYearAgo.setFullYear(today.getFullYear() - 1);
+                startDate = formatDate(oneYearAgo);
+                break;
+            case 'ytd':
+                const yearStart = new Date(today.getFullYear(), 0, 1);
+                startDate = formatDate(yearStart);
+                break;
+            default:
+                return null;
+        }
+
+        return { startDate, endDate };
+    }
+
+    // Function to update dashboard data via AJAX
+    async function updateDashboard(startDate, endDate) {
+        try {
+            // Build URL with parameters
+            const params = new URLSearchParams();
+            if (startDate) params.set('start_date', startDate);
+            if (endDate) params.set('end_date', endDate);
+
+            // Fetch data from server
+            const response = await fetch(`/workout/get_dashboard_data/?${params.toString()}`);
+            const data = await response.json();
+
+            // Update stats cards
+            document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = data.total_workouts;
+            document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = data.total_exercises;
+            document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = data.total_volume.toLocaleString() + ' kg';
+
+            // Update global variables for charts
+            window.weeklyWorkouts = data.weekly_workouts;
+            window.workoutsByType = data.workouts_by_type;
+            window.topExercises = data.top_exercises;
+
+            // Destroy existing charts
+            if (window.weeklyChart) window.weeklyChart.destroy();
+            if (window.typeChart) window.typeChart.destroy();
+            if (window.exercisesChart) window.exercisesChart.destroy();
+
+            // Reinitialize charts with new data
+            window.chartsInitialized = false;
+            initializeCharts();
+
+            // Update URL without reloading
+            const url = new URL(window.location.href);
+            if (startDate) {
+                url.searchParams.set('start_date', startDate);
+            } else {
+                url.searchParams.delete('start_date');
+            }
+            if (endDate) {
+                url.searchParams.set('end_date', endDate);
+            } else {
+                url.searchParams.delete('end_date');
+            }
+            window.history.pushState({}, '', url);
+
+        } catch (error) {
+            console.error('Error updating dashboard:', error);
+            alert('Error updating dashboard data. Please try again.');
+        }
+    }
+
+    // Quick select button handlers
+    quickSelectButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const range = button.getAttribute('data-range');
+            const dates = getDateRange(range);
+
+            if (dates) {
+                // Update input fields
+                startDateInput.value = dates.startDate;
+                endDateInput.value = dates.endDate;
+
+                // Update dashboard via AJAX
+                updateDashboard(dates.startDate, dates.endDate);
+            }
+        });
+    });
+
+    if (applyFilterBtn && startDateInput && endDateInput) {
+        applyFilterBtn.addEventListener('click', () => {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            // Update dashboard via AJAX
+            updateDashboard(startDate, endDate);
+        });
+    }
+
+    if (resetFilterBtn && startDateInput && endDateInput) {
+        resetFilterBtn.addEventListener('click', () => {
+            // Clear the date inputs
+            startDateInput.value = '';
+            endDateInput.value = '';
+
+            // Update dashboard via AJAX with no filters
+            updateDashboard('', '');
+        });
+    }
 });
 
 // Chart.js Configuration
 function initializeCharts() {
     if (window.chartsInitialized) return;
     window.chartsInitialized = true;
+
+    // Use global variables (will be updated via AJAX)
+    const weeklyData = window.weeklyWorkouts || weeklyWorkouts;
+    const typeData = window.workoutsByType || workoutsByType;
+    const exerciseData = window.topExercises || topExercises;
 
     // Common chart options
     const commonOptions = {
@@ -98,12 +250,12 @@ function initializeCharts() {
     };
 
     // Weekly Trend Chart
-    const weeklyLabels = weeklyWorkouts.map(w => w.start);
-    const weeklyCounts = weeklyWorkouts.map(w => w.count);
+    const weeklyLabels = weeklyData.map(w => w.start);
+    const weeklyCounts = weeklyData.map(w => w.count);
 
     const weeklyCtx = document.getElementById('weeklyTrendChart');
     if (weeklyCtx) {
-        new Chart(weeklyCtx, {
+        window.weeklyChart = new Chart(weeklyCtx, {
             type: 'line',
             data: {
                 labels: weeklyLabels,
@@ -134,12 +286,12 @@ function initializeCharts() {
     }
 
     // Workout Type Chart
-    const typeLabels = workoutsByType.map(w => w.type_workout__name_workout || 'No Type');
-    const typeCounts = workoutsByType.map(w => w.count);
+    const typeLabels = typeData.map(w => w.type_workout__name_workout || 'No Type');
+    const typeCounts = typeData.map(w => w.count);
 
     const typeCtx = document.getElementById('workoutTypeChart');
     if (typeCtx) {
-        new Chart(typeCtx, {
+        window.typeChart = new Chart(typeCtx, {
             type: 'doughnut',
             data: {
                 labels: typeLabels,
@@ -169,8 +321,8 @@ function initializeCharts() {
     }
 
     // Top Exercises Chart
-    const exerciseLabels = topExercises.map(e => e.name__name);
-    const exerciseCounts = topExercises.map(e => e.count);
+    const exerciseLabels = exerciseData.map(e => e.name__name);
+    const exerciseCounts = exerciseData.map(e => e.count);
 
     const exercisesCtx = document.getElementById('topExercisesChart');
     if (exercisesCtx) {
@@ -179,7 +331,7 @@ function initializeCharts() {
         const isTablet = window.innerWidth <= 768;
         const labelFontSize = isMobile ? 9 : isTablet ? 10 : 11;
 
-        new Chart(exercisesCtx, {
+        window.exercisesChart = new Chart(exercisesCtx, {
             type: 'bar',
             data: {
                 labels: exerciseLabels,

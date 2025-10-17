@@ -12,6 +12,7 @@ urlpatterns = [
     path("edit_workout/<int:workout_id>/", views.edit_workout, name="edit_workout"),
     path("library/", views.exercise_library, name="exercise_library"),
     path("analytics/", views.analytics, name="analytics"),
+    path("get_dashboard_data/", views.get_dashboard_data, name="get_dashboard_data"),
     path("export_data/", views.export_data, name="export_data"),
     path("import_data/", views.import_data, name="import_data"),
     path("clear_data/", views.clear_data, name="clear_data"),

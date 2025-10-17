@@ -479,6 +479,142 @@ def clear_data(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 
+@login_required
+def get_dashboard_data(request):
+    """Get dashboard statistics filtered by date range (AJAX endpoint)"""
+    from django.db.models import Count, F, Sum
+
+    # Get date filter parameters
+    start_date = request.GET.get("start_date", "")
+    end_date = request.GET.get("end_date", "")
+
+    # Build filter
+    workout_filter = {}
+    if start_date:
+        workout_filter["date__gte"] = start_date
+    if end_date:
+        workout_filter["date__lte"] = end_date
+
+    # Build the filtered workout queryset
+    filtered_workouts = (
+        Workout.objects.filter(**workout_filter)
+        if workout_filter
+        else Workout.objects.all()
+    )
+
+    total_workouts = filtered_workouts.count()
+
+    # Get exercise IDs from filtered workouts
+    if workout_filter:
+        filtered_workout_ids = filtered_workouts.values_list("id", flat=True)
+        total_exercises = OneExercice.objects.filter(
+            seance_id__in=filtered_workout_ids
+        ).count()
+
+        # Calculate total volume (for strength exercises) with date filter
+        total_volume = (
+            StrengthExerciseLog.objects.filter(
+                workout_id__in=filtered_workout_ids
+            ).aggregate(total=Sum(F("nb_series") * F("nb_repetition") * F("weight")))[
+                "total"
+            ]
+            or 0
+        )
+
+        # Workouts by type with date filter
+        workouts_by_type = list(
+            filtered_workouts.values("type_workout__name_workout")
+            .annotate(count=Count("id"))
+            .order_by("-count")
+        )
+
+        # Top exercises by frequency with date filter
+        top_exercises = list(
+            OneExercice.objects.filter(seance_id__in=filtered_workout_ids)
+            .values("name__name")
+            .annotate(count=Count("id"))
+            .order_by("-count")[:5]
+        )
+    else:
+        total_exercises = OneExercice.objects.count()
+
+        # Calculate total volume (for strength exercises)
+        total_volume = (
+            StrengthExerciseLog.objects.aggregate(
+                total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
+            )["total"]
+            or 0
+        )
+
+        # Workouts by type
+        workouts_by_type = list(
+            Workout.objects.values("type_workout__name_workout")
+            .annotate(count=Count("id"))
+            .order_by("-count")
+        )
+
+        # Top exercises by frequency
+        top_exercises = list(
+            OneExercice.objects.values("name__name")
+            .annotate(count=Count("id"))
+            .order_by("-count")[:5]
+        )
+
+    # Weekly workouts trend - use date filter for the range if provided
+    if start_date and end_date:
+        # Calculate weeks between start and end date
+        from datetime import datetime as dt
+
+        start_dt = dt.strptime(start_date, "%Y-%m-%d").date()
+        end_dt = dt.strptime(end_date, "%Y-%m-%d").date()
+        total_days = (end_dt - start_dt).days
+        num_weeks = min(max(total_days // 7, 1), 12)  # Between 1 and 12 weeks
+
+        weekly_workouts = []
+        for week in range(num_weeks):
+            week_start = start_dt + timedelta(weeks=week)
+            week_end = min(week_start + timedelta(days=6), end_dt)
+            count = Workout.objects.filter(
+                date__gte=week_start, date__lte=week_end
+            ).count()
+            weekly_workouts.append(
+                {
+                    "week": week + 1,
+                    "count": count,
+                    "start": week_start.strftime("%m/%d"),
+                }
+            )
+    else:
+        # Default to last 12 weeks
+        twelve_weeks_ago = datetime.now().date() - timedelta(weeks=12)
+        weekly_workouts = []
+
+        for week in range(12):
+            week_start = twelve_weeks_ago + timedelta(weeks=week)
+            week_end = week_start + timedelta(days=6)
+            count = Workout.objects.filter(
+                date__gte=week_start, date__lte=week_end
+            ).count()
+            weekly_workouts.append(
+                {
+                    "week": week + 1,
+                    "count": count,
+                    "start": week_start.strftime("%m/%d"),
+                }
+            )
+
+    return JsonResponse(
+        {
+            "total_workouts": total_workouts,
+            "total_exercises": total_exercises,
+            "total_volume": int(total_volume),
+            "workouts_by_type": workouts_by_type,
+            "weekly_workouts": weekly_workouts,
+            "top_exercises": top_exercises,
+        }
+    )
+
+
 def calculate_personal_records(limit=10):
     """
     Calculate personal records at runtime from StrengthExerciseLog data.
@@ -548,6 +684,10 @@ def analytics(request):
     current_year = int(request.GET.get("year", datetime.now().year))
     current_month = datetime.now().month
 
+    # Get date filter parameters for dashboard
+    start_date = request.GET.get("start_date", "")
+    end_date = request.GET.get("end_date", "")
+
     # Get all workouts for calendar view
     workouts = Workout.objects.filter(date__year=current_year).order_by("date")
 
@@ -580,48 +720,123 @@ def analytics(request):
             }
         )
 
-    # Dashboard statistics
-    total_workouts = Workout.objects.count()
-    total_exercises = OneExercice.objects.count()
+    # Dashboard statistics - apply date filter if provided
+    workout_filter = {}
+    if start_date:
+        workout_filter["date__gte"] = start_date
+    if end_date:
+        workout_filter["date__lte"] = end_date
 
-    # Calculate total volume (for strength exercises)
-    total_volume = (
-        StrengthExerciseLog.objects.aggregate(
-            total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
-        )["total"]
-        or 0
+    # Build the filtered workout queryset for dashboard
+    filtered_workouts = (
+        Workout.objects.filter(**workout_filter)
+        if workout_filter
+        else Workout.objects.all()
     )
 
-    # Workouts by type
-    workouts_by_type = list(
-        Workout.objects.values("type_workout__name_workout")
-        .annotate(count=Count("id"))
-        .order_by("-count")
-    )
-    twelve_weeks_ago = datetime.now().date() - timedelta(weeks=12)
-    weekly_workouts = []
+    total_workouts = filtered_workouts.count()
 
-    for week in range(12):
-        week_start = twelve_weeks_ago + timedelta(weeks=week)
-        week_end = week_start + timedelta(days=6)
-        count = Workout.objects.filter(date__gte=week_start, date__lte=week_end).count()
-        weekly_workouts.append(
-            {
-                "week": week + 1,
-                "count": count,
-                "start": week_start.strftime("%m/%d"),
-            }
+    # Get exercise IDs from filtered workouts
+    if workout_filter:
+        filtered_workout_ids = filtered_workouts.values_list("id", flat=True)
+        total_exercises = OneExercice.objects.filter(
+            seance_id__in=filtered_workout_ids
+        ).count()
+
+        # Calculate total volume (for strength exercises) with date filter
+        total_volume = (
+            StrengthExerciseLog.objects.filter(
+                workout_id__in=filtered_workout_ids
+            ).aggregate(total=Sum(F("nb_series") * F("nb_repetition") * F("weight")))[
+                "total"
+            ]
+            or 0
         )
+
+        # Workouts by type with date filter
+        workouts_by_type = list(
+            filtered_workouts.values("type_workout__name_workout")
+            .annotate(count=Count("id"))
+            .order_by("-count")
+        )
+
+        # Top exercises by frequency with date filter
+        top_exercises = list(
+            OneExercice.objects.filter(seance_id__in=filtered_workout_ids)
+            .values("name__name")
+            .annotate(count=Count("id"))
+            .order_by("-count")[:5]
+        )
+    else:
+        total_exercises = OneExercice.objects.count()
+
+        # Calculate total volume (for strength exercises)
+        total_volume = (
+            StrengthExerciseLog.objects.aggregate(
+                total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
+            )["total"]
+            or 0
+        )
+
+        # Workouts by type
+        workouts_by_type = list(
+            Workout.objects.values("type_workout__name_workout")
+            .annotate(count=Count("id"))
+            .order_by("-count")
+        )
+
+        # Top exercises by frequency
+        top_exercises = list(
+            OneExercice.objects.values("name__name")
+            .annotate(count=Count("id"))
+            .order_by("-count")[:5]
+        )
+
+    # Weekly workouts trend - use date filter for the range if provided
+    if start_date and end_date:
+        # Calculate weeks between start and end date
+        from datetime import datetime as dt
+
+        start_dt = dt.strptime(start_date, "%Y-%m-%d").date()
+        end_dt = dt.strptime(end_date, "%Y-%m-%d").date()
+        total_days = (end_dt - start_dt).days
+        num_weeks = min(max(total_days // 7, 1), 12)  # Between 1 and 12 weeks
+
+        weekly_workouts = []
+        for week in range(num_weeks):
+            week_start = start_dt + timedelta(weeks=week)
+            week_end = min(week_start + timedelta(days=6), end_dt)
+            count = Workout.objects.filter(
+                date__gte=week_start, date__lte=week_end
+            ).count()
+            weekly_workouts.append(
+                {
+                    "week": week + 1,
+                    "count": count,
+                    "start": week_start.strftime("%m/%d"),
+                }
+            )
+    else:
+        # Default to last 12 weeks
+        twelve_weeks_ago = datetime.now().date() - timedelta(weeks=12)
+        weekly_workouts = []
+
+        for week in range(12):
+            week_start = twelve_weeks_ago + timedelta(weeks=week)
+            week_end = week_start + timedelta(days=6)
+            count = Workout.objects.filter(
+                date__gte=week_start, date__lte=week_end
+            ).count()
+            weekly_workouts.append(
+                {
+                    "week": week + 1,
+                    "count": count,
+                    "start": week_start.strftime("%m/%d"),
+                }
+            )
 
     # Personal Records (calculated at runtime)
     personal_records = calculate_personal_records(limit=10)
-
-    # Top exercises by frequency
-    top_exercises = list(
-        OneExercice.objects.values("name__name")
-        .annotate(count=Count("id"))
-        .order_by("-count")[:5]
-    )
 
     # Generate calendar months for the year
     # Define translatable month names
@@ -672,6 +887,8 @@ def analytics(request):
         "months": months_data,
         "has_prev_year_data": has_prev_year_data,
         "has_next_year_data": has_next_year_data,
+        "start_date": start_date,
+        "end_date": end_date,
         "total_workouts": total_workouts,
         "total_exercises": total_exercises,
         "total_volume": int(total_volume),
