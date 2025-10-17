@@ -107,7 +107,7 @@ msgstr "Enregistrer Séance"
 
 #: apps/workout/templates/workout/analytics.html:12
 msgid "Workout Analytics"
-msgstr "Analytiques de Sport"
+msgstr "Analyses des données de sports"
 
 #: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:901
 msgid "Calendar"

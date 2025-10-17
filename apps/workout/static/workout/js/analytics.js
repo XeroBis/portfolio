@@ -30,49 +30,155 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentYearSpan = document.getElementById('current-year');
 
     if (prevYearBtn && nextYearBtn && currentYearSpan) {
-        const currentYear = parseInt(currentYearSpan.textContent);
+        let currentYear = parseInt(currentYearSpan.textContent);
 
         // Check if there's data for previous/next year and disable accordingly
-        const hasPrevData = prevYearBtn.getAttribute('data-has-data') === 'true';
-        const hasNextData = nextYearBtn.getAttribute('data-has-data') === 'true';
+        let hasPrevData = prevYearBtn.getAttribute('data-has-data') === 'true';
+        let hasNextData = nextYearBtn.getAttribute('data-has-data') === 'true';
 
-        if (!hasPrevData) {
-            prevYearBtn.disabled = true;
-            prevYearBtn.style.opacity = '0.3';
-            prevYearBtn.style.cursor = 'not-allowed';
+        function updateYearNavButtons(hasPrev, hasNext) {
+            if (!hasPrev) {
+                prevYearBtn.disabled = true;
+                prevYearBtn.style.opacity = '0.3';
+                prevYearBtn.style.cursor = 'not-allowed';
+            } else {
+                prevYearBtn.disabled = false;
+                prevYearBtn.style.opacity = '1';
+                prevYearBtn.style.cursor = 'pointer';
+            }
+
+            if (!hasNext) {
+                nextYearBtn.disabled = true;
+                nextYearBtn.style.opacity = '0.3';
+                nextYearBtn.style.cursor = 'not-allowed';
+            } else {
+                nextYearBtn.disabled = false;
+                nextYearBtn.style.opacity = '1';
+                nextYearBtn.style.cursor = 'pointer';
+            }
         }
 
-        if (!hasNextData) {
-            nextYearBtn.disabled = true;
-            nextYearBtn.style.opacity = '0.3';
-            nextYearBtn.style.cursor = 'not-allowed';
+        // Initial button state
+        updateYearNavButtons(hasPrevData, hasNextData);
+
+        // Function to update calendar via AJAX
+        async function updateCalendar(year) {
+            try {
+                // Fetch calendar data from server
+                const response = await fetch(`/workout/get_calendar_data/?year=${year}`);
+                const data = await response.json();
+
+                // Update year display
+                currentYear = data.year;
+                currentYearSpan.textContent = currentYear;
+
+                // Update navigation buttons
+                hasPrevData = data.has_prev_year_data;
+                hasNextData = data.has_next_year_data;
+                updateYearNavButtons(hasPrevData, hasNextData);
+
+                // Update the calendar grid
+                const calendarGrid = document.querySelector('.calendar-grid');
+                calendarGrid.innerHTML = '';
+
+                // Create months
+                data.months.forEach(month => {
+                    const monthDiv = document.createElement('div');
+                    monthDiv.className = 'calendar-month' + (month.is_current ? ' current-month' : '');
+
+                    // Month header
+                    const monthHeader = document.createElement('h3');
+                    monthHeader.textContent = month.name;
+                    monthDiv.appendChild(monthHeader);
+
+                    // Weekday headers
+                    const weekdaysDiv = document.createElement('div');
+                    weekdaysDiv.className = 'calendar-weekdays';
+                    ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach(day => {
+                        const dayDiv = document.createElement('div');
+                        dayDiv.className = 'weekday';
+                        dayDiv.textContent = day;
+                        weekdaysDiv.appendChild(dayDiv);
+                    });
+                    monthDiv.appendChild(weekdaysDiv);
+
+                    // Days container
+                    const daysDiv = document.createElement('div');
+                    daysDiv.className = 'calendar-days';
+
+                    // Empty days before month starts
+                    for (let i = 0; i < month.start_weekday; i++) {
+                        const emptyDiv = document.createElement('div');
+                        emptyDiv.className = 'calendar-day empty';
+                        daysDiv.appendChild(emptyDiv);
+                    }
+
+                    // Month days
+                    for (let day = 1; day <= month.num_days; day++) {
+                        const dayDiv = document.createElement('div');
+                        dayDiv.className = 'calendar-day';
+                        dayDiv.textContent = day;
+
+                        // Check if this day has a workout
+                        const workout = month.workout_days[day];
+                        if (workout) {
+                            dayDiv.classList.add('has-workout');
+                            dayDiv.setAttribute('data-workout-type', workout.type);
+                            dayDiv.setAttribute('data-workout-id', workout.id);
+                            dayDiv.setAttribute('title', workout.type);
+
+                            // Add click handler
+                            dayDiv.addEventListener('click', () => {
+                                window.location.href = `/workout/edit_workout/${workout.id}/`;
+                            });
+                        }
+
+                        daysDiv.appendChild(dayDiv);
+                    }
+
+                    monthDiv.appendChild(daysDiv);
+                    calendarGrid.appendChild(monthDiv);
+                });
+
+                // Update URL without reloading
+                const url = new URL(window.location.href);
+                url.searchParams.set('year', year);
+                window.history.pushState({}, '', url);
+
+            } catch (error) {
+                console.error('Error updating calendar:', error);
+                alert('Error updating calendar data. Please try again.');
+            }
         }
 
         prevYearBtn.addEventListener('click', () => {
             if (hasPrevData) {
                 const newYear = currentYear - 1;
-                window.location.href = `?year=${newYear}`;
+                updateCalendar(newYear);
             }
         });
 
         nextYearBtn.addEventListener('click', () => {
             if (hasNextData) {
                 const newYear = currentYear + 1;
-                window.location.href = `?year=${newYear}`;
+                updateCalendar(newYear);
             }
         });
     }
 
-    // Calendar day click functionality
-    const calendarDays = document.querySelectorAll('.calendar-day.has-workout');
-    calendarDays.forEach(day => {
-        day.addEventListener('click', () => {
-            const workoutId = day.getAttribute('data-workout-id');
-            if (workoutId) {
-                window.location.href = `/workout/edit_workout/${workoutId}/`;
-            }
+    // Calendar day click functionality - for initial page load
+    function attachCalendarDayClickHandlers() {
+        const calendarDays = document.querySelectorAll('.calendar-day.has-workout');
+        calendarDays.forEach(day => {
+            day.addEventListener('click', () => {
+                const workoutId = day.getAttribute('data-workout-id');
+                if (workoutId) {
+                    window.location.href = `/workout/edit_workout/${workoutId}/`;
+                }
+            });
         });
-    });
+    }
+    attachCalendarDayClickHandlers();
 
     // Initialize charts on page load if dashboard is active
     if (document.getElementById('dashboard-section').classList.contains('active')) {

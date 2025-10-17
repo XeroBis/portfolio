@@ -678,6 +678,101 @@ def calculate_personal_records(limit=10):
     return all_records[:limit]
 
 
+def get_calendar_data(request):
+    """AJAX endpoint to get calendar data for a specific year"""
+    import calendar as cal
+    from collections import defaultdict
+
+    from django.http import JsonResponse
+
+    # Get year from URL parameter or use current year
+    current_year = int(request.GET.get("year", datetime.now().year))
+    current_month = datetime.now().month
+
+    # Get all workouts for calendar view
+    workouts = Workout.objects.filter(date__year=current_year).order_by("date")
+
+    # Determine which years have workout data
+    years_with_data = (
+        Workout.objects.dates("date", "year")
+        .values_list("date__year", flat=True)
+        .distinct()
+    )
+    years_with_data_l = list(years_with_data)
+
+    # Check if there's data for previous and next year
+    has_prev_year_data = (current_year - 1) in years_with_data_l
+    has_next_year_data = (current_year + 1) in years_with_data_l
+
+    # Create calendar data structure
+    calendar_data = defaultdict(list)
+    for workout in workouts:
+        month_key = f"{workout.date.year}-{workout.date.month:02d}"
+        calendar_data[month_key].append(
+            {
+                "day": workout.date.day,
+                "type": (
+                    workout.type_workout.name_workout
+                    if workout.type_workout
+                    else "No Type"
+                ),
+                "duration": workout.duration,
+                "id": workout.id,
+            }
+        )
+
+    # Define translatable month names
+    month_names = [
+        gettext("January"),
+        gettext("February"),
+        gettext("March"),
+        gettext("April"),
+        gettext("May"),
+        gettext("June"),
+        gettext("July"),
+        gettext("August"),
+        gettext("September"),
+        gettext("October"),
+        gettext("November"),
+        gettext("December"),
+    ]
+
+    months_data = []
+    for month in range(1, 13):
+        month_name = month_names[month - 1]
+        month_key = f"{current_year}-{month:02d}"
+
+        # Get first day of month and number of days
+        first_day = datetime(current_year, month, 1)
+        num_days = cal.monthrange(current_year, month)[1]
+        start_weekday = first_day.weekday()
+
+        # Get workouts for this month
+        month_workouts = calendar_data.get(month_key, [])
+        workout_days = {w["day"]: w for w in month_workouts}
+
+        months_data.append(
+            {
+                "name": month_name,
+                "number": month,
+                "num_days": num_days,
+                "start_weekday": start_weekday,
+                "workout_days": workout_days,
+                "is_current": month == current_month
+                and current_year == datetime.now().year,
+            }
+        )
+
+    return JsonResponse(
+        {
+            "year": current_year,
+            "months": months_data,
+            "has_prev_year_data": has_prev_year_data,
+            "has_next_year_data": has_next_year_data,
+        }
+    )
+
+
 def analytics(request):
     """Analytics page with calendar view, progress dashboard, and PR tracking"""
     import calendar as cal

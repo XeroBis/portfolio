@@ -13,6 +13,7 @@ urlpatterns = [
     path("library/", views.exercise_library, name="exercise_library"),
     path("analytics/", views.analytics, name="analytics"),
     path("get_dashboard_data/", views.get_dashboard_data, name="get_dashboard_data"),
+    path("get_calendar_data/", views.get_calendar_data, name="get_calendar_data"),
     path("export_data/", views.export_data, name="export_data"),
     path("import_data/", views.import_data, name="import_data"),
     path("clear_data/", views.clear_data, name="clear_data"),
