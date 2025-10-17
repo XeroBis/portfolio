@@ -29,5 +29,4 @@ pip-audit
 safety check
 
 ### run all :
-pre-commit install
-pre-commit run --all-files
+uv run pre-commit run --all-files
