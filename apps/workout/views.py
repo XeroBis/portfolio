@@ -585,23 +585,31 @@ def get_dashboard_data(request):
                 }
             )
     else:
-        # Default to last 12 weeks
-        twelve_weeks_ago = datetime.now().date() - timedelta(weeks=12)
-        weekly_workouts = []
+        # Show all available data - calculate from earliest workout to now
+        earliest_workout = Workout.objects.order_by("date").first()
+        if earliest_workout:
+            start_dt = earliest_workout.date
+            end_dt = datetime.now().date()
+            total_days = (end_dt - start_dt).days
+            num_weeks = max(total_days // 7, 1)
 
-        for week in range(12):
-            week_start = twelve_weeks_ago + timedelta(weeks=week)
-            week_end = week_start + timedelta(days=6)
-            count = Workout.objects.filter(
-                date__gte=week_start, date__lte=week_end
-            ).count()
-            weekly_workouts.append(
-                {
-                    "week": week + 1,
-                    "count": count,
-                    "start": week_start.strftime("%m/%d"),
-                }
-            )
+            weekly_workouts = []
+            for week in range(num_weeks):
+                week_start = start_dt + timedelta(weeks=week)
+                week_end = min(week_start + timedelta(days=6), end_dt)
+                count = Workout.objects.filter(
+                    date__gte=week_start, date__lte=week_end
+                ).count()
+                weekly_workouts.append(
+                    {
+                        "week": week + 1,
+                        "count": count,
+                        "start": week_start.strftime("%m/%d"),
+                    }
+                )
+        else:
+            # No workouts yet
+            weekly_workouts = []
 
     return JsonResponse(
         {
@@ -817,23 +825,31 @@ def analytics(request):
                 }
             )
     else:
-        # Default to last 12 weeks
-        twelve_weeks_ago = datetime.now().date() - timedelta(weeks=12)
-        weekly_workouts = []
+        # Show all available data - calculate from earliest workout to now
+        earliest_workout = Workout.objects.order_by("date").first()
+        if earliest_workout:
+            start_dt = earliest_workout.date
+            end_dt = datetime.now().date()
+            total_days = (end_dt - start_dt).days
+            num_weeks = max(total_days // 7, 1)
 
-        for week in range(12):
-            week_start = twelve_weeks_ago + timedelta(weeks=week)
-            week_end = week_start + timedelta(days=6)
-            count = Workout.objects.filter(
-                date__gte=week_start, date__lte=week_end
-            ).count()
-            weekly_workouts.append(
-                {
-                    "week": week + 1,
-                    "count": count,
-                    "start": week_start.strftime("%m/%d"),
-                }
-            )
+            weekly_workouts = []
+            for week in range(num_weeks):
+                week_start = start_dt + timedelta(weeks=week)
+                week_end = min(week_start + timedelta(days=6), end_dt)
+                count = Workout.objects.filter(
+                    date__gte=week_start, date__lte=week_end
+                ).count()
+                weekly_workouts.append(
+                    {
+                        "week": week + 1,
+                        "count": count,
+                        "start": week_start.strftime("%m/%d"),
+                    }
+                )
+        else:
+            # No workouts yet
+            weekly_workouts = []
 
     # Personal Records (calculated at runtime)
     personal_records = calculate_personal_records(limit=10)
