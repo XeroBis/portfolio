@@ -6,30 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0003_alter_projet_description'),
+        ("home", "0003_alter_projet_description"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='projet',
-            old_name='description',
-            new_name='description_en',
+            model_name="projet",
+            old_name="description",
+            new_name="description_en",
         ),
         migrations.RenameField(
-            model_name='projet',
-            old_name='title',
-            new_name='title_en',
+            model_name="projet",
+            old_name="title",
+            new_name="title_en",
         ),
         migrations.AddField(
-            model_name='projet',
-            name='description_fr',
-            field=models.TextField(default='desc'),
+            model_name="projet",
+            name="description_fr",
+            field=models.TextField(default="desc"),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='projet',
-            name='title_fr',
-            field=models.CharField(default='titre', max_length=50),
+            model_name="projet",
+            name="title_fr",
+            field=models.CharField(default="titre", max_length=50),
             preserve_default=False,
         ),
     ]

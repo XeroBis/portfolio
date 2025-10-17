@@ -6,46 +6,81 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workout', '0009_auto_20250926_2113'),
+        ("workout", "0009_auto_20250926_2113"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Equipment',
+            name="Equipment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('description', models.TextField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
+                ("description", models.TextField(blank=True, null=True)),
             ],
             options={
-                'verbose_name_plural': 'Equipment',
-                'ordering': ['name'],
+                "verbose_name_plural": "Equipment",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='MuscleGroup',
+            name="MuscleGroup",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('description', models.TextField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
+                ("description", models.TextField(blank=True, null=True)),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.AddField(
-            model_name='exercice',
-            name='difficulty',
-            field=models.CharField(choices=[('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')], default='beginner', help_text='Exercise difficulty level', max_length=20),
+            model_name="exercice",
+            name="difficulty",
+            field=models.CharField(
+                choices=[
+                    ("beginner", "Beginner"),
+                    ("intermediate", "Intermediate"),
+                    ("advanced", "Advanced"),
+                ],
+                default="beginner",
+                help_text="Exercise difficulty level",
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='exercice',
-            name='equipment',
-            field=models.ManyToManyField(blank=True, help_text='Equipment required for this exercise', related_name='exercises', to='workout.equipment'),
+            model_name="exercice",
+            name="equipment",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Equipment required for this exercise",
+                related_name="exercises",
+                to="workout.equipment",
+            ),
         ),
         migrations.AddField(
-            model_name='exercice',
-            name='muscle_groups',
-            field=models.ManyToManyField(blank=True, help_text='Muscle groups targeted by this exercise', related_name='exercises', to='workout.musclegroup'),
+            model_name="exercice",
+            name="muscle_groups",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Muscle groups targeted by this exercise",
+                related_name="exercises",
+                to="workout.musclegroup",
+            ),
         ),
     ]

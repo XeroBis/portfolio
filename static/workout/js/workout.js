@@ -228,11 +228,11 @@ function handleClick(e) {
 
 function loadMore() {
     if (isLoading || !hasMoreContent) return;
-    
+
     isLoading = true;
     $('#loading-indicator').show();
     $('#load-more').hide();
-    
+
     var url = "/workout/?page=" + currentPage;
 
     $.ajax({
@@ -350,7 +350,7 @@ function loadMore() {
                 hasMoreContent = false;
                 $('#load-more').remove();
             }
-            
+
             $('#loading-indicator').hide();
             isLoading = false;
         },

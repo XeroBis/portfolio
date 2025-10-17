@@ -6,26 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workout', '0004_workout_name_workout_en_workout_name_workout_fr'),
+        ("workout", "0004_workout_name_workout_en_workout_name_workout_fr"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='typeworkout',
-            old_name='name',
-            new_name='name_workout_fr',
+            model_name="typeworkout",
+            old_name="name",
+            new_name="name_workout_fr",
         ),
         migrations.RemoveField(
-            model_name='workout',
-            name='name_workout_en',
+            model_name="workout",
+            name="name_workout_en",
         ),
         migrations.RemoveField(
-            model_name='workout',
-            name='name_workout_fr',
+            model_name="workout",
+            name="name_workout_fr",
         ),
         migrations.AddField(
-            model_name='typeworkout',
-            name='name_workout_en',
-            field=models.CharField(default='Workout', max_length=50),
+            model_name="typeworkout",
+            name="name_workout_en",
+            field=models.CharField(default="Workout", max_length=50),
         ),
     ]

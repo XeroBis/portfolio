@@ -6,32 +6,32 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0011_remove_oneexercice_time'),
+        ("home", "0011_remove_oneexercice_time"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='oneexercice',
-            name='name',
+            model_name="oneexercice",
+            name="name",
         ),
         migrations.RemoveField(
-            model_name='oneexercice',
-            name='seance',
+            model_name="oneexercice",
+            name="seance",
         ),
         migrations.RemoveField(
-            model_name='workout',
-            name='type_workout',
+            model_name="workout",
+            name="type_workout",
         ),
         migrations.DeleteModel(
-            name='Exercice',
+            name="Exercice",
         ),
         migrations.DeleteModel(
-            name='OneExercice',
+            name="OneExercice",
         ),
         migrations.DeleteModel(
-            name='TypeWorkout',
+            name="TypeWorkout",
         ),
         migrations.DeleteModel(
-            name='Workout',
+            name="Workout",
         ),
     ]

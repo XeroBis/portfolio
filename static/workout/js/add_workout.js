@@ -234,4 +234,3 @@ function loadWorkoutTypes() {
 document.addEventListener('DOMContentLoaded', function() {
     loadWorkoutTypes();
 });
-
