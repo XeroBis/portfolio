@@ -21,13 +21,13 @@
         <!-- Calendar View Section -->
         <div class="analytics-section active" id="calendar-section">
             <div class="year-navigation">
-                <button class="year-nav-btn" id="prev-year" title="{% trans 'Previous year' %}">
+                <button class="year-nav-btn" id="prev-year" title="{% trans 'Previous year' %}" data-has-data="{% if has_prev_year_data %}true{% else %}false{% endif %}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
                 </button>
                 <h2>{% trans "Workout Calendar" %} - <span id="current-year">{{ current_year }}</span></h2>
-                <button class="year-nav-btn" id="next-year" title="{% trans 'Next year' %}">
+                <button class="year-nav-btn" id="next-year" title="{% trans 'Next year' %}" data-has-data="{% if has_next_year_data %}true{% else %}false{% endif %}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
                     </svg>
@@ -54,7 +54,7 @@
                         {% with day_num=forloop.counter %}
                         {% with workout=month.workout_days|get_item:day_num %}
                         <div class="calendar-day {% if workout %}has-workout{% endif %}"
-                             {% if workout %}data-workout-type="{{ workout.type }}" data-workout-id="{{ workout.id }}" title="{{ workout.type }} - {{ workout.duration }}min"{% endif %}>
+                             {% if workout %}data-workout-type="{{ workout.type }}" data-workout-id="{{ workout.id }}" title="{{ workout.type }}"{% endif %}>
                             {{ day_num }}
                         </div>
                         {% endwith %}
@@ -90,7 +90,7 @@
             <div class="charts-container">
                 <!-- Weekly Trend Chart -->
                 <div class="chart-card">
-                    <h3>{% trans "Weekly Workout Trend" %} (Last 12 Weeks)</h3>
+                    <h3>{% trans "Weekly Workout Trend (Last 12 Weeks)" %} </h3>
                     <canvas id="weeklyTrendChart"></canvas>
                 </div>
 

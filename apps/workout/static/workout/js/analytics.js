@@ -32,14 +32,34 @@ document.addEventListener('DOMContentLoaded', function() {
     if (prevYearBtn && nextYearBtn && currentYearSpan) {
         const currentYear = parseInt(currentYearSpan.textContent);
 
+        // Check if there's data for previous/next year and disable accordingly
+        const hasPrevData = prevYearBtn.getAttribute('data-has-data') === 'true';
+        const hasNextData = nextYearBtn.getAttribute('data-has-data') === 'true';
+
+        if (!hasPrevData) {
+            prevYearBtn.disabled = true;
+            prevYearBtn.style.opacity = '0.3';
+            prevYearBtn.style.cursor = 'not-allowed';
+        }
+
+        if (!hasNextData) {
+            nextYearBtn.disabled = true;
+            nextYearBtn.style.opacity = '0.3';
+            nextYearBtn.style.cursor = 'not-allowed';
+        }
+
         prevYearBtn.addEventListener('click', () => {
-            const newYear = currentYear - 1;
-            window.location.href = `?year=${newYear}`;
+            if (hasPrevData) {
+                const newYear = currentYear - 1;
+                window.location.href = `?year=${newYear}`;
+            }
         });
 
         nextYearBtn.addEventListener('click', () => {
-            const newYear = currentYear + 1;
-            window.location.href = `?year=${newYear}`;
+            if (hasNextData) {
+                const newYear = currentYear + 1;
+                window.location.href = `?year=${newYear}`;
+            }
         });
     }
 

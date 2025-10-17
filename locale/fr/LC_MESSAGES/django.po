@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portfolio 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-17 23:26+0200\n"
+"POT-Creation-Date: 2025-10-17 23:38+0200\n"
 "PO-Revision-Date: 2025-10-17 23:30+0200\n"
 "Last-Translator: Claude Code\n"
 "Language-Team: French\n"
@@ -109,16 +109,16 @@ msgstr "Enregistrer Séance"
 msgid "Workout Analytics"
 msgstr "Analytiques de Sport"
 
-#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:699
+#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:684
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: apps/workout/templates/workout/analytics.html:17 apps/workout/views.py:700
+#: apps/workout/templates/workout/analytics.html:17 apps/workout/views.py:685
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: apps/workout/templates/workout/analytics.html:18
-#: apps/workout/templates/workout/analytics.html:113 apps/workout/views.py:701
+#: apps/workout/templates/workout/analytics.html:113 apps/workout/views.py:686
 msgid "Personal Records"
 msgstr "Records Personnels"
 
@@ -138,23 +138,24 @@ msgstr "Année suivante"
 msgid "Progress Dashboard"
 msgstr "Tableau de bord de Progression"
 
-#: apps/workout/templates/workout/analytics.html:77 apps/workout/views.py:702
+#: apps/workout/templates/workout/analytics.html:77 apps/workout/views.py:687
 msgid "Total Workouts"
 msgstr "Total des Séances"
 
-#: apps/workout/templates/workout/analytics.html:81 apps/workout/views.py:703
+#: apps/workout/templates/workout/analytics.html:81 apps/workout/views.py:688
 msgid "Total Exercises"
 msgstr "Total des Exercices"
 
-#: apps/workout/templates/workout/analytics.html:85 apps/workout/views.py:704
+#: apps/workout/templates/workout/analytics.html:85 apps/workout/views.py:689
 msgid "Total Volume"
 msgstr "Volume Total"
 
 #: apps/workout/templates/workout/analytics.html:93
-msgid "Weekly Workout Trend"
-msgstr "Tendance Hebdomadaire des Séances"
+#| msgid "Weekly Workout Trend"
+msgid "Weekly Workout Trend (Last 12 Weeks)"
+msgstr "Tendance Hebdomadaire des Séances (12 dernières semaines)"
 
-#: apps/workout/templates/workout/analytics.html:99 apps/workout/views.py:707
+#: apps/workout/templates/workout/analytics.html:99 apps/workout/views.py:692
 msgid "Workouts by Type"
 msgstr "Séances par Type"
 
@@ -316,71 +317,71 @@ msgstr "Répétitions"
 msgid "Duration (sec)"
 msgstr "Durée (sec)"
 
-#: apps/workout/views.py:646
+#: apps/workout/views.py:629
 msgid "January"
 msgstr "Janvier"
 
-#: apps/workout/views.py:647
+#: apps/workout/views.py:630
 msgid "February"
 msgstr "Février"
 
-#: apps/workout/views.py:648
+#: apps/workout/views.py:631
 msgid "March"
 msgstr "Mars"
 
-#: apps/workout/views.py:649
+#: apps/workout/views.py:632
 msgid "April"
 msgstr "Avril"
 
-#: apps/workout/views.py:650
+#: apps/workout/views.py:633
 msgid "May"
 msgstr "Mai"
 
-#: apps/workout/views.py:651
+#: apps/workout/views.py:634
 msgid "June"
 msgstr "Juin"
 
-#: apps/workout/views.py:652
+#: apps/workout/views.py:635
 msgid "July"
 msgstr "Juillet"
 
-#: apps/workout/views.py:653
+#: apps/workout/views.py:636
 msgid "August"
 msgstr "Août"
 
-#: apps/workout/views.py:654
+#: apps/workout/views.py:637
 msgid "September"
 msgstr "Septembre"
 
-#: apps/workout/views.py:655
+#: apps/workout/views.py:638
 msgid "October"
 msgstr "Octobre"
 
-#: apps/workout/views.py:656
+#: apps/workout/views.py:639
 msgid "November"
 msgstr "Novembre"
 
-#: apps/workout/views.py:657
+#: apps/workout/views.py:640
 msgid "December"
 msgstr "Décembre"
 
-#: apps/workout/views.py:698
+#: apps/workout/views.py:683
 msgid "Analytics"
 msgstr "Analytiques"
 
-#: apps/workout/views.py:705
+#: apps/workout/views.py:690
 msgid "Current Streak"
 msgstr "Série Actuelle"
 
-#: apps/workout/views.py:706
+#: apps/workout/views.py:691
 msgid "Longest Streak"
 msgstr "Plus Longue Série"
 
-#: apps/workout/views.py:708
+#: apps/workout/views.py:693
 msgid "Weekly Trend"
 msgstr "Tendance Hebdomadaire"
 
-#: apps/workout/views.py:709
+#: apps/workout/views.py:694
 msgid "Top Exercises"
 msgstr "Meilleurs Exercices"
 

@@ -551,6 +551,18 @@ def analytics(request):
     # Get all workouts for calendar view
     workouts = Workout.objects.filter(date__year=current_year).order_by("date")
 
+    # Determine which years have workout data
+    years_with_data = (
+        Workout.objects.dates("date", "year")
+        .values_list("date__year", flat=True)
+        .distinct()
+    )
+    years_with_data_l = list(years_with_data)
+
+    # Check if there's data for previous and next year
+    has_prev_year_data = (current_year - 1) in years_with_data_l
+    has_next_year_data = (current_year + 1) in years_with_data_l
+
     # Create calendar data structure
     calendar_data = defaultdict(list)
     for workout in workouts:
@@ -658,6 +670,8 @@ def analytics(request):
         "lang": lang,
         "current_year": current_year,
         "months": months_data,
+        "has_prev_year_data": has_prev_year_data,
+        "has_next_year_data": has_next_year_data,
         "total_workouts": total_workouts,
         "total_exercises": total_exercises,
         "total_volume": int(total_volume),
