@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "asgiref==3.8.1",
-    "django==5.1.12",
+    "django==5.1.13",
     "feedparser==6.0.12",
     "gunicorn==23.0.0",
     "psycopg2-binary==2.9.10",

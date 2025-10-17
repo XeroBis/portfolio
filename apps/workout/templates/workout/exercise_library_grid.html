@@ -1,0 +1,50 @@
+{% load i18n %}
+{% for exercise in exercises %}
+<div class="exercise-card">
+    <div class="exercise-header">
+        <h3>{{ exercise.name }}</h3>
+        <span class="exercise-type-badge {{ exercise.exercise_type }}">
+            {{ exercise.get_exercise_type_display }}
+        </span>
+    </div>
+
+    <div class="exercise-details">
+        {% if exercise.muscle_groups.exists %}
+        <div class="detail-item">
+            <strong>{% trans "Muscle Group" %}:</strong>
+            <div class="badges-container">
+                {% for muscle_group in exercise.muscle_groups.all %}
+                <span class="badge muscle-{{ muscle_group.name|lower }}">
+                    {{ muscle_group.name }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if exercise.difficulty %}
+        <div class="detail-item">
+            <strong>{% trans "Difficulty" %}:</strong>
+            <span class="badge difficulty-{{ exercise.difficulty }}">
+                {{ exercise.get_difficulty_display }}
+            </span>
+        </div>
+        {% endif %}
+
+        {% if exercise.equipment.exists %}
+        <div class="detail-item">
+            <strong>{% trans "Equipment" %}:</strong>
+            <div class="badges-container">
+                {% for equip in exercise.equipment.all %}
+                <span class="badge">{{ equip.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="no-exercises">
+    <p>{% trans "No exercises found." %}</p>
+</div>
+{% endfor %}

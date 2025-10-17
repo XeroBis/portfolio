@@ -269,6 +269,7 @@ def exercise_library(request):
     lang = translation.get_language()
 
     # Get filter parameters
+    name = request.GET.get('name', '')
     muscle_group_id = request.GET.get('muscle_group', '')
     difficulty = request.GET.get('difficulty', '')
     equipment_id = request.GET.get('equipment', '')
@@ -277,6 +278,8 @@ def exercise_library(request):
     exercises = Exercice.objects.all().prefetch_related('muscle_groups', 'equipment').order_by('name')
 
     # Apply filters
+    if name:
+        exercises = exercises.filter(name__icontains=name)
     if muscle_group_id:
         exercises = exercises.filter(muscle_groups__id=muscle_group_id)
     if difficulty:
@@ -289,6 +292,9 @@ def exercise_library(request):
     difficulties = Exercice.DIFFICULTY_CHOICES
     equipments = Equipment.objects.all().order_by('name')
 
+    # Check if it's an AJAX request
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
     context = {
         "page": "exercise_library",
         "lang": lang,
@@ -296,6 +302,7 @@ def exercise_library(request):
         "muscle_groups": muscle_groups,
         "difficulties": difficulties,
         "equipments": equipments,
+        "selected_name": name,
         "selected_muscle_group": muscle_group_id,
         "selected_difficulty": difficulty,
         "selected_equipment": equipment_id,
@@ -309,6 +316,13 @@ def exercise_library(request):
             "no_exercises": gettext("No exercises found."),
         }
     }
+
+    if is_ajax:
+        # Return only the exercises grid HTML for AJAX requests
+        from django.template.loader import render_to_string
+        exercises_html = render_to_string('workout/exercise_library_grid.html', context, request=request)
+        return JsonResponse({'exercises_html': exercises_html})
+
     return render(request, 'exercise_library.html', context)
 
 

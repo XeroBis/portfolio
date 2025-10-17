@@ -1,7 +1,55 @@
 $(document).ready(function() {
-    // Auto-submit form when filter changes
+    // Function to apply filters via AJAX
+    function applyFilters() {
+        const formData = $('#filter-form').serialize();
+
+        $.ajax({
+            url: '/workout/library/',
+            type: 'GET',
+            data: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(data) {
+                // Update the exercises grid with new content
+                $('.exercises-grid').html(data.exercises_html);
+            },
+            error: function(xhr) {
+                console.error('Failed to apply filters:', xhr);
+            }
+        });
+    }
+
+    // Auto-apply filter when dropdown changes
     $('.filter-select').on('change', function() {
-        $('#filter-form').submit();
+        applyFilters();
+    });
+
+    // Debounced text input for name filter
+    let nameInputTimeout;
+    $('.filter-input').on('input', function() {
+        clearTimeout(nameInputTimeout);
+        nameInputTimeout = setTimeout(function() {
+            applyFilters();
+        }, 500); // Wait 500ms after user stops typing
+    });
+
+    // Prevent form submission (we handle it via AJAX)
+    $('#filter-form').on('submit', function(e) {
+        e.preventDefault();
+        applyFilters();
+    });
+
+    // Reset filters button
+    $('#reset-filters').on('click', function() {
+        // Clear all form inputs
+        $('#name').val('');
+        $('#muscle_group').val('');
+        $('#difficulty').val('');
+        $('#equipment').val('');
+
+        // Apply filters (which will now show all exercises)
+        applyFilters();
     });
 
     // Optional: Add smooth scroll for long pages
