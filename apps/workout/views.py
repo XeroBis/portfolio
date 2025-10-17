@@ -568,7 +568,7 @@ def get_dashboard_data(request):
         start_dt = dt.strptime(start_date, "%Y-%m-%d").date()
         end_dt = dt.strptime(end_date, "%Y-%m-%d").date()
         total_days = (end_dt - start_dt).days
-        num_weeks = min(max(total_days // 7, 1), 12)  # Between 1 and 12 weeks
+        num_weeks = max(total_days // 7, 1)  # Show all weeks in the date range
 
         weekly_workouts = []
         for week in range(num_weeks):
@@ -800,7 +800,7 @@ def analytics(request):
         start_dt = dt.strptime(start_date, "%Y-%m-%d").date()
         end_dt = dt.strptime(end_date, "%Y-%m-%d").date()
         total_days = (end_dt - start_dt).days
-        num_weeks = min(max(total_days // 7, 1), 12)  # Between 1 and 12 weeks
+        num_weeks = max(total_days // 7, 1)  # Show all weeks in the date range
 
         weekly_workouts = []
         for week in range(num_weeks):
