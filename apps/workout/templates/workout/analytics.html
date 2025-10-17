@@ -136,6 +136,12 @@
         const weeklyWorkouts = {{ weekly_workouts|safe }};
         const workoutsByType = {{ workouts_by_type|safe }};
         const topExercises = {{ top_exercises|safe }};
+
+        // Translations for chart labels
+        const chartTranslations = {
+            workoutsPerWeek: "{% trans 'Workouts per Week' %}",
+            timesPerformed: "{% trans 'Times Performed' %}"
+        };
     </script>
     <script src="{% static 'workout/js/analytics.js' %}"></script>
 

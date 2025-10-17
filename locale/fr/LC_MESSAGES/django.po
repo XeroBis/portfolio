@@ -163,6 +163,14 @@ msgstr "Séances par Type"
 msgid "Top 10 Exercises"
 msgstr "Top 10 des Exercices"
 
+#: apps/workout/templates/workout/analytics.html:142
+msgid "Workouts per Week"
+msgstr "Séances par Semaine"
+
+#: apps/workout/templates/workout/analytics.html:143
+msgid "Times Performed"
+msgstr "Fois Réalisé"
+
 #: apps/workout/templates/workout/analytics.html:128
 msgid "No personal records yet. Keep training!"
 msgstr "Aucun record personnel pour le moment. Continuez à vous entraîner !"

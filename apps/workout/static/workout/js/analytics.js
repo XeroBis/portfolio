@@ -108,7 +108,7 @@ function initializeCharts() {
             data: {
                 labels: weeklyLabels,
                 datasets: [{
-                    label: 'Workouts per Week',
+                    label: chartTranslations.workoutsPerWeek,
                     data: weeklyCounts,
                     borderColor: 'rgb(102, 126, 234)',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
@@ -184,7 +184,7 @@ function initializeCharts() {
             data: {
                 labels: exerciseLabels,
                 datasets: [{
-                    label: 'Times Performed',
+                    label: chartTranslations.timesPerformed,
                     data: exerciseCounts,
                     backgroundColor: 'rgba(118, 75, 162, 0.8)',
                     borderColor: 'rgba(118, 75, 162, 1)',
