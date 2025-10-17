@@ -148,8 +148,8 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static/home"),
-    os.path.join(BASE_DIR, "static/workout"),
+    os.path.join(BASE_DIR, "apps/home/static/home"),
+    os.path.join(BASE_DIR, "apps/workout/static/workout"),
     os.path.join(BASE_DIR, "locale"),
 )
 
