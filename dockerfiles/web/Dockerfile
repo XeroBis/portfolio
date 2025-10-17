@@ -3,11 +3,13 @@ RUN mkdir /app
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1 
+ENV PYTHONUNBUFFERED=1
 
-RUN pip install --upgrade pip 
-COPY requirements.txt  /app/
-RUN pip install --no-cache-dir -r requirements.txt
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+COPY pyproject.toml /app/
+RUN uv pip install --system --no-cache .
 RUN apt-get update && apt-get install -y gettext
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh
