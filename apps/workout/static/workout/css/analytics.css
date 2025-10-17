@@ -70,6 +70,43 @@
     color: #333;
 }
 
+/* Year Navigation */
+.year-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.year-nav-btn {
+    background: linear-gradient(135deg, #b8a77c 0%, #a89568 100%);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.year-nav-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(184, 167, 124, 0.4);
+}
+
+.year-nav-btn:active {
+    transform: scale(0.95);
+}
+
+.year-navigation h2 {
+    margin: 0;
+}
+
 /* Calendar Grid */
 .calendar-grid {
     display: grid;

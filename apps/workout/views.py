@@ -573,8 +573,8 @@ def analytics(request):
 
     lang = translation.get_language()
 
-    # Get date range for current year
-    current_year = datetime.now().year
+    # Get year from URL parameter or use current year
+    current_year = int(request.GET.get("year", datetime.now().year))
     current_month = datetime.now().month
 
     # Get all workouts for calendar view

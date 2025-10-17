@@ -24,6 +24,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Year navigation functionality
+    const prevYearBtn = document.getElementById('prev-year');
+    const nextYearBtn = document.getElementById('next-year');
+    const currentYearSpan = document.getElementById('current-year');
+
+    if (prevYearBtn && nextYearBtn && currentYearSpan) {
+        const currentYear = parseInt(currentYearSpan.textContent);
+
+        prevYearBtn.addEventListener('click', () => {
+            const newYear = currentYear - 1;
+            window.location.href = `?year=${newYear}`;
+        });
+
+        nextYearBtn.addEventListener('click', () => {
+            const newYear = currentYear + 1;
+            window.location.href = `?year=${newYear}`;
+        });
+    }
+
     // Calendar day click functionality
     const calendarDays = document.querySelectorAll('.calendar-day.has-workout');
     calendarDays.forEach(day => {

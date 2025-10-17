@@ -1,17 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# French translation for Portfolio Workout App
+# Copyright (C) 2025
+# This file is distributed under the same license as the Portfolio package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Portfolio 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-15 18:58+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2025-10-17 23:24+0200\n"
+"PO-Revision-Date: 2025-10-17 23:30+0200\n"
+"Last-Translator: Claude Code\n"
+"Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,19 +17,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: apps/home/templates/home/header.html:11
-#: apps/home/templates/home/header.html:21
-#: apps/home/templates/home/header.html:26
+#: apps/home/templates/home/header.html:17
 msgid "Home"
 msgstr "Accueil"
 
-#: apps/home/templates/home/header.html:13
-#: apps/home/templates/home/header.html:18
-#: apps/home/templates/home/header.html:23
-msgid "News"
-msgstr "Actualités"
-
-#: apps/home/templates/home/header.html:16
-#: apps/home/templates/home/header.html:28
+#: apps/home/templates/home/header.html:14
 msgid "Workout"
 msgstr "Sports"
 
@@ -86,89 +76,6 @@ msgstr ""
 msgid "Reset All Data"
 msgstr "Réinitialiser toutes les données"
 
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:11
-msgid "News Feed"
-msgstr "Fil d'actualité"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:18
-msgid "Fetch Latest Articles"
-msgstr "Récupérer les derniers articles"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:24
-msgid "Export RSS Feeds"
-msgstr "Exporter les flux RSS"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:29
-msgid "Import RSS Feeds"
-msgstr "Importer les flux RSS"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:39
-msgid "Delete Articles"
-msgstr "Supprimer les articles"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:44
-msgid "Delete RSS Feeds"
-msgstr "Supprimer les flux RSS"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:49
-msgid "Clear All"
-msgstr "Tout effacer"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:77
-msgid "Search articles..."
-msgstr "Rechercher des articles..."
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:91
-#, python-format
-msgid "%(total)s article"
-msgid_plural "%(total)s articles"
-msgstr[0] "%(total)s article"
-msgstr[1] "%(total)s articles"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:97
-#, python-format
-msgid "Search results for: \"<strong>%(search_query)s</strong>\""
-msgstr "Résultats de recherche pour : \"<strong>%(search_query)s</strong>\""
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:103
-#: apps/workout/templates/workout/exercise_library.html:40
-#: apps/workout/templates/workout/exercise_library.html:50
-#: apps/workout/templates/workout/exercise_library.html:60
-#: apps/workout/views.py:307
-msgid "All"
-msgstr "Tous"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:115
-msgid "Featured Articles"
-msgstr "Articles en vedette"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:124
-msgid "Featured"
-msgstr "En vedette"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:224
-msgid "of"
-msgstr "sur"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:241
-msgid "No articles found"
-msgstr "Aucun article trouvé"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:243
-#, python-format
-msgid "No articles match your search for \"%(search_query)s\""
-msgstr ""
-"Aucun article ne correspond à votre recherche pour \"%(search_query)s\""
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:244
-msgid "Clear search"
-msgstr "Effacer la recherche"
-
-#: apps/newsfeed/templates/newsfeed/newsfeed_home.html:246
-msgid "Try adding some RSS feeds and running the fetch command!"
-msgstr ""
-"Essayez d'ajouter des flux RSS et d'exécuter la commande de récupération !"
-
 #: apps/workout/templates/workout/add_workout.html:10
 #: apps/workout/templates/workout/workout.html:15
 msgid "Add Workout"
@@ -198,8 +105,69 @@ msgstr "Ajouter un exercice"
 msgid "Save Workout"
 msgstr "Enregistrer Séance"
 
+#: apps/workout/templates/workout/analytics.html:12
+msgid "Workout Analytics"
+msgstr "Analytiques de Sport"
+
+#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:683
+msgid "Calendar"
+msgstr "Calendrier"
+
+#: apps/workout/templates/workout/analytics.html:17 apps/workout/views.py:684
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: apps/workout/templates/workout/analytics.html:18
+#: apps/workout/templates/workout/analytics.html:113 apps/workout/views.py:685
+msgid "Personal Records"
+msgstr "Records Personnels"
+
+#: apps/workout/templates/workout/analytics.html:24
+msgid "Previous year"
+msgstr ""
+
+#: apps/workout/templates/workout/analytics.html:29
+msgid "Workout Calendar"
+msgstr "Calendrier des Séances"
+
+#: apps/workout/templates/workout/analytics.html:30
+msgid "Next year"
+msgstr ""
+
+#: apps/workout/templates/workout/analytics.html:71
+msgid "Progress Dashboard"
+msgstr "Tableau de bord de Progression"
+
+#: apps/workout/templates/workout/analytics.html:77 apps/workout/views.py:686
+msgid "Total Workouts"
+msgstr "Total des Séances"
+
+#: apps/workout/templates/workout/analytics.html:81 apps/workout/views.py:687
+msgid "Total Exercises"
+msgstr "Total des Exercices"
+
+#: apps/workout/templates/workout/analytics.html:85 apps/workout/views.py:688
+msgid "Total Volume"
+msgstr "Volume Total"
+
+#: apps/workout/templates/workout/analytics.html:93
+msgid "Weekly Workout Trend"
+msgstr "Tendance Hebdomadaire des Séances"
+
+#: apps/workout/templates/workout/analytics.html:99 apps/workout/views.py:691
+msgid "Workouts by Type"
+msgstr "Séances par Type"
+
+#: apps/workout/templates/workout/analytics.html:105
+msgid "Top 10 Exercises"
+msgstr "Top 10 des Exercices"
+
+#: apps/workout/templates/workout/analytics.html:128
+msgid "No personal records yet. Keep training!"
+msgstr "Aucun record personnel pour le moment. Continuez à vous entraîner !"
+
 #: apps/workout/templates/workout/exercise_library.html:9
-#: apps/workout/views.py:302
+#: apps/workout/views.py:381
 msgid "Exercise Library"
 msgstr "Liste d'exercice"
 
@@ -224,34 +192,61 @@ msgid "Clear All Data"
 msgstr "Tout effacer"
 
 #: apps/workout/templates/workout/exercise_library.html:35
-#: apps/workout/views.py:303
+#: apps/workout/views.py:382
 msgid "Filters"
 msgstr "Filtres"
 
 #: apps/workout/templates/workout/exercise_library.html:38
-#: apps/workout/templates/workout/exercise_library.html:84
-#: apps/workout/views.py:304
+#, fuzzy
+#| msgid "Exercise"
+msgid "Exercise Name"
+msgstr "Exercice"
+
+#: apps/workout/templates/workout/exercise_library.html:39
+#, fuzzy
+#| msgid "Search articles..."
+msgid "Search by name..."
+msgstr "Rechercher des articles..."
+
+#: apps/workout/templates/workout/exercise_library.html:43
+#: apps/workout/templates/workout/exercise_library.html:92
+#: apps/workout/templates/workout/exercise_library_grid.html:14
+#: apps/workout/views.py:383
 msgid "Muscle Group"
 msgstr "Groupe de muscle"
 
-#: apps/workout/templates/workout/exercise_library.html:48
-#: apps/workout/templates/workout/exercise_library.html:97
-#: apps/workout/views.py:305
+#: apps/workout/templates/workout/exercise_library.html:45
+#: apps/workout/templates/workout/exercise_library.html:55
+#: apps/workout/templates/workout/exercise_library.html:65
+#: apps/workout/views.py:386
+msgid "All"
+msgstr "Tous"
+
+#: apps/workout/templates/workout/exercise_library.html:53
+#: apps/workout/templates/workout/exercise_library.html:105
+#: apps/workout/templates/workout/exercise_library_grid.html:27
+#: apps/workout/views.py:384
 msgid "Difficulty"
 msgstr "Difficulté"
 
-#: apps/workout/templates/workout/exercise_library.html:58
-#: apps/workout/templates/workout/exercise_library.html:106
-#: apps/workout/views.py:306
+#: apps/workout/templates/workout/exercise_library.html:63
+#: apps/workout/templates/workout/exercise_library.html:114
+#: apps/workout/templates/workout/exercise_library_grid.html:36
+#: apps/workout/views.py:385
 msgid "Equipment"
 msgstr "Équipement"
 
-#: apps/workout/templates/workout/exercise_library.html:67
+#: apps/workout/templates/workout/exercise_library.html:73
 msgid "Apply Filters"
 msgstr "Appliquer filtres"
 
-#: apps/workout/templates/workout/exercise_library.html:118
-#: apps/workout/views.py:308
+#: apps/workout/templates/workout/exercise_library.html:74
+msgid "Reset Filters"
+msgstr "Réinitialiser les Filtres"
+
+#: apps/workout/templates/workout/exercise_library.html:126
+#: apps/workout/templates/workout/exercise_library_grid.html:48
+#: apps/workout/views.py:387
 msgid "No exercises found."
 msgstr "Aucun Exercice trouvé"
 
@@ -263,37 +258,37 @@ msgstr "Séances de sports"
 msgid "Go to Library"
 msgstr "Liste d'exercices"
 
-#: apps/workout/templates/workout/workout.html:34
+#: apps/workout/templates/workout/workout.html:34 apps/workout/views.py:98
 msgid "Edit"
 msgstr "Modifier"
 
 #: apps/workout/templates/workout/workout.html:44
-#: apps/workout/templates/workout/workout.html:65 apps/workout/views.py:70
-#: apps/workout/views.py:71
+#: apps/workout/templates/workout/workout.html:65 apps/workout/views.py:91
+#: apps/workout/views.py:92
 msgid "Exercise"
 msgstr "Exercice"
 
-#: apps/workout/templates/workout/workout.html:45 apps/workout/views.py:72
-#: apps/workout/views.py:190
+#: apps/workout/templates/workout/workout.html:45 apps/workout/views.py:93
+#: apps/workout/views.py:256
 msgid "Series"
 msgstr "Séries"
 
-#: apps/workout/templates/workout/workout.html:46 apps/workout/views.py:73
-#: apps/workout/views.py:191
+#: apps/workout/templates/workout/workout.html:46 apps/workout/views.py:94
+#: apps/workout/views.py:257
 msgid "Reps"
 msgstr "Reps"
 
-#: apps/workout/templates/workout/workout.html:47 apps/workout/views.py:74
-#: apps/workout/views.py:193
+#: apps/workout/templates/workout/workout.html:47 apps/workout/views.py:95
+#: apps/workout/views.py:259
 msgid "Weight (kg)"
 msgstr "Poids (kg)"
 
-#: apps/workout/templates/workout/workout.html:66 apps/workout/views.py:75
+#: apps/workout/templates/workout/workout.html:66 apps/workout/views.py:96
 msgid "Duration (min)"
 msgstr "Durée (min)"
 
-#: apps/workout/templates/workout/workout.html:67 apps/workout/views.py:76
-#: apps/workout/views.py:195
+#: apps/workout/templates/workout/workout.html:67 apps/workout/views.py:97
+#: apps/workout/views.py:261
 msgid "Distance (m)"
 msgstr "Distance (m)"
 
@@ -309,17 +304,95 @@ msgstr "Charger plus"
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: apps/workout/views.py:189
+#: apps/workout/views.py:255
 msgid "Sets"
 msgstr "Sets"
 
-#: apps/workout/views.py:192
+#: apps/workout/views.py:258
 msgid "Repetitions"
 msgstr "Répétitions"
 
-#: apps/workout/views.py:194
+#: apps/workout/views.py:260
 msgid "Duration (sec)"
 msgstr "Durée (sec)"
+
+#: apps/workout/views.py:682
+msgid "Analytics"
+msgstr "Analytiques"
+
+#: apps/workout/views.py:689
+msgid "Current Streak"
+msgstr "Série Actuelle"
+
+#: apps/workout/views.py:690
+msgid "Longest Streak"
+msgstr "Plus Longue Série"
+
+#: apps/workout/views.py:692
+msgid "Weekly Trend"
+msgstr "Tendance Hebdomadaire"
+
+#: apps/workout/views.py:693
+msgid "Top Exercises"
+msgstr "Meilleurs Exercices"
+
+#~ msgid "News"
+#~ msgstr "Actualités"
+
+#~ msgid "News Feed"
+#~ msgstr "Fil d'actualité"
+
+#~ msgid "Fetch Latest Articles"
+#~ msgstr "Récupérer les derniers articles"
+
+#~ msgid "Export RSS Feeds"
+#~ msgstr "Exporter les flux RSS"
+
+#~ msgid "Import RSS Feeds"
+#~ msgstr "Importer les flux RSS"
+
+#~ msgid "Delete Articles"
+#~ msgstr "Supprimer les articles"
+
+#~ msgid "Delete RSS Feeds"
+#~ msgstr "Supprimer les flux RSS"
+
+#~ msgid "Clear All"
+#~ msgstr "Tout effacer"
+
+#, python-format
+#~ msgid "%(total)s article"
+#~ msgid_plural "%(total)s articles"
+#~ msgstr[0] "%(total)s article"
+#~ msgstr[1] "%(total)s articles"
+
+#, python-format
+#~ msgid "Search results for: \"<strong>%(search_query)s</strong>\""
+#~ msgstr "Résultats de recherche pour : \"<strong>%(search_query)s</strong>\""
+
+#~ msgid "Featured Articles"
+#~ msgstr "Articles en vedette"
+
+#~ msgid "Featured"
+#~ msgstr "En vedette"
+
+#~ msgid "of"
+#~ msgstr "sur"
+
+#~ msgid "No articles found"
+#~ msgstr "Aucun article trouvé"
+
+#, python-format
+#~ msgid "No articles match your search for \"%(search_query)s\""
+#~ msgstr ""
+#~ "Aucun article ne correspond à votre recherche pour \"%(search_query)s\""
+
+#~ msgid "Clear search"
+#~ msgstr "Effacer la recherche"
+
+#~ msgid "Try adding some RSS feeds and running the fetch command!"
+#~ msgstr ""
+#~ "Essayez d'ajouter des flux RSS et d'exécuter la commande de récupération !"
 
 #~ msgid "Save Changes"
 #~ msgstr "Sauvegarder les modifications"

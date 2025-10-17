@@ -20,7 +20,19 @@
 
         <!-- Calendar View Section -->
         <div class="analytics-section active" id="calendar-section">
-            <h2>{% trans "Workout Calendar" %} - {{ current_year }}</h2>
+            <div class="year-navigation">
+                <button class="year-nav-btn" id="prev-year" title="{% trans 'Previous year' %}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <h2>{% trans "Workout Calendar" %} - <span id="current-year">{{ current_year }}</span></h2>
+                <button class="year-nav-btn" id="next-year" title="{% trans 'Next year' %}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
             <div class="calendar-grid">
                 {% for month in months %}
                 <div class="calendar-month {% if month.is_current %}current-month{% endif %}">
