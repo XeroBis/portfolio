@@ -331,6 +331,7 @@
         padding: 15px;
     }
 
+
     .records-grid {
         grid-template-columns: 1fr;
         gap: 15px;

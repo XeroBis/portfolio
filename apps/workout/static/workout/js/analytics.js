@@ -134,6 +134,11 @@ function initializeCharts() {
 
     const exercisesCtx = document.getElementById('topExercisesChart');
     if (exercisesCtx) {
+        // Determine font size based on screen width
+        const isMobile = window.innerWidth <= 480;
+        const isTablet = window.innerWidth <= 768;
+        const labelFontSize = isMobile ? 9 : isTablet ? 10 : 11;
+
         new Chart(exercisesCtx, {
             type: 'bar',
             data: {
@@ -149,11 +154,31 @@ function initializeCharts() {
             options: {
                 ...commonOptions,
                 indexAxis: 'y',
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: 10
+                    }
+                },
                 scales: {
                     x: {
                         beginAtZero: true,
                         ticks: {
-                            stepSize: 1
+                            stepSize: 1,
+                            font: {
+                                size: labelFontSize
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            autoSkip: false,
+                            font: {
+                                size: labelFontSize
+                            }
                         }
                     }
                 },

@@ -590,7 +590,7 @@ def analytics(request):
     top_exercises = list(
         OneExercice.objects.values("name__name")
         .annotate(count=Count("id"))
-        .order_by("-count")[:10]
+        .order_by("-count")[:5]
     )
 
     # Generate calendar months for the year
