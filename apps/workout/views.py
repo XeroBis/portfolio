@@ -1,7 +1,7 @@
 import logging
 import os
 import tempfile
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Union
 
 from django.contrib.auth.decorators import login_required
@@ -20,6 +20,7 @@ from .models import (
     Exercice,
     MuscleGroup,
     OneExercice,
+    PersonalRecord,
     StrengthExerciseLog,
     TypeWorkout,
     Workout,
@@ -477,3 +478,175 @@ def clear_data(request):
     except Exception as e:
         logger.error(f"Error clearing data: {str(e)}", exc_info=True)
         return JsonResponse({"error": str(e)}, status=500)
+
+
+def analytics(request):
+    """Analytics page with calendar view, progress dashboard, and PR tracking"""
+    import calendar as cal
+    import json
+    from collections import defaultdict
+
+    from django.db.models import Count, F, Sum
+
+    lang = translation.get_language()
+
+    # Get date range for current year
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+
+    # Get all workouts for calendar view
+    workouts = Workout.objects.filter(date__year=current_year).order_by("date")
+
+    # Create calendar data structure
+    calendar_data = defaultdict(list)
+    for workout in workouts:
+        month_key = f"{workout.date.year}-{workout.date.month:02d}"
+        calendar_data[month_key].append(
+            {
+                "day": workout.date.day,
+                "type": (
+                    workout.type_workout.name_workout
+                    if workout.type_workout
+                    else "No Type"
+                ),
+                "duration": workout.duration,
+                "id": workout.id,
+            }
+        )
+
+    # Calculate workout streaks
+    all_workout_dates = list(
+        Workout.objects.order_by("date").values_list("date", flat=True)
+    )
+    current_streak = 0
+    longest_streak = 0
+
+    if all_workout_dates:
+        streak = 1
+        for i in range(len(all_workout_dates) - 1):
+            diff = (all_workout_dates[i + 1] - all_workout_dates[i]).days
+            if diff == 1:
+                streak += 1
+            else:
+                longest_streak = max(longest_streak, streak)
+                streak = 1
+        longest_streak = max(longest_streak, streak)
+
+        # Calculate current streak
+        today = datetime.now().date()
+        if all_workout_dates:
+            last_workout = all_workout_dates[-1]
+            diff = (today - last_workout).days
+            if diff <= 1:
+                streak = 1
+                for i in range(len(all_workout_dates) - 1, 0, -1):
+                    diff = (all_workout_dates[i] - all_workout_dates[i - 1]).days
+                    if diff == 1:
+                        streak += 1
+                    else:
+                        break
+                current_streak = streak
+
+    # Dashboard statistics
+    total_workouts = Workout.objects.count()
+    total_exercises = OneExercice.objects.count()
+
+    # Calculate total volume (for strength exercises)
+    total_volume = (
+        StrengthExerciseLog.objects.aggregate(
+            total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
+        )["total"]
+        or 0
+    )
+
+    # Workouts by type
+    workouts_by_type = list(
+        Workout.objects.values("type_workout__name_workout")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+    )
+
+    twelve_weeks_ago = datetime.now().date() - timedelta(weeks=12)
+    weekly_workouts = []
+
+    for week in range(12):
+        week_start = twelve_weeks_ago + timedelta(weeks=week)
+        week_end = week_start + timedelta(days=6)
+        count = Workout.objects.filter(date__gte=week_start, date__lte=week_end).count()
+        weekly_workouts.append(
+            {
+                "week": week + 1,
+                "count": count,
+                "start": week_start.strftime("%m/%d"),
+            }
+        )
+
+    # Personal Records
+    personal_records = PersonalRecord.objects.select_related(
+        "exercise", "workout"
+    ).order_by("-date_achieved")[:10]
+
+    # Top exercises by frequency
+    top_exercises = list(
+        OneExercice.objects.values("name__name")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:10]
+    )
+
+    # Generate calendar months for the year
+    months_data = []
+    for month in range(1, 13):
+        month_name = cal.month_name[month]
+        month_key = f"{current_year}-{month:02d}"
+
+        # Get first day of month and number of days
+        first_day = datetime(current_year, month, 1)
+        num_days = cal.monthrange(current_year, month)[1]
+        start_weekday = first_day.weekday()
+
+        # Get workouts for this month
+        month_workouts = calendar_data.get(month_key, [])
+        workout_days = {w["day"]: w for w in month_workouts}
+
+        months_data.append(
+            {
+                "name": month_name,
+                "number": month,
+                "num_days": num_days,
+                "start_weekday": start_weekday,
+                "workout_days": workout_days,
+                "is_current": month == current_month,
+            }
+        )
+
+    context = {
+        "page": "analytics",
+        "lang": lang,
+        "current_year": current_year,
+        "months": months_data,
+        "total_workouts": total_workouts,
+        "total_exercises": total_exercises,
+        "total_volume": int(total_volume),
+        "current_streak": current_streak,
+        "longest_streak": longest_streak,
+        "workouts_by_type": json.dumps(workouts_by_type),
+        "weekly_workouts": json.dumps(weekly_workouts),
+        "personal_records": personal_records,
+        "top_exercises": json.dumps(top_exercises),
+        "translations": {
+            "analytics": gettext("Analytics"),
+            "calendar": gettext("Calendar"),
+            "dashboard": gettext("Dashboard"),
+            "personal_records": gettext("Personal Records"),
+            "total_workouts": gettext("Total Workouts"),
+            "total_exercises": gettext("Total Exercises"),
+            "total_volume": gettext("Total Volume"),
+            "current_streak": gettext("Current Streak"),
+            "longest_streak": gettext("Longest Streak"),
+            "workouts_by_type": gettext("Workouts by Type"),
+            "weekly_trend": gettext("Weekly Trend"),
+            "top_exercises": gettext("Top Exercises"),
+        },
+    }
+
+    return render(request, "workout/analytics.html", context)

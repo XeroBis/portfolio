@@ -107,8 +107,5 @@ skips = ["B101", "B601"]
 [tool.bandit.assert_used]
 skips = ["*/test_*.py", "*/tests.py"]
 
-[tool.setuptools]
-packages = ["apps", "mysite"]
-
 [tool.setuptools.package-data]
 "*" = ["*.html", "*.css", "*.js", "*.json", "*.txt", "*.po", "*.mo"]

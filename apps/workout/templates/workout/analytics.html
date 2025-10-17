@@ -1,0 +1,148 @@
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% include "home/head.html" %}
+
+<body data-lang="{{ lang }}">
+    {% include "home/header.html" %}
+    <link rel="stylesheet" href="{% static 'workout/css/analytics.css' %}">
+
+    <div class="container_analytics">
+        <h1>{% trans "Workout Analytics" %}</h1>
+
+        <!-- Navigation Tabs -->
+        <div class="analytics-tabs">
+            <button class="tab-button active" data-tab="calendar">{% trans "Calendar" %}</button>
+            <button class="tab-button" data-tab="dashboard">{% trans "Dashboard" %}</button>
+            <button class="tab-button" data-tab="records">{% trans "Personal Records" %}</button>
+        </div>
+
+        <!-- Calendar View Section -->
+        <div class="analytics-section active" id="calendar-section">
+            <h2>{% trans "Workout Calendar" %} - {{ current_year }}</h2>
+            <div class="calendar-grid">
+                {% for month in months %}
+                <div class="calendar-month {% if month.is_current %}current-month{% endif %}">
+                    <h3>{{ month.name }}</h3>
+                    <div class="calendar-weekdays">
+                        <div class="weekday">M</div>
+                        <div class="weekday">T</div>
+                        <div class="weekday">W</div>
+                        <div class="weekday">T</div>
+                        <div class="weekday">F</div>
+                        <div class="weekday">S</div>
+                        <div class="weekday">S</div>
+                    </div>
+                    <div class="calendar-days">
+                        {% for _ in "x"|rjust:month.start_weekday %}
+                        <div class="calendar-day empty"></div>
+                        {% endfor %}
+                        {% for day in "x"|rjust:month.num_days %}
+                        {% with day_num=forloop.counter %}
+                        {% with workout=month.workout_days|get_item:day_num %}
+                        <div class="calendar-day {% if workout %}has-workout{% endif %}"
+                             {% if workout %}data-workout-type="{{ workout.type }}" data-workout-id="{{ workout.id }}" title="{{ workout.type }} - {{ workout.duration }}min"{% endif %}>
+                            {{ day_num }}
+                        </div>
+                        {% endwith %}
+                        {% endwith %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="analytics-section" id="dashboard-section">
+            <h2>{% trans "Progress Dashboard" %}</h2>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏋️</div>
+                    <div class="stat-value">{{ total_workouts }}</div>
+                    <div class="stat-label">{% trans "Total Workouts" %}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💪</div>
+                    <div class="stat-value">{{ total_exercises }}</div>
+                    <div class="stat-label">{% trans "Total Exercises" %}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value">{{ total_volume|floatformat:0 }} kg</div>
+                    <div class="stat-label">{% trans "Total Volume" %}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value">{{ current_streak }}</div>
+                    <div class="stat-label">{% trans "Current Streak" %}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value">{{ longest_streak }}</div>
+                    <div class="stat-label">{% trans "Longest Streak" %}</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <!-- Weekly Trend Chart -->
+                <div class="chart-card">
+                    <h3>{% trans "Weekly Workout Trend" %} (Last 12 Weeks)</h3>
+                    <canvas id="weeklyTrendChart"></canvas>
+                </div>
+
+                <!-- Workouts by Type Chart -->
+                <div class="chart-card">
+                    <h3>{% trans "Workouts by Type" %}</h3>
+                    <canvas id="workoutTypeChart"></canvas>
+                </div>
+
+                <!-- Top Exercises -->
+                <div class="chart-card">
+                    <h3>{% trans "Top 10 Exercises" %}</h3>
+                    <canvas id="topExercisesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Records Section -->
+        <div class="analytics-section" id="records-section">
+            <h2>{% trans "Personal Records" %}</h2>
+
+            {% if personal_records %}
+            <div class="records-grid">
+                {% for pr in personal_records %}
+                <div class="record-card">
+                    <div class="record-exercise">{{ pr.exercise.name }}</div>
+                    <div class="record-type">{{ pr.get_record_type_display }}</div>
+                    <div class="record-value">{{ pr.value|floatformat:0 }}{% if pr.record_type == 'max_weight' %} kg{% elif pr.record_type == 'max_volume' %} kg{% else %} reps{% endif %}</div>
+                    <div class="record-date">{{ pr.date_achieved|date:"M d, Y" }}</div>
+                    {% if pr.notes %}
+                    <div class="record-notes">{{ pr.notes }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>{% trans "No personal records yet. Keep training!" %}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Pass data from Django to JavaScript
+        const weeklyWorkouts = {{ weekly_workouts|safe }};
+        const workoutsByType = {{ workouts_by_type|safe }};
+        const topExercises = {{ top_exercises|safe }};
+    </script>
+    <script src="{% static 'workout/js/analytics.js' %}"></script>
+
+</body>
+</html>

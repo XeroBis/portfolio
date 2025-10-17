@@ -68,3 +68,11 @@ def group_consecutive_exercises(exercises):
         groups.append({"type": current_type, "exercises": current_group})
 
     return groups
+
+
+@register.filter
+def get_item(dictionary, key):
+    """Get an item from a dictionary by key"""
+    if dictionary is None:
+        return None
+    return dictionary.get(key)

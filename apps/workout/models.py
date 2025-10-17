@@ -174,3 +174,33 @@ class OneExercice(models.Model):
         )
 
         return f"{self.position}. {exercice_name} - {seance_date}"
+
+
+class PersonalRecord(models.Model):
+    """
+    Track personal records for strength exercises
+    """
+
+    RECORD_TYPES = [
+        ("max_weight", "Max Weight"),
+        ("max_reps", "Max Reps"),
+        ("max_volume", "Max Volume"),
+    ]
+
+    exercise = models.ForeignKey(
+        Exercice, on_delete=models.CASCADE, related_name="personal_records"
+    )
+    record_type = models.CharField(max_length=20, choices=RECORD_TYPES)
+    value = models.FloatField()
+    date_achieved = models.DateField(auto_now_add=True)
+    workout = models.ForeignKey(
+        Workout, on_delete=models.CASCADE, null=True, blank=True
+    )
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-date_achieved"]
+        unique_together = [["exercise", "record_type"]]
+
+    def __str__(self):
+        return f"{self.exercise.name} - {self.get_record_type_display()}: {self.value} ({self.date_achieved})"

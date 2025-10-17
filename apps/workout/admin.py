@@ -8,6 +8,7 @@ from .models import (
     Exercice,
     MuscleGroup,
     OneExercice,
+    PersonalRecord,
     StrengthExerciseLog,
     TypeWorkout,
     Workout,
@@ -284,3 +285,12 @@ class OneExerciceAdmin(admin.ModelAdmin):
                 )
                 return f"{obj.exercise_log.duration_seconds}s{distance}"
         return "No details"
+
+
+@admin.register(PersonalRecord)
+class PersonalRecordAdmin(admin.ModelAdmin):
+    list_display = ("id", "exercise", "record_type", "value", "date_achieved")
+    list_filter = ("record_type", "date_achieved", "exercise__name")
+    search_fields = ("exercise__name", "notes")
+    ordering = ("-date_achieved",)
+    raw_id_fields = ("exercise", "workout")
