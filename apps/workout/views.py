@@ -487,9 +487,10 @@ def calculate_personal_records(limit=10):
     """
     from django.db.models import F
 
-    # Get all strength exercise logs with calculated volume
+    # Get all strength exercise logs with calculated volume (only exercises with weight)
     logs = (
         StrengthExerciseLog.objects.select_related("exercise", "workout")
+        .filter(weight__gt=0)  # Only include exercises with weight > 0
         .annotate(volume=F("nb_series") * F("nb_repetition") * F("weight"))
         .order_by("-workout__date")
     )
@@ -504,8 +505,6 @@ def calculate_personal_records(limit=10):
         if exercise_id not in records_by_exercise:
             records_by_exercise[exercise_id] = {
                 "max_weight": None,
-                "max_reps": None,
-                "max_volume": None,
             }
 
         exercise_records = records_by_exercise[exercise_id]
@@ -522,34 +521,6 @@ def calculate_personal_records(limit=10):
                 "date_achieved": log.workout.date,
                 "workout": log.workout,
                 "display_name": "Max Weight",
-            }
-
-        # Check for max reps record
-        if (
-            exercise_records["max_reps"] is None
-            or log.nb_repetition > exercise_records["max_reps"]["value"]
-        ):
-            exercise_records["max_reps"] = {
-                "exercise": log.exercise,
-                "record_type": "max_reps",
-                "value": log.nb_repetition,
-                "date_achieved": log.workout.date,
-                "workout": log.workout,
-                "display_name": "Max Reps",
-            }
-
-        # Check for max volume record
-        if (
-            exercise_records["max_volume"] is None
-            or log.volume > exercise_records["max_volume"]["value"]
-        ):
-            exercise_records["max_volume"] = {
-                "exercise": log.exercise,
-                "record_type": "max_volume",
-                "value": log.volume,
-                "date_achieved": log.workout.date,
-                "workout": log.workout,
-                "display_name": "Max Volume",
             }
 
     # Collect all records
@@ -641,9 +612,25 @@ def analytics(request):
     )
 
     # Generate calendar months for the year
+    # Define translatable month names
+    month_names = [
+        gettext("January"),
+        gettext("February"),
+        gettext("March"),
+        gettext("April"),
+        gettext("May"),
+        gettext("June"),
+        gettext("July"),
+        gettext("August"),
+        gettext("September"),
+        gettext("October"),
+        gettext("November"),
+        gettext("December"),
+    ]
+
     months_data = []
     for month in range(1, 13):
-        month_name = cal.month_name[month]
+        month_name = month_names[month - 1]
         month_key = f"{current_year}-{month:02d}"
 
         # Get first day of month and number of days
