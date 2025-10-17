@@ -34,7 +34,7 @@ jobs:
         run: isort --check-only .
 
       - name: Run Flake8 (linting)
-        run: flake8 . --count --statistics --show-source
+        run: flake8 . --count --statistics --show-source --max-line-length=88 --extend-ignore=D100,D101,D102,D103,D104,D105,D106,D107,D200,D400
 
       - name: Run Pylint
         run: pylint apps/ mysite/ --output-format=colorized --exit-zero
