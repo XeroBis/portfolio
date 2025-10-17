@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.home.apps.HomeConfig',
     'apps.workout.apps.WorkoutConfig',
-    'apps.newsfeed.apps.NewsfeedConfig'
 ]
 
 MIDDLEWARE = [
@@ -194,11 +193,6 @@ LOGGING = {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": True,
-        },
-        "apps.newsfeed": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
         },
         "apps.workout": {
             "handlers": ["console"],

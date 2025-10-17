@@ -23,7 +23,6 @@ from django.urls import re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("news/", include("apps.newsfeed.urls")),
     path("i18n/", include("django.conf.urls.i18n")),
     path("workout/", include("apps.workout.urls")),
     path("", include("apps.home.urls")),
