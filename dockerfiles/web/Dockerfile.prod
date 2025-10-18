@@ -12,6 +12,9 @@ ENV PYTHONUNBUFFERED=1
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 COPY pyproject.toml /app/
+COPY README.md /app/
+COPY apps/ /app/apps/
+COPY mysite/ /app/mysite/
 
 RUN uv pip install --system --no-cache .
 
@@ -34,7 +37,6 @@ ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y gettext
 
-RUN chown -R appuser /app/static
 USER appuser
 
 CMD ["sh", "-c", "python manage.py collectstatic --noinput && python manage.py compilemessages && python manage.py migrate && python manage.py ensure_superuser && gunicorn --bind 0.0.0.0:8000 --workers 3 mysite.wsgi:application"]

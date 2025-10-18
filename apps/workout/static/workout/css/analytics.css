@@ -16,12 +16,15 @@
 .analytics-tabs {
     display: flex;
     justify-content: center;
-    gap: 10px;
     margin-bottom: 30px;
     border-bottom: 2px solid var(--color-border-secondary);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .tab-button {
+    flex: 1;
     padding: 12px 30px;
     border: none;
     background: none;
@@ -31,6 +34,7 @@
     color: var(--color-text-tertiary);
     border-bottom: 3px solid transparent;
     transition: all 0.3s ease;
+    text-align: center;
 }
 
 .tab-button:hover {
