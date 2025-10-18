@@ -494,10 +494,6 @@
         text-align: left;
     }
 
-    .date-filter input[type="date"] {
-        width: 100%;
-    }
-
     .filter-actions {
         flex-direction: column;
     }

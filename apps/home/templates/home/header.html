@@ -3,22 +3,28 @@
 <header id="contenu_header">
     <a href="{% url 'home' %}" id="name_href" class="cliquable">Alan Bignon</a>
     <div id="links">
-        <a href="mailto:contact@alanbignon.com" class="cliquable" id="send_mail">
+        <a href="mailto:contact@alanbignon.com" class="cliquable nav-item" id="send_mail">
             <i class="fas fa-envelope"></i>
         </a>
-        <span id="span_point">•</span>
-        {% if page == "workout" %}
-        <a href="/" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-        {% endif %}
-        {% if page == "home" %}
-        <a href="/workout/" id="my_projects" class="cliquable">{% trans "Workout" %}</a>
-        {% endif %}
-        {% if page == "add_workout" or page == "edit_workout" or page == "exercise_library" or page == "analytics" %}
-        <a href="{% url 'home' %}" id="my_projects" class="cliquable">{% trans "Home" %}</a>
-        {% endif %}
-        <span id="span_point">•</span>
+        <span id="span_point" class="nav-separator">•</span>
 
-        <div class="flag cliquable">
+        <a href="{% url 'home' %}" class="cliquable nav-item" id="home_link">{% trans "Home" %}</a>
+
+        <span id="span_point" class="nav-separator">•</span>
+
+        <div class="dropdown nav-item">
+            <a href="{% url 'workout' %}" class="cliquable dropdown-toggle" id="workout_link">{% trans "Workout" %}</a>
+            <div class="dropdown-menu">
+                <a href="{% url 'workout' %}" class="dropdown-item cliquable">{% trans "Sessions" %}</a>
+                <a href="{% url 'add_workout' %}" class="dropdown-item cliquable">{% trans "+ Workout" %}</a>
+                <a href="{% url 'exercise_library' %}" class="dropdown-item cliquable">{% trans "Exercises" %}</a>
+                <a href="{% url 'analytics' %}" class="dropdown-item cliquable">{% trans "Analytics" %}</a>
+            </div>
+        </div>
+
+        <span id="span_point" class="nav-separator">•</span>
+
+        <div class="flag cliquable nav-item">
             <form method="post" action="{% url 'set_language' %}" style="display: inline;">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}" />
@@ -28,9 +34,9 @@
             </form>
         </div>
 
-        <span id="span_point">•</span>
+        <span id="span_point" class="nav-separator">•</span>
 
-        <div class="flag cliquable">
+        <div class="flag cliquable nav-item">
             <form method="post" action="{% url 'set_language' %}" style="display: inline;">
                 {% csrf_token %}
                 <input name="next" type="hidden" value="{{ request.get_full_path }}" />
@@ -41,3 +47,46 @@
         </div>
     </div>
 </header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('.dropdown');
+
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+
+        if (window.innerWidth <= 1100) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Close other dropdowns
+                dropdowns.forEach(other => {
+                    if (other !== dropdown) {
+                        other.querySelector('.dropdown-menu').classList.remove('active');
+                    }
+                });
+
+                menu.classList.toggle('active');
+            });
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.dropdown')) {
+            dropdowns.forEach(dropdown => {
+                dropdown.querySelector('.dropdown-menu').classList.remove('active');
+            });
+        }
+    });
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1100) {
+            dropdowns.forEach(dropdown => {
+                dropdown.querySelector('.dropdown-menu').classList.remove('active');
+            });
+        }
+    });
+});
+</script>

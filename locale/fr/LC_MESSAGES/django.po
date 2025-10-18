@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portfolio 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-18 11:13+0200\n"
+"POT-Creation-Date: 2025-10-18 11:50+0200\n"
 "PO-Revision-Date: 2025-10-17 23:30+0200\n"
 "Last-Translator: Claude Code\n"
 "Language-Team: French\n"
@@ -17,13 +17,28 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: apps/home/templates/home/header.html:11
-#: apps/home/templates/home/header.html:17
 msgid "Home"
 msgstr "Accueil"
 
-#: apps/home/templates/home/header.html:14
+#: apps/home/templates/home/header.html:16
 msgid "Workout"
 msgstr "Sports"
+
+#: apps/home/templates/home/header.html:18
+msgid "Sessions"
+msgstr "Séances"
+
+#: apps/home/templates/home/header.html:19
+msgid "+ Workout"
+msgstr "+ Séance"
+
+#: apps/home/templates/home/header.html:20
+msgid "Exercises"
+msgstr "Exercices"
+
+#: apps/home/templates/home/header.html:21 apps/workout/views.py:1011
+msgid "Analytics"
+msgstr "Statistiques"
 
 #: apps/home/templates/home/home.html:10
 msgid "A great addition to your team!"
@@ -243,7 +258,7 @@ msgstr "Fois Réalisé"
 #: apps/workout/templates/workout/exercise_library.html:9
 #: apps/workout/views.py:381
 msgid "Exercise Library"
-msgstr "Liste d'exercice"
+msgstr "Exercices"
 
 #: apps/workout/templates/workout/exercise_library.html:11
 msgid "Go to Workout"
@@ -328,53 +343,49 @@ msgstr "Aucun Exercice trouvé"
 msgid "Workout Sessions"
 msgstr "Séances de sports"
 
-#: apps/workout/templates/workout/workout.html:18
-msgid "Go to Library"
-msgstr "Liste d'exercices"
-
-#: apps/workout/templates/workout/workout.html:34 apps/workout/views.py:98
+#: apps/workout/templates/workout/workout.html:31 apps/workout/views.py:98
 msgid "Edit"
 msgstr "Modifier"
 
-#: apps/workout/templates/workout/workout.html:44
-#: apps/workout/templates/workout/workout.html:65 apps/workout/views.py:91
+#: apps/workout/templates/workout/workout.html:41
+#: apps/workout/templates/workout/workout.html:62 apps/workout/views.py:91
 #: apps/workout/views.py:92
 msgid "Exercise"
 msgstr "Exercice"
 
-#: apps/workout/templates/workout/workout.html:45 apps/workout/views.py:93
+#: apps/workout/templates/workout/workout.html:42 apps/workout/views.py:93
 #: apps/workout/views.py:256
 msgid "Series"
 msgstr "Séries"
 
-#: apps/workout/templates/workout/workout.html:46 apps/workout/views.py:94
+#: apps/workout/templates/workout/workout.html:43 apps/workout/views.py:94
 #: apps/workout/views.py:257
 msgid "Reps"
 msgstr "Reps"
 
-#: apps/workout/templates/workout/workout.html:47 apps/workout/views.py:95
+#: apps/workout/templates/workout/workout.html:44 apps/workout/views.py:95
 #: apps/workout/views.py:259
 msgid "Weight (kg)"
 msgstr "Poids (kg)"
 
-#: apps/workout/templates/workout/workout.html:66 apps/workout/views.py:96
+#: apps/workout/templates/workout/workout.html:63 apps/workout/views.py:96
 msgid "Duration (min)"
 msgstr "Durée (min)"
 
-#: apps/workout/templates/workout/workout.html:67 apps/workout/views.py:97
+#: apps/workout/templates/workout/workout.html:64 apps/workout/views.py:97
 #: apps/workout/views.py:261
 msgid "Distance (m)"
 msgstr "Distance (m)"
 
-#: apps/workout/templates/workout/workout.html:86
+#: apps/workout/templates/workout/workout.html:83
 msgid "No workouts recorded."
 msgstr "Aucun workout enregistré."
 
-#: apps/workout/templates/workout/workout.html:93
+#: apps/workout/templates/workout/workout.html:90
 msgid "Load More"
 msgstr "Charger plus"
 
-#: apps/workout/templates/workout/workout.html:96
+#: apps/workout/templates/workout/workout.html:93
 msgid "Loading..."
 msgstr "Chargement..."
 
@@ -438,10 +449,6 @@ msgstr "Novembre"
 msgid "December"
 msgstr "Décembre"
 
-#: apps/workout/views.py:1011
-msgid "Analytics"
-msgstr "Analytiques"
-
 #: apps/workout/views.py:1018
 msgid "Current Streak"
 msgstr "Série Actuelle"
@@ -457,6 +464,9 @@ msgstr "Tendance Hebdomadaire"
 #: apps/workout/views.py:1022
 msgid "Top Exercises"
 msgstr "Meilleurs Exercices"
+
+#~ msgid "Go to Library"
+#~ msgstr "Liste d'exercices"
 
 #~ msgid "Workout Analytics"
 #~ msgstr "Analyses des données de sports"
