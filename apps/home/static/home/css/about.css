@@ -1,0 +1,83 @@
+/* ABOUT ME SECTION */
+
+/* Images + texte */
+#about_me_phrase {
+    font-size: 2rem;
+    padding-top: 5%;
+}
+
+#about_me_accroche {
+    font-size: 2.9rem;
+}
+
+.logo {
+    width: 48px;
+}
+
+@media (min-width:1100px) {
+    #img_me {
+        grid-row: 1/3;
+        grid-column: 2;
+    }
+
+    #logo_liens {
+        display: flex;
+        grid-row :4;
+        grid-column: 2;
+    }
+
+    .logo {
+        margin: 2rem;
+        width: 48px;
+    }
+
+    /* about me */
+    #about_me {
+        padding-right: 12%;
+        padding-left: 12%;
+        display: grid;
+    }
+
+    #about_me_txt {
+        grid-row: 2/2;
+        grid-column: 1;
+        margin-bottom: 25%;
+        padding-top: 5%;
+        padding-left: 10%;
+        width: 80%;
+        border-top: 2px solid black;
+    }
+}
+
+@media (max-width:1100px) {
+    #img_me {
+        width: 100%;
+        grid-row: 1;
+        grid-column: 1;
+    }
+
+    #logo_liens {
+        display: flex;
+        grid-row :2;
+        grid-column: 1;
+        justify-content: center;
+    }
+
+    .logo {
+        margin: 2rem;
+        width: 64px;
+    }
+
+    /* about me */
+    #about_me {
+        padding: 2%;
+        display: grid;
+        text-align: center;
+    }
+
+    #about_me_txt {
+        padding-top: 0;
+        grid-row: 3;
+        grid-column: 1;
+    }
+}

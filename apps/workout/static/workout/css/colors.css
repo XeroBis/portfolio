@@ -1,0 +1,108 @@
+:root {
+    /* Primary Colors */
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    /* Text Colors */
+    --color-text-primary: #333;
+    --color-text-secondary: #555;
+    --color-text-tertiary: #666;
+    --color-text-muted: #999;
+
+    /* Background Colors */
+    --color-bg-primary: #fff;
+    --color-bg-secondary: #f8f9fa;
+    --color-bg-tertiary: #fafafa;
+    --color-bg-hover: #f1f1f1;
+    --color-bg-overlay: rgba(255, 255, 255, 0.98);
+
+    /* Border Colors */
+    --color-border-primary: #ddd;
+    --color-border-secondary: #e0e0e0;
+    --color-border-tertiary: #d0d0d0;
+    --color-border-light: #eee;
+    --color-border-lighter: #f0f0f0;
+
+    /* Brand/Accent Colors */
+    --color-accent-primary: #b8a77c;
+    --color-accent-hover: #b8ab8aac;
+    --color-accent-light: rgba(184, 167, 124, 0.15);
+    --color-accent-border: rgb(143, 123, 120);
+    --color-accent-border-hover: rgb(126, 108, 105);
+    --color-accent-focus: rgba(126, 108, 105, 0.1);
+
+    /* Shadow Colors */
+    --color-shadow-light: rgba(0, 0, 0, 0.1);
+    --color-shadow-medium: rgba(0, 0, 0, 0.08);
+    --color-shadow-heavy: rgba(0, 0, 0, 0.12);
+    --color-shadow-strong: rgba(0, 0, 0, 0.15);
+    --color-shadow-dark: rgba(0, 0, 0, 0.3);
+    --color-shadow-backdrop: rgba(0, 0, 0, 0.5);
+
+    /* Status Colors */
+    --color-success-bg: #d4edda;
+    --color-success-text: #155724;
+    --color-success-border: #c3e6cb;
+
+    --color-error-bg: #f8d7da;
+    --color-error-text: #721c24;
+    --color-error-border: #f5c6cb;
+    --color-error-button: #f44336;
+    --color-error-button-hover: #da190b;
+    --color-error-active: #990000;
+
+    --color-info-bg: #d1ecf1;
+    --color-info-text: #0c5460;
+    --color-info-border: #bee5eb;
+
+    --color-disabled: #cccccc;
+    --color-delete-hover: #c4c4c48c;
+
+    --color-gray-medium: #6c757d;
+    --color-gray-dark: #5a6268;
+
+    /* Badge Colors - Muscle Groups */
+    --color-badge-chest-bg: #ffebee;
+    --color-badge-chest-text: #c62828;
+    --color-badge-back-bg: #e8f5e9;
+    --color-badge-back-text: #2e7d32;
+    --color-badge-shoulders-bg: #fff3e0;
+    --color-badge-shoulders-text: #e65100;
+    --color-badge-biceps-bg: #e1f5fe;
+    --color-badge-biceps-text: #0277bd;
+    --color-badge-triceps-bg: #f3e5f5;
+    --color-badge-triceps-text: #6a1b9a;
+    --color-badge-legs-bg: #fffde7;
+    --color-badge-legs-text: #f57f17;
+    --color-badge-abs-bg: #fce4ec;
+    --color-badge-abs-text: #c2185b;
+    --color-badge-cardio-bg: #e0f2f1;
+    --color-badge-cardio-text: #00695c;
+    --color-badge-fullbody-bg: #f1f8e9;
+    --color-badge-fullbody-text: #558b2f;
+
+    /* Badge Colors - Difficulty */
+    --color-difficulty-beginner-bg: #c8e6c9;
+    --color-difficulty-beginner-text: #2e7d32;
+    --color-difficulty-intermediate-bg: #fff9c4;
+    --color-difficulty-intermediate-text: #f57f17;
+    --color-difficulty-advanced-bg: #ffccbc;
+    --color-difficulty-advanced-text: #d84315;
+
+    /* Badge Colors - Exercise Type */
+    --color-type-strength-bg: #e3f2fd;
+    --color-type-strength-text: #1976d2;
+    --color-type-cardio-bg: #fce4ec;
+    --color-type-cardio-text: #c2185b;
+
+    /* Badge Generic */
+    --color-badge-default-bg: #e0e0e0;
+    --color-badge-default-text: #333;
+
+    /* SVG Colors */
+    --color-svg-default: #d0d5d9;
+
+    /* Hover States */
+    --color-hover-light: rgba(0, 0, 0, 0.1);
+    --color-hover-medium: #e9ecef;
+}

@@ -1,0 +1,15 @@
+/* CV SECTION */
+
+#cv {
+    padding-bottom: 5%;
+    padding-right: 12%;
+    padding-left: 12%;
+    text-align: center;
+}
+
+#cv_title {
+    padding-top: 5%;
+    border-top: 2px solid black;
+    font-size: 3rem;
+    font-weight: bold;
+}
