@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0007_rename_name_en_exercice_name_remove_exercice_name_fr'),
+        ("home", "0007_rename_name_en_exercice_name_remove_exercice_name_fr"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='oneexercice',
-            name='time',
+            model_name="oneexercice",
+            name="time",
             field=models.DurationField(),
         ),
     ]

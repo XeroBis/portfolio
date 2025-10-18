@@ -6,17 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0006_exercice_typeworkout_workout_oneexercice'),
+        ("home", "0006_exercice_typeworkout_workout_oneexercice"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='exercice',
-            old_name='name_en',
-            new_name='name',
+            model_name="exercice",
+            old_name="name_en",
+            new_name="name",
         ),
         migrations.RemoveField(
-            model_name='exercice',
-            name='name_fr',
+            model_name="exercice",
+            name="name_fr",
         ),
     ]

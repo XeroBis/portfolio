@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workout', '0007_rename_name_workout_fr_typeworkout_name_workout_and_more'),
+        ("workout", "0007_rename_name_workout_fr_typeworkout_name_workout_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='oneexercice',
-            options={'ordering': ['seance', 'position']},
+            name="oneexercice",
+            options={"ordering": ["seance", "position"]},
         ),
         migrations.AddField(
-            model_name='oneexercice',
-            name='position',
+            model_name="oneexercice",
+            name="position",
             field=models.IntegerField(default=1),
         ),
     ]

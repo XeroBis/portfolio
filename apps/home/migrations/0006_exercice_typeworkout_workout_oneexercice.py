@@ -7,43 +7,92 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0005_testimonial'),
+        ("home", "0005_testimonial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Exercice',
+            name="Exercice",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name_fr', models.CharField(max_length=50)),
-                ('name_en', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name_fr", models.CharField(max_length=50)),
+                ("name_en", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='TypeWorkout',
+            name="TypeWorkout",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='Workout',
+            name="Workout",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField()),
-                ('type_workout', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='home.typeworkout')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField()),
+                (
+                    "type_workout",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="home.typeworkout",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='OneExercice',
+            name="OneExercice",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nb_series', models.IntegerField()),
-                ('nb_repetition', models.IntegerField()),
-                ('weight', models.IntegerField()),
-                ('time', models.TimeField()),
-                ('name', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='home.exercice')),
-                ('seance', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='home.workout')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("nb_series", models.IntegerField()),
+                ("nb_repetition", models.IntegerField()),
+                ("weight", models.IntegerField()),
+                ("time", models.TimeField()),
+                (
+                    "name",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="home.exercice"
+                    ),
+                ),
+                (
+                    "seance",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="home.workout"
+                    ),
+                ),
             ],
         ),
     ]

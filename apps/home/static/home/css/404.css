@@ -1,0 +1,16 @@
+/* 404 PAGE */
+
+#div_404 {
+    align-items: center;
+    text-align: center;
+    padding-top: 5%;
+}
+
+#link_404 {
+    font-size: 20vw;
+    transition: transform 0.3s ease;
+}
+
+#link_404:hover {
+    text-decoration: underline;
+}

@@ -1,7 +1,7 @@
 {% load static %}
 {% load i18n %}
 
-{% include "head.html" %} 
+{% include "head.html" %}
 <body>
     {% include "header.html" %}
 
@@ -26,7 +26,7 @@
     <section id="projects">
         {% for projet in projets %}
             <div class="project">
-                
+
                 <div class="project_div">
                     {% if lang == "en" %}
                         <div class="project_title">{{ projet.title_en }}</div>
@@ -45,7 +45,7 @@
                     <a href="{{ projet.github_url }}" target=”_blank” class="cliquable">
                         <img src="{% static 'images/github_logo.png' %}" class="logo">
                     </a>
-                    
+
                 </div>
             </div>
         {% endfor %}

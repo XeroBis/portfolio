@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0001_initial'),
+        ("home", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='projet',
-            name='github_url',
-            field=models.CharField(default='https://github.com', max_length=100),
+            model_name="projet",
+            name="github_url",
+            field=models.CharField(default="https://github.com", max_length=100),
             preserve_default=False,
         ),
     ]

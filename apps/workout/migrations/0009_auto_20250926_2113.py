@@ -6,8 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workout', '0008_alter_oneexercice_options_oneexercice_position'),
+        ("workout", "0008_alter_oneexercice_options_oneexercice_position"),
     ]
 
-    operations = [
-    ]
+    operations = []
