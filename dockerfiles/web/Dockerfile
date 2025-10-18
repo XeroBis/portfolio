@@ -11,6 +11,8 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 COPY pyproject.toml /app/
 COPY apps/ /app/apps/
 COPY mysite/ /app/mysite/
+COPY README.md /app/README.md
+
 RUN uv pip install --system --no-cache .
 RUN apt-get update && apt-get install -y gettext
 # Copy entrypoint script
