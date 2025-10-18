@@ -7,7 +7,7 @@
     {% include "header.html" %}
     <div class="container_add_workout">
         <h1 id="name_add_workout">
-            {% trans "Add Workout" %}
+            {% trans "New Session" %}
         </h1>
         <form method="post">
             {% csrf_token %}
@@ -39,7 +39,7 @@
                 {% trans "Add Exercise" %}
             </button>
             <button type="submit" class="cliquable button_workout">
-                {% trans "Save Workout" %}
+                {% trans "Save" %}
             </button>
         </form>
     </div>

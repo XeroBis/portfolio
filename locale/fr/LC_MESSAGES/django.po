@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portfolio 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-18 11:50+0200\n"
+"POT-Creation-Date: 2025-10-18 12:05+0200\n"
 "PO-Revision-Date: 2025-10-17 23:30+0200\n"
 "Last-Translator: Claude Code\n"
 "Language-Team: French\n"
@@ -29,7 +29,8 @@ msgid "Sessions"
 msgstr "Séances"
 
 #: apps/home/templates/home/header.html:19
-msgid "+ Workout"
+#: apps/workout/templates/workout/workout.html:15
+msgid "+ Session"
 msgstr "+ Séance"
 
 #: apps/home/templates/home/header.html:20
@@ -92,9 +93,8 @@ msgid "Reset All Data"
 msgstr "Réinitialiser toutes les données"
 
 #: apps/workout/templates/workout/add_workout.html:10
-#: apps/workout/templates/workout/workout.html:15
-msgid "Add Workout"
-msgstr "Ajout Séance"
+msgid "New Session"
+msgstr "Nouvelle Séance"
 
 #: apps/workout/templates/workout/add_workout.html:16
 msgid "Date:"
@@ -117,8 +117,8 @@ msgid "Add Exercise"
 msgstr "Ajouter un exercice"
 
 #: apps/workout/templates/workout/add_workout.html:42
-msgid "Save Workout"
-msgstr "Enregistrer Séance"
+msgid "Save"
+msgstr ""
 
 #: apps/workout/templates/workout/analytics.html:15 apps/workout/views.py:1012
 msgid "Calendar"
@@ -464,6 +464,18 @@ msgstr "Tendance Hebdomadaire"
 #: apps/workout/views.py:1022
 msgid "Top Exercises"
 msgstr "Meilleurs Exercices"
+
+#~ msgid "+ Workout"
+#~ msgstr "+ Séance"
+
+#~ msgid "Add Session"
+#~ msgstr "AjouterSéances"
+
+#~ msgid "Save Workout"
+#~ msgstr "Enregistrer Séance"
+
+#~ msgid "Add Workout"
+#~ msgstr "Ajout Séance"
 
 #~ msgid "Go to Library"
 #~ msgstr "Liste d'exercices"
