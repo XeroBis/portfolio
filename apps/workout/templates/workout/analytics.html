@@ -26,7 +26,7 @@
                         <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
                 </button>
-                <h2>{% trans "Workout Calendar" %} - <span id="current-year">{{ current_year }}</span></h2>
+                <h2><span id="current-year">{{ current_year }}</span></h2>
                 <button class="year-nav-btn" id="next-year" title="{% trans 'Next year' %}" data-has-data="{% if has_next_year_data %}true{% else %}false{% endif %}">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"></polyline>
@@ -66,11 +66,7 @@
             </div>
         </div>
 
-        <!-- Dashboard Section -->
         <div class="analytics-section" id="dashboard-section">
-            <h2>{% trans "Progress Dashboard" %}</h2>
-
-            <!-- Date Filter -->
             <div class="date-filter-container">
                 <div class="date-filter">
                     <div class="quick-select-section">
@@ -138,9 +134,7 @@
             </div>
         </div>
 
-        <!-- Personal Records Section -->
         <div class="analytics-section" id="records-section">
-            <h2>{% trans "Personal Records" %}</h2>
 
             {% if personal_records %}
             <div class="records-grid">
