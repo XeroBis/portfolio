@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Weekday headers
                     const weekdaysDiv = document.createElement('div');
                     weekdaysDiv.className = 'calendar-weekdays';
-                    ['M', 'T', 'W', 'T', 'F', 'S', 'S'].forEach(day => {
+                    chartTranslations.weekdays.forEach(day => {
                         const dayDiv = document.createElement('div');
                         dayDiv.className = 'weekday';
                         dayDiv.textContent = day;

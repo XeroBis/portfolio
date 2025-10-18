@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{% static 'workout/css/analytics.css' %}">
 
     <div class="container_analytics">
-        <h1>{% trans "Workout Analytics" %}</h1>
 
         <!-- Navigation Tabs -->
         <div class="analytics-tabs">
@@ -38,13 +37,13 @@
                 <div class="calendar-month {% if month.is_current %}current-month{% endif %}">
                     <h3>{{ month.name }}</h3>
                     <div class="calendar-weekdays">
-                        <div class="weekday">M</div>
-                        <div class="weekday">T</div>
-                        <div class="weekday">W</div>
-                        <div class="weekday">T</div>
-                        <div class="weekday">F</div>
-                        <div class="weekday">S</div>
-                        <div class="weekday">S</div>
+                        <div class="weekday">{% trans "M" %}</div>
+                        <div class="weekday">{% trans "T" %}</div>
+                        <div class="weekday">{% trans "W" %}</div>
+                        <div class="weekday">{% trans "Th" %}</div>
+                        <div class="weekday">{% trans "F" %}</div>
+                        <div class="weekday">{% trans "Sa" %}</div>
+                        <div class="weekday">{% trans "Su" %}</div>
                     </div>
                     <div class="calendar-days">
                         {% for _ in "x"|rjust:month.start_weekday %}
@@ -164,7 +163,16 @@
         // Translations for chart labels
         const chartTranslations = {
             workoutsPerWeek: "{% trans 'Workouts per Week' %}",
-            timesPerformed: "{% trans 'Times Performed' %}"
+            timesPerformed: "{% trans 'Times Performed' %}",
+            weekdays: [
+                "{% trans 'M' %}",
+                "{% trans 'T' %}",
+                "{% trans 'W' %}",
+                "{% trans 'Th' %}",
+                "{% trans 'F' %}",
+                "{% trans 'Sa' %}",
+                "{% trans 'Su' %}"
+            ]
         };
     </script>
     <script src="{% static 'workout/js/analytics.js' %}"></script>

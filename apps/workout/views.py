@@ -581,7 +581,7 @@ def get_dashboard_data(request):
                 {
                     "week": week + 1,
                     "count": count,
-                    "start": week_start.strftime("%m/%d"),
+                    "start": week_start.strftime("%d/%m/%Y"),
                 }
             )
     else:
@@ -604,7 +604,7 @@ def get_dashboard_data(request):
                     {
                         "week": week + 1,
                         "count": count,
-                        "start": week_start.strftime("%m/%d"),
+                        "start": week_start.strftime("%d/%m/%Y"),
                     }
                 )
         else:
@@ -916,7 +916,7 @@ def analytics(request):
                 {
                     "week": week + 1,
                     "count": count,
-                    "start": week_start.strftime("%m/%d"),
+                    "start": week_start.strftime("%d/%m/%Y"),
                 }
             )
     else:
@@ -939,7 +939,7 @@ def analytics(request):
                     {
                         "week": week + 1,
                         "count": count,
-                        "start": week_start.strftime("%m/%d"),
+                        "start": week_start.strftime("%d/%m/%Y"),
                     }
                 )
         else:

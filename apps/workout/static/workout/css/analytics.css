@@ -363,6 +363,7 @@
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 30px;
     margin-bottom: 40px;
+    max-width: 100%;
 }
 
 .chart-card {
@@ -371,6 +372,8 @@
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .chart-card h3 {
@@ -528,6 +531,13 @@
 
     .chart-card {
         padding: 15px;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .chart-card canvas {
+        max-width: 100%;
+        height: auto !important;
     }
 
 
@@ -538,6 +548,10 @@
 }
 
 @media (max-width: 480px) {
+    .container_analytics {
+        padding: 10px;
+    }
+
     .container_analytics h1 {
         font-size: 24px;
     }
@@ -552,5 +566,15 @@
 
     .calendar-day {
         font-size: 12px;
+    }
+
+    .chart-card {
+        padding: 10px;
+    }
+
+    .chart-card canvas {
+        max-width: 100%;
+        width: 100% !important;
+        height: auto !important;
     }
 }
