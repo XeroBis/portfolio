@@ -1,13 +1,19 @@
 :root {
+    --color-background: rgb(240, 240, 232);
+
     /* Primary Colors */
     --color-white: #ffffff;
     --color-black: #000000;
 
+    --color-text-black: black;
+
     /* Text Colors */
-    --color-text-primary: #333;
+    --color-text-primary: rgb(51, 51, 51);
     --color-text-secondary: #555;
     --color-text-tertiary: #666;
     --color-text-muted: #999;
+    --color-text-dark-gray: rgb(70, 70, 70);
+    --color-text-medium-gray: rgb(100, 100, 100);
 
     /* Background Colors */
     --color-bg-primary: #fff;
@@ -22,11 +28,12 @@
     --color-border-tertiary: #d0d0d0;
     --color-border-light: #eee;
     --color-border-lighter: #f0f0f0;
+    --color-border-black: black;
 
     /* Brand/Accent Colors */
-    --color-accent-primary: #b8a77c;
-    --color-accent-hover: #b8ab8aac;
-    --color-accent-light: rgba(184, 167, 124, 0.15);
+    --color-accent-primary: rgb(143, 123, 120);
+    --color-accent-primary-light: rgba(143, 123, 120, 0.1);
+    --color-accent-hover: rgb(126, 108, 105);
     --color-accent-border: rgb(143, 123, 120);
     --color-accent-border-hover: rgb(126, 108, 105);
     --color-accent-focus: rgba(126, 108, 105, 0.1);

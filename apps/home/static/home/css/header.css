@@ -12,7 +12,7 @@
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: rgb(143, 123, 120);
+    background-color: var(--color-accent-primary);
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 }
@@ -33,9 +33,9 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: rgb(240 240 232);
+    background-color: var(--color-background);
     min-width: 200px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px var(--color-shadow-light);
     border-radius: 5px;
     margin-top: 0.5rem;
     padding: 0.5rem 0;
@@ -45,13 +45,13 @@
 .dropdown-item {
     display: block;
     padding: 0.75rem 1.5rem;
-    color: rgb(143, 123, 120);
+    color: var(--color-accent-primary);
     text-decoration: none;
     transition: background-color 0.2s ease;
 }
 
 .dropdown-item:hover {
-    background-color: rgba(143, 123, 120, 0.1);
+    background-color: var(--color-accent-primary-light);
 }
 
 @media (min-width:1100px) {
@@ -62,14 +62,14 @@
         top: 0;
         left: 0;
         z-index: 1000; /* Ensures the header stays above other content */
-        background-color: rgb(240 240 232);
+        background-color: var(--color-background);
         padding-top: 1rem;
         padding-bottom: 1rem;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1)
+        box-shadow: 0 2px 5px var(--color-shadow-light)
     }
 
     #name_href {
-        color: black;
+        color: var(--color-text-black);
         text-decoration: none; /* no underline */
         font-size: 2rem;
         line-height: 2rem;
@@ -93,7 +93,7 @@
         -o-transform: translateY(-50%);
         right: 20%;
         font-size: 1.5rem;
-        color: rgb(143, 123, 120);
+        color: var(--color-accent-primary);
     }
 
     .dropdown::before {
@@ -119,10 +119,10 @@
         top: 0;
         left: 0;
         z-index: 1000; /* Ensures the header stays above other content */
-        background-color: rgb(240 240 232);
+        background-color: var(--color-background);
         padding-top: 1rem;
         padding-bottom: 1rem;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 5px var(--color-shadow-light);
     }
 
     #name_href {
@@ -134,7 +134,7 @@
         -webkit-transform: translateY(-50%);
         -o-transform: translateY(-50%);
         left: 5%;
-        color: black;
+        color: var(--color-text-black);
         text-decoration: none; /* no underline */
         font-size: 1.125rem;
     }
@@ -149,7 +149,7 @@
         -o-transform: translateY(-50%);
         right: 5%;
         font-size: 1.125rem;
-        color: rgb(143, 123, 120);
+        color: var(--color-accent-primary);
     }
 
     /* Mobile dropdown */

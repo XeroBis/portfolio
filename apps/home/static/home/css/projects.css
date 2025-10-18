@@ -12,9 +12,9 @@
 }
 
 .project {
-    background-color: #fff;
+    background-color: var(--color-white);
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px var(--color-shadow-light);
     overflow: hidden;
     transition: transform 0.3s ease;
 }
@@ -40,8 +40,8 @@
 
 .tag {
     display: inline-block;
-    background-color: rgb(126, 108, 105);
-    color: #fff;
+    background-color: var(--color-accent-primary);
+    color: var(--color-white);
     padding: 5px 10px;
     border-radius: 5px;
     margin-right: 2px;

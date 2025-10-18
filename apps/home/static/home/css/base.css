@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    background-color: rgb(240 240 232);
+    background-color: var(--color-background);
     font-family: "Twemoji Country Flags", Arial, Helvetica, sans-serif;
     padding-top: 10rem;
 }

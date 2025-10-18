@@ -9,7 +9,7 @@
 
 #cv_title {
     padding-top: 5%;
-    border-top: 2px solid black;
+    border-top: 2px solid var(--color-border-black);
     font-size: 3rem;
     font-weight: bold;
 }
