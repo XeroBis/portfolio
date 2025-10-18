@@ -33,6 +33,8 @@
     /* Brand/Accent Colors */
     --color-accent-primary: rgb(143, 123, 120);
     --color-accent-primary-light: rgba(143, 123, 120, 0.1);
+    --color-accent-primary-dark: rgb(85, 74, 71);
+    --color-accent-gradient: linear-gradient(135deg, var(--color-accent-primary) 0%, var(--color-accent-primary-dark) 100%);
     --color-accent-hover: rgb(126, 108, 105);
     --color-accent-border: rgb(143, 123, 120);
     --color-accent-border-hover: rgb(126, 108, 105);
