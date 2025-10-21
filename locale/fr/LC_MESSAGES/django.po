@@ -240,8 +240,8 @@ msgid "Workouts by Type"
 msgstr "Séances par Type"
 
 #: apps/workout/templates/workout/analytics.html:130
-msgid "Top 10 Exercises"
-msgstr "Top 10 des Exercices"
+msgid "Top 5 Exercises"
+msgstr "Top 5 des Exercices"
 
 #: apps/workout/templates/workout/analytics.html:151
 msgid "No personal records yet. Keep training!"

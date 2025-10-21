@@ -179,6 +179,25 @@ def add_workout(request):
                             f"Creating StrengthExerciseLog for "
                             f"exercise: {exercise_obj.name}, workout: {workout.id}"
                         )
+                        # Handle empty fields - convert empty string to default values
+                        weight = data.get("weight", 0)
+                        if weight == "" or weight is None:
+                            weight = 0
+                        else:
+                            weight = int(weight)
+
+                        nb_series = data.get("nb_series", 1)
+                        if nb_series == "" or nb_series is None:
+                            nb_series = 1
+                        else:
+                            nb_series = int(nb_series)
+
+                        nb_repetition = data.get("nb_repetition", 1)
+                        if nb_repetition == "" or nb_repetition is None:
+                            nb_repetition = 1
+                        else:
+                            nb_repetition = int(nb_repetition)
+
                         (
                             exercise_log,
                             created,
@@ -186,9 +205,9 @@ def add_workout(request):
                             exercise=exercise_obj,
                             workout=workout,
                             defaults={
-                                "nb_series": data.get("nb_series", 0),
-                                "nb_repetition": data.get("nb_repetition", 0),
-                                "weight": data.get("weight", 0),
+                                "nb_series": nb_series,
+                                "nb_repetition": nb_repetition,
+                                "weight": weight,
                             },
                         )
                         logger.info(
