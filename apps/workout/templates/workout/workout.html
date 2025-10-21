@@ -11,9 +11,7 @@
             {% trans "Workout Sessions" %}
         </h1>
         {% if user.is_authenticated %}
-        <a href="/workout/add_workout/">
-            <button class="cliquable button_workout">{% trans "+ Session" %}</button>
-        </a>
+        <button class="cliquable button_workout" onclick="window.location.href='/workout/add_workout/';">{% trans "+ Session" %}</button>
         {% endif %}
 
         <div id="workout-list">
