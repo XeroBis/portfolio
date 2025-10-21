@@ -111,7 +111,7 @@ function updateExerciseFields(exerciseIndex, exerciseType = null) {
             </div>
             <div class="input-group">
                 <label class="input-label">${translations.weight_kg}</label>
-                <input type="number" class="workout_input" id="exercise_${exerciseIndex}_weight" name="exercise_${exerciseIndex}_weight" required>
+                <input type="number" class="workout_input" id="exercise_${exerciseIndex}_weight" name="exercise_${exerciseIndex}_weight">
             </div>
         `;
     } else if (exerciseType === 'cardio') {
@@ -175,7 +175,7 @@ function changeWorkoutType() {
                                     <input type="number" class="workout_input"
                                         id="exercise_${index}_${field}"
                                         name="exercise_${index}_${field}"
-                                        value="${value}" required>
+                                        value="${value}">
                                 </div>`;
                         }
 
