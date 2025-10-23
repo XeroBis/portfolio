@@ -12,6 +12,34 @@
         </h1>
         {% if user.is_authenticated %}
         <button class="cliquable button_workout" onclick="window.location.href='/workout/add_workout/';">{% trans "+ Session" %}</button>
+
+        <div id="filter-section" class="filter-container">
+            <h3>{% trans "Filter Workouts" %}</h3>
+            <form id="filter-form" method="GET" action="">
+                <div class="filter-group">
+                    <label for="workout-type-filter">{% trans "Workout Type:" %}</label>
+                    <select id="workout-type-filter" name="workout_type">
+                        <option value="">{% trans "All Types" %}</option>
+                        {% for type in all_workout_types %}
+                        <option value="{{ type }}" {% if workout_type_filter == type %}selected{% endif %}>{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="exercise-filter">{% trans "Exercise:" %}</label>
+                    <select id="exercise-filter" name="exercise">
+                        <option value="">{% trans "All Exercises" %}</option>
+                        {% for exercise in all_exercises %}
+                        <option value="{{ exercise }}" {% if exercise_filter == exercise %}selected{% endif %}>{{ exercise }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="cliquable button_workout">{% trans "Apply Filters" %}</button>
+                <a href="/workout/" class="cliquable button_workout" id="clear-filters">{% trans "Clear Filters" %}</a>
+            </form>
+        </div>
         {% endif %}
 
         <div id="workout-list">

@@ -31,7 +31,25 @@ logger = logging.getLogger(__name__)
 def redirect_workout(request):
     lang = translation.get_language()
 
+    # Get filter parameters
+    workout_type_filter = request.GET.get("workout_type", "")
+    exercise_filter = request.GET.get("exercise", "")
+
+    # Base queryset
     workouts = Workout.objects.all().order_by("-date")
+
+    # Apply workout type filter
+    if workout_type_filter:
+        workouts = workouts.filter(
+            type_workout__name_workout__icontains=workout_type_filter
+        )
+
+    # Apply exercise filter (filter workouts that contain the specified exercise)
+    if exercise_filter:
+        workouts = workouts.filter(
+            oneexercice__name__name__icontains=exercise_filter
+        ).distinct()
+
     paginator = Paginator(workouts, 5)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -69,6 +87,20 @@ def redirect_workout(request):
 
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
+    # Get unique workout types and exercises for filter dropdowns
+    all_workout_types = (
+        TypeWorkout.objects.all()
+        .values_list("name_workout", flat=True)
+        .distinct()
+        .order_by("name_workout")
+    )
+    all_exercises = (
+        Exercice.objects.all()
+        .values_list("name", flat=True)
+        .distinct()
+        .order_by("name")
+    )
+
     if is_ajax:
         data = {
             "workout_data": workout_data,
@@ -87,6 +119,10 @@ def redirect_workout(request):
         "next_page_number": (
             page_obj.next_page_number() if page_obj.has_next() else None
         ),
+        "workout_type_filter": workout_type_filter,
+        "exercise_filter": exercise_filter,
+        "all_workout_types": all_workout_types,
+        "all_exercises": all_exercises,
         "translations": {
             "exercise": gettext("Exercise"),
             "exercice": gettext("Exercise"),
