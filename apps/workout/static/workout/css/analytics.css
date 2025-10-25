@@ -84,7 +84,7 @@
 }
 
 .year-nav-btn {
-    background: var(--color-accent-gradient);
+    background: var(--color-accent-primary);
     border: none;
     border-radius: 50%;
     width: 40px;
@@ -178,7 +178,7 @@
 }
 
 .calendar-day.has-workout {
-    background: var(--color-accent-gradient);
+    background: var(--color-accent-primary);
     color: var(--color-white);
     font-weight: bold;
     cursor: pointer;
@@ -246,7 +246,7 @@
 }
 
 .quick-select-btn:hover {
-    background: var(--color-accent-gradient);
+    background: var(--color-accent-primary);
     color: var(--color-white);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px var(--color-shadow-medium);
@@ -300,7 +300,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: var(--color-accent-gradient);
+    background: var(--color-accent-primary);
     color: var(--color-white);
     box-shadow: 0 2px 4px var(--color-shadow-medium);
 }
@@ -333,7 +333,7 @@
 }
 
 .stat-card {
-    background: var(--color-accent-gradient);
+    background: var(--color-accent-primary);
     border-radius: 12px;
     padding: 30px;
     text-align: center;
@@ -400,7 +400,7 @@
 }
 
 .record-card {
-    background: var(--color-accent-gradient);
+    background: var(--color-accent-primary);
     border-radius: 12px;
     padding: 20px;
     color: var(--color-white);

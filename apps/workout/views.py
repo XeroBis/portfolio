@@ -31,7 +31,25 @@ logger = logging.getLogger(__name__)
 def redirect_workout(request):
     lang = translation.get_language()
 
+    # Get filter parameters
+    workout_type_filter = request.GET.get("workout_type", "")
+    exercise_filter = request.GET.get("exercise", "")
+
+    # Base queryset
     workouts = Workout.objects.all().order_by("-date")
+
+    # Apply workout type filter (exact match)
+    if workout_type_filter:
+        workouts = workouts.filter(
+            type_workout__name_workout__exact=workout_type_filter
+        )
+
+    # Apply exercise filter (filter workouts that contain the specified exercise)
+    if exercise_filter:
+        workouts = workouts.filter(
+            oneexercice__name__name__icontains=exercise_filter
+        ).distinct()
+
     paginator = Paginator(workouts, 5)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -69,6 +87,20 @@ def redirect_workout(request):
 
     is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
 
+    # Get unique workout types and exercises for filter dropdowns
+    all_workout_types = (
+        TypeWorkout.objects.all()
+        .values_list("name_workout", flat=True)
+        .distinct()
+        .order_by("name_workout")
+    )
+    all_exercises = (
+        Exercice.objects.all()
+        .values_list("name", flat=True)
+        .distinct()
+        .order_by("name")
+    )
+
     if is_ajax:
         data = {
             "workout_data": workout_data,
@@ -87,6 +119,10 @@ def redirect_workout(request):
         "next_page_number": (
             page_obj.next_page_number() if page_obj.has_next() else None
         ),
+        "workout_type_filter": workout_type_filter,
+        "exercise_filter": exercise_filter,
+        "all_workout_types": all_workout_types,
+        "all_exercises": all_exercises,
         "translations": {
             "exercise": gettext("Exercise"),
             "exercice": gettext("Exercise"),
@@ -802,13 +838,9 @@ def analytics(request):
 
     lang = translation.get_language()
 
-    # Get year from URL parameter or use current year
-    current_year = int(request.GET.get("year", datetime.now().year))
+    # Use current year for initial page load
+    current_year = datetime.now().year
     current_month = datetime.now().month
-
-    # Get date filter parameters for dashboard
-    start_date = request.GET.get("start_date", "")
-    end_date = request.GET.get("end_date", "")
 
     # Get all workouts for calendar view
     workouts = Workout.objects.filter(date__year=current_year).order_by("date")
@@ -842,87 +874,41 @@ def analytics(request):
             }
         )
 
-    # Dashboard statistics - apply date filter if provided
-    workout_filter = {}
-    if start_date:
-        workout_filter["date__gte"] = start_date
-    if end_date:
-        workout_filter["date__lte"] = end_date
+    # Dashboard statistics - start with all workouts for initial load
+    total_exercises = OneExercice.objects.count()
 
-    # Build the filtered workout queryset for dashboard
-    filtered_workouts = (
-        Workout.objects.filter(**workout_filter)
-        if workout_filter
-        else Workout.objects.all()
+    # Calculate total volume (for strength exercises)
+    total_volume = (
+        StrengthExerciseLog.objects.aggregate(
+            total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
+        )["total"]
+        or 0
     )
 
-    total_workouts = filtered_workouts.count()
+    # Workouts by type
+    workouts_by_type = list(
+        Workout.objects.values("type_workout__name_workout")
+        .annotate(count=Count("id"))
+        .order_by("-count")
+    )
 
-    # Get exercise IDs from filtered workouts
-    if workout_filter:
-        filtered_workout_ids = filtered_workouts.values_list("id", flat=True)
-        total_exercises = OneExercice.objects.filter(
-            seance_id__in=filtered_workout_ids
-        ).count()
+    # Top exercises by frequency
+    top_exercises = list(
+        OneExercice.objects.values("name__name")
+        .annotate(count=Count("id"))
+        .order_by("-count")[:5]
+    )
 
-        # Calculate total volume (for strength exercises) with date filter
-        total_volume = (
-            StrengthExerciseLog.objects.filter(
-                workout_id__in=filtered_workout_ids
-            ).aggregate(total=Sum(F("nb_series") * F("nb_repetition") * F("weight")))[
-                "total"
-            ]
-            or 0
-        )
+    # Total workouts for initial load
+    total_workouts = Workout.objects.count()
 
-        # Workouts by type with date filter
-        workouts_by_type = list(
-            filtered_workouts.values("type_workout__name_workout")
-            .annotate(count=Count("id"))
-            .order_by("-count")
-        )
-
-        # Top exercises by frequency with date filter
-        top_exercises = list(
-            OneExercice.objects.filter(seance_id__in=filtered_workout_ids)
-            .values("name__name")
-            .annotate(count=Count("id"))
-            .order_by("-count")[:5]
-        )
-    else:
-        total_exercises = OneExercice.objects.count()
-
-        # Calculate total volume (for strength exercises)
-        total_volume = (
-            StrengthExerciseLog.objects.aggregate(
-                total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
-            )["total"]
-            or 0
-        )
-
-        # Workouts by type
-        workouts_by_type = list(
-            Workout.objects.values("type_workout__name_workout")
-            .annotate(count=Count("id"))
-            .order_by("-count")
-        )
-
-        # Top exercises by frequency
-        top_exercises = list(
-            OneExercice.objects.values("name__name")
-            .annotate(count=Count("id"))
-            .order_by("-count")[:5]
-        )
-
-    # Weekly workouts trend - use date filter for the range if provided
-    if start_date and end_date:
-        # Calculate weeks between start and end date
-        from datetime import datetime as dt
-
-        start_dt = dt.strptime(start_date, "%Y-%m-%d").date()
-        end_dt = dt.strptime(end_date, "%Y-%m-%d").date()
+    # Weekly workouts trend - calculate from earliest workout to now
+    earliest_workout = Workout.objects.order_by("date").first()
+    if earliest_workout:
+        start_dt = earliest_workout.date
+        end_dt = datetime.now().date()
         total_days = (end_dt - start_dt).days
-        num_weeks = max(total_days // 7, 1)  # Show all weeks in the date range
+        num_weeks = max(total_days // 7, 1)
 
         weekly_workouts = []
         for week in range(num_weeks):
@@ -939,31 +925,8 @@ def analytics(request):
                 }
             )
     else:
-        # Show all available data - calculate from earliest workout to now
-        earliest_workout = Workout.objects.order_by("date").first()
-        if earliest_workout:
-            start_dt = earliest_workout.date
-            end_dt = datetime.now().date()
-            total_days = (end_dt - start_dt).days
-            num_weeks = max(total_days // 7, 1)
-
-            weekly_workouts = []
-            for week in range(num_weeks):
-                week_start = start_dt + timedelta(weeks=week)
-                week_end = min(week_start + timedelta(days=6), end_dt)
-                count = Workout.objects.filter(
-                    date__gte=week_start, date__lte=week_end
-                ).count()
-                weekly_workouts.append(
-                    {
-                        "week": week + 1,
-                        "count": count,
-                        "start": week_start.strftime("%d/%m/%Y"),
-                    }
-                )
-        else:
-            # No workouts yet
-            weekly_workouts = []
+        # No workouts yet
+        weekly_workouts = []
 
     # Personal Records (calculated at runtime)
     personal_records = calculate_personal_records(limit=10)
@@ -1017,8 +980,6 @@ def analytics(request):
         "months": months_data,
         "has_prev_year_data": has_prev_year_data,
         "has_next_year_data": has_next_year_data,
-        "start_date": start_date,
-        "end_date": end_date,
         "total_workouts": total_workouts,
         "total_exercises": total_exercises,
         "total_volume": int(total_volume),

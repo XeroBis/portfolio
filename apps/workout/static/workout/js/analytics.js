@@ -140,11 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     calendarGrid.appendChild(monthDiv);
                 });
 
-                // Update URL without reloading
-                const url = new URL(window.location.href);
-                url.searchParams.set('year', year);
-                window.history.pushState({}, '', url);
-
             } catch (error) {
                 console.error('Error updating calendar:', error);
                 alert('Error updating calendar data. Please try again.');
@@ -186,11 +181,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Date filter functionality
-    const applyFilterBtn = document.getElementById('apply-filter');
     const resetFilterBtn = document.getElementById('reset-filter');
     const startDateInput = document.getElementById('start-date');
     const endDateInput = document.getElementById('end-date');
     const quickSelectButtons = document.querySelectorAll('.quick-select-btn');
+
+    // Debounce timer for auto-apply
+    let filterDebounceTimer = null;
 
     // Function to format date as YYYY-MM-DD
     function formatDate(date) {
@@ -250,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams();
             if (startDate) params.set('start_date', startDate);
             if (endDate) params.set('end_date', endDate);
-
             // Fetch data from server
             const response = await fetch(`/workout/get_dashboard_data/?${params.toString()}`);
             const data = await response.json();
@@ -274,24 +270,27 @@ document.addEventListener('DOMContentLoaded', function() {
             window.chartsInitialized = false;
             initializeCharts();
 
-            // Update URL without reloading
-            const url = new URL(window.location.href);
-            if (startDate) {
-                url.searchParams.set('start_date', startDate);
-            } else {
-                url.searchParams.delete('start_date');
-            }
-            if (endDate) {
-                url.searchParams.set('end_date', endDate);
-            } else {
-                url.searchParams.delete('end_date');
-            }
-            window.history.pushState({}, '', url);
-
         } catch (error) {
             console.error('Error updating dashboard:', error);
             alert('Error updating dashboard data. Please try again.');
         }
+    }
+
+    // Function to apply filter with debouncing
+    function applyFilterWithDebounce() {
+        // Clear existing timer
+        if (filterDebounceTimer) {
+            clearTimeout(filterDebounceTimer);
+        }
+
+        // Set new timer to apply filter after 500ms
+        filterDebounceTimer = setTimeout(() => {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            // Update dashboard via AJAX
+            updateDashboard(startDate, endDate);
+        }, 200);
     }
 
     // Quick select button handlers
@@ -305,20 +304,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 startDateInput.value = dates.startDate;
                 endDateInput.value = dates.endDate;
 
-                // Update dashboard via AJAX
+                // Update dashboard via AJAX immediately for quick select
                 updateDashboard(dates.startDate, dates.endDate);
             }
         });
     });
 
-    if (applyFilterBtn && startDateInput && endDateInput) {
-        applyFilterBtn.addEventListener('click', () => {
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value;
-
-            // Update dashboard via AJAX
-            updateDashboard(startDate, endDate);
-        });
+    // Auto-apply filter on date input changes with debouncing
+    if (startDateInput && endDateInput) {
+        startDateInput.addEventListener('change', applyFilterWithDebounce);
+        endDateInput.addEventListener('change', applyFilterWithDebounce);
     }
 
     if (resetFilterBtn && startDateInput && endDateInput) {

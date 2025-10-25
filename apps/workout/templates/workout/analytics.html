@@ -81,14 +81,13 @@
 
                     <div class="date-inputs-section">
                         <label for="start-date">{% trans "Start Date" %}:</label>
-                        <input type="date" id="start-date" name="start_date" value="{{ start_date|default:'' }}">
+                        <input type="date" id="start-date" name="start_date">
 
                         <label for="end-date">{% trans "End Date" %}:</label>
-                        <input type="date" id="end-date" name="end_date" value="{{ end_date|default:'' }}">
+                        <input type="date" id="end-date" name="end_date">
                     </div>
 
                     <div class="filter-actions">
-                        <button id="apply-filter" class="filter-btn">{% trans "Apply Filter" %}</button>
                         <button id="reset-filter" class="filter-btn reset-btn">{% trans "Reset" %}</button>
                     </div>
                 </div>
