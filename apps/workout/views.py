@@ -38,10 +38,10 @@ def redirect_workout(request):
     # Base queryset
     workouts = Workout.objects.all().order_by("-date")
 
-    # Apply workout type filter
+    # Apply workout type filter (exact match)
     if workout_type_filter:
         workouts = workouts.filter(
-            type_workout__name_workout__icontains=workout_type_filter
+            type_workout__name_workout__exact=workout_type_filter
         )
 
     # Apply exercise filter (filter workouts that contain the specified exercise)

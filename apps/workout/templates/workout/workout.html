@@ -36,8 +36,10 @@
                     </select>
                 </div>
 
-                <button type="submit" class="cliquable button_workout">{% trans "Apply Filters" %}</button>
-                <a href="/workout/" class="cliquable button_workout" id="clear-filters">{% trans "Clear Filters" %}</a>
+                <div class="filter-button-group">
+                    <button type="submit" class="cliquable button_workout" style="display: none;">{% trans "Apply Filters" %}</button>
+                    <a href="/workout/" class="cliquable button_workout" id="clear-filters">{% trans "Clear Filters" %}</a>
+                </div>
             </form>
         </div>
         {% endif %}

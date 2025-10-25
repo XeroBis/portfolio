@@ -6,6 +6,10 @@ let currentPage = document.getElementById('load-more') ? parseInt(document.getEl
 let frontSvgContent = null;
 let backSvgContent = null;
 
+// Auto-apply filter delay management
+let filterDebounceTimer = null;
+const FILTER_DEBOUNCE_DELAY = 500; // milliseconds
+
 function muscleNameToSvgId(muscleName) {
     let svgId = muscleName.toLowerCase().trim();
 
@@ -539,6 +543,19 @@ function applyFilters(e) {
     });
 }
 
+// Schedule filter application after delay
+function scheduleFilterApplication() {
+    // Clear any existing timer
+    if (filterDebounceTimer) {
+        clearTimeout(filterDebounceTimer);
+    }
+
+    // Set a new timer to apply filters after the delay
+    filterDebounceTimer = setTimeout(function() {
+        applyFilters();
+    }, FILTER_DEBOUNCE_DELAY);
+}
+
 $(document).ready(function() {
     // Pre-load SVG content for faster display
     loadSvgContent();
@@ -546,8 +563,19 @@ $(document).ready(function() {
     // Initialize hover listeners for existing exercises
     attachHoverListeners();
 
-    // Handle filter form submission
-    $('#filter-form').on('submit', applyFilters);
+    // Handle filter form submission (prevent default since we use auto-apply)
+    $('#filter-form').on('submit', function(e) {
+        e.preventDefault();
+        // Trigger filter application immediately on form submit
+        if (filterDebounceTimer) {
+            clearTimeout(filterDebounceTimer);
+        }
+        applyFilters();
+    });
+
+    // Handle filter changes - apply filters after delay
+    $('#workout-type-filter').on('change', scheduleFilterApplication);
+    $('#exercise-filter').on('change', scheduleFilterApplication);
 
     // Handle clear filters button
     $('#clear-filters').on('click', function(e) {
@@ -557,7 +585,10 @@ $(document).ready(function() {
         $('#workout-type-filter').val('');
         $('#exercise-filter').val('');
 
-        // Apply filters (with empty values, will show all)
+        // Apply filters immediately (with empty values, will show all)
+        if (filterDebounceTimer) {
+            clearTimeout(filterDebounceTimer);
+        }
         applyFilters();
     });
 
