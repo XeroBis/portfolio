@@ -534,7 +534,6 @@ def clear_data(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 
-@login_required
 def get_dashboard_data(request):
     """Get dashboard statistics filtered by date range (AJAX endpoint)"""
     from django.db.models import Count, F, Sum
