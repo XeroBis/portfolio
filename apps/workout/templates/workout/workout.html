@@ -124,34 +124,4 @@
     {{ translations|json_script:"workout-translations" }}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'js/workout.js' %}"></script>
-    <script>
-        // Re-index all exercises with unique global IDs on initial page load
-        document.addEventListener('DOMContentLoaded', function() {
-            var globalIndex = 0;
-            var tables = document.querySelectorAll('.series-table');
-            var buttons = document.querySelectorAll('.toggle-series-btn');
-
-            console.log('Found', tables.length, 'exercise tables to re-index');
-
-            // Re-index all tables and buttons with unique global IDs
-            tables.forEach(function(table, index) {
-                var newId = 'exercise-' + globalIndex;
-                var oldId = table.id;
-                console.log('Re-indexing exercise', index, 'from', oldId, 'to', newId);
-                table.id = newId;
-                globalIndex++;
-            });
-
-            // Update all button data-exercise-id attributes to match
-            buttons.forEach(function(btn, index) {
-                var newId = 'exercise-' + index;
-                btn.setAttribute('data-exercise-id', 'exercise-' + index);
-                console.log('Updated button', index, 'to point to exercise-' + index);
-            });
-
-            // Set the global counter to continue from where we left off
-            globalExerciseCounter = globalIndex;
-            console.log('Initialized globalExerciseCounter to', globalExerciseCounter);
-        });
-    </script>
 </body>

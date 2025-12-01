@@ -713,4 +713,26 @@ $(document).ready(function() {
     $('#load-more').click(function() {
         loadMore();
     });
+
+    // Re-index all exercises with unique global IDs on initial page load
+    var globalIndex = 0;
+    var tables = document.querySelectorAll('.series-table');
+    var buttons = document.querySelectorAll('.toggle-series-btn');
+
+    // Re-index all tables and buttons with unique global IDs
+    tables.forEach(function(table, index) {
+        var newId = 'exercise-' + globalIndex;
+        var oldId = table.id;
+        table.id = newId;
+        globalIndex++;
+    });
+
+    // Update all button data-exercise-id attributes to match
+    buttons.forEach(function(btn, index) {
+        var newId = 'exercise-' + index;
+        btn.setAttribute('data-exercise-id', 'exercise-' + index);
+    });
+
+    // Set the global counter to continue from where we left off
+    globalExerciseCounter = globalIndex;
 });
