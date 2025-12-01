@@ -399,7 +399,8 @@ function loadMore() {
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
-                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    var positionLabel = exercise.position ? exercise.position + '. ' : '';
+                                    html += '<div class="exercise-name-section"><strong>' + positionLabel + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
                                     html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
                                     if (exercise.series && exercise.series.length > 0) {
@@ -417,7 +418,8 @@ function loadMore() {
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
-                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    var positionLabel = exercise.position ? exercise.position + '. ' : '';
+                                    html += '<div class="exercise-name-section"><strong>' + positionLabel + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
                                     html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
                                     if (exercise.series && exercise.series.length > 0) {
@@ -566,7 +568,8 @@ function applyFilters(e) {
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
-                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    var positionLabel = exercise.position ? exercise.position + '. ' : '';
+                                    html += '<div class="exercise-name-section"><strong>' + positionLabel + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
                                     html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
                                     if (exercise.series && exercise.series.length > 0) {
@@ -584,7 +587,8 @@ function applyFilters(e) {
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
-                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    var positionLabel = exercise.position ? exercise.position + '. ' : '';
+                                    html += '<div class="exercise-name-section"><strong>' + positionLabel + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
                                     html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
                                     if (exercise.series && exercise.series.length > 0) {

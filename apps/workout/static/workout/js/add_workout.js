@@ -11,6 +11,7 @@ function addExercice() {
 
             exerciseDiv.innerHTML = `
                 <div class="exercise-name-header">
+                    <div class="exercise-position-number">${exerciseCount + 1}.</div>
                     <div class="exercise-search-container">
                         <input type="text" class="workout_input exercise-search-input"
                                id="exercise_${exerciseCount}_search"
@@ -198,6 +199,7 @@ function changeWorkoutType() {
 
                         exerciseDiv.innerHTML = `
                             <div class="exercise-name-header">
+                                <div class="exercise-position-number">${index + 1}.</div>
                                 <div class="exercise-search-container">
                                     <input type="text" class="workout_input exercise-search-input"
                                            id="exercise_${index}_search"
