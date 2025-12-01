@@ -92,8 +92,7 @@
                                 <tbody>
                                     {% for series in exercise.series %}
                                     <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
-                                        <td>{% if series.duration_seconds and series.duration_seconds > 0 %}{% if series.distance_m and series.distance_m > 0 %}{{ series.duration_seconds
-          + }}s / {{ series.distance_m }}m{% else %}{{ series.duration_seconds }}s{% endif %}{% elif series.distance_m and series.distance_m > 0 %}{{ series.distance_m }}m{% endif %}</td>
+                                        <td>{% if series.duration_seconds and series.duration_seconds > 0 %}{% if series.distance_m and series.distance_m > 0 %}{{ series.duration_seconds }}s / {{ series.distance_m }}m{% else %}{{ series.duration_seconds }}s{% endif %}{% elif series.distance_m and series.distance_m > 0 %}{{ series.distance_m }}m{% endif %}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
