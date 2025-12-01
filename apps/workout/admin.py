@@ -4,11 +4,13 @@ from django.contrib.contenttypes.models import ContentType
 
 from .models import (
     CardioExerciseLog,
+    CardioSeriesLog,
     Equipment,
     Exercice,
     MuscleGroup,
     OneExercice,
     StrengthExerciseLog,
+    StrengthSeriesLog,
     TypeWorkout,
     Workout,
 )
@@ -284,3 +286,28 @@ class OneExerciceAdmin(admin.ModelAdmin):
                 )
                 return f"{obj.exercise_log.duration_seconds}s{distance}"
         return "No details"
+
+
+@admin.register(StrengthSeriesLog)
+class StrengthSeriesLogAdmin(admin.ModelAdmin):
+    list_display = ("id", "exercise", "workout", "series_number", "reps", "weight")
+    list_filter = ("workout__date", "exercise")
+    search_fields = ("exercise__name", "workout__date")
+    raw_id_fields = ("exercise", "workout")
+    ordering = ("-workout__date", "exercise", "series_number")
+
+
+@admin.register(CardioSeriesLog)
+class CardioSeriesLogAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "exercise",
+        "workout",
+        "series_number",
+        "duration_seconds",
+        "distance_m",
+    )
+    list_filter = ("workout__date", "exercise")
+    search_fields = ("exercise__name", "workout__date")
+    raw_id_fields = ("exercise", "workout")
+    ordering = ("-workout__date", "exercise", "series_number")
