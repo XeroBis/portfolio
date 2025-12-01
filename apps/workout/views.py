@@ -61,6 +61,12 @@ def redirect_workout(request):
         )
         exercises: list[dict[str, Any]] = []
 
+        # Get exercises ordered by position from OneExercice
+        one_exercices = OneExercice.objects.filter(seance=workout).order_by("position")
+        exercise_positions: dict[int, int] = {
+            oe.name.id: oe.position for oe in one_exercices
+        }
+
         # Get strength exercises with series
         strength_series = StrengthSeriesLog.objects.filter(workout=workout).order_by(
             "exercise", "series_number"
@@ -77,6 +83,7 @@ def redirect_workout(request):
                     "id": series.exercise.id,
                     "name": series.exercise.name,
                     "exercise_type": "strength",
+                    "position": exercise_positions.get(series.exercise.id, 0),
                     "series": [],
                     "muscle_groups": list(
                         series.exercise.muscle_groups.all().values_list(
@@ -113,6 +120,9 @@ def redirect_workout(request):
                     "id": cardio_series_item.exercise.id,
                     "name": cardio_series_item.exercise.name,
                     "exercise_type": "cardio",
+                    "position": exercise_positions.get(
+                        cardio_series_item.exercise.id, 0
+                    ),
                     "series": [],
                     "muscle_groups": list(
                         cardio_series_item.exercise.muscle_groups.all().values_list(
@@ -132,6 +142,9 @@ def redirect_workout(request):
 
         if current_cardio_data:
             exercises.append(current_cardio_data)
+
+        # Sort exercises by position
+        exercises.sort(key=lambda x: x.get("position", 0))
 
         workout_data.append(
             {
@@ -277,6 +290,15 @@ def add_workout(request):
                         )
                         continue
 
+                    # Create OneExercice record for position tracking
+                    _ = OneExercice.objects.create(
+                        name=exercise_obj, seance=workout, position=position
+                    )
+                    logger.info(
+                        f"Created OneExercice: {exercise_obj.name} "
+                        f"at position {position}"
+                    )
+
                     # Process series for this exercise
                     if exercise_obj.exercise_type == "strength":
                         logger.info(
@@ -380,6 +402,14 @@ def get_last_workout(request):
     if last_workout:
         exercises_data: list[dict[str, Any]] = []
 
+        # Get exercises ordered by position from OneExercice
+        one_exercices = OneExercice.objects.filter(seance=last_workout).order_by(
+            "position"
+        )
+        exercise_positions: dict[int, int] = {
+            oe.name.id: oe.position for oe in one_exercices
+        }
+
         # Get all strength exercises from the last workout
         strength_series = StrengthSeriesLog.objects.filter(
             workout=last_workout
@@ -395,6 +425,7 @@ def get_last_workout(request):
                 current_exercise_data = {
                     "name": series.exercise.name,
                     "exercise_type": "strength",
+                    "position": exercise_positions.get(series.exercise.id, 0),
                     "series": [],
                 }
 
@@ -425,6 +456,9 @@ def get_last_workout(request):
                 current_cardio_data = {
                     "name": cardio_series_item.exercise.name,
                     "exercise_type": "cardio",
+                    "position": exercise_positions.get(
+                        cardio_series_item.exercise.id, 0
+                    ),
                     "series": [],
                 }
 
@@ -439,6 +473,9 @@ def get_last_workout(request):
 
         if current_cardio_data:
             exercises_data.append(current_cardio_data)
+
+        # Sort exercises by position
+        exercises_data.sort(key=lambda x: x.get("position", 0))
 
         data = {
             "date": last_workout.date.strftime("%Y-%m-%d"),
