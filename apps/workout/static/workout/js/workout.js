@@ -10,6 +10,9 @@ let backSvgContent = null;
 let filterDebounceTimer = null;
 const FILTER_DEBOUNCE_DELAY = 500; // milliseconds
 
+// Global exercise index counter to ensure unique IDs across all workouts
+let globalExerciseCounter = 0;
+
 function muscleNameToSvgId(muscleName) {
     let svgId = muscleName.toLowerCase().trim();
 
@@ -178,29 +181,86 @@ function isMobileDevice() {
            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-// Attach event listeners to exercise rows
+// Attach event listeners to exercise names using event delegation
 function attachHoverListeners() {
     const isMobile = isMobileDevice();
+    const workoutList = document.getElementById('workout-list');
 
-    document.querySelectorAll('.exercise-row').forEach(row => {
-        // Remove all existing listeners
-        row.removeEventListener('mouseenter', handleMouseEnter);
-        row.removeEventListener('mouseleave', handleMouseLeave);
-        row.removeEventListener('click', handleClick);
+    if (!workoutList) return;
 
-        if (isMobile) {
-            // On mobile: use click
-            row.addEventListener('click', handleClick);
-        } else {
-            // On desktop: use hover
-            row.addEventListener('mouseenter', handleMouseEnter);
-            row.addEventListener('mouseleave', handleMouseLeave);
-        }
+    // Only attach once via event delegation
+    if (workoutList.dataset.listenersAttached === 'true') {
+        return;
+    }
+
+    if (isMobile) {
+        // On mobile: click on the section shows SVG modal
+        workoutList.addEventListener('click', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleNameClick.call(section, e);
+            }
+        });
+    } else {
+        // On desktop: hover shows SVG modal, click toggles series
+        workoutList.addEventListener('mouseenter', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleMouseEnter.call(section, e);
+            }
+        }, true);
+
+        workoutList.addEventListener('mouseleave', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleMouseLeave.call(section, e);
+            }
+        }, true);
+
+        workoutList.addEventListener('click', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleToggleClickFromName.call(section, e);
+            }
+        });
+    }
+
+    workoutList.dataset.listenersAttached = 'true';
+}
+
+// Attach toggle listeners for collapsible series
+function attachToggleListeners() {
+    // Listen only to the arrow button for toggling
+    document.querySelectorAll('.toggle-series-btn').forEach(btn => {
+        btn.removeEventListener('click', handleToggleClick);
+        btn.addEventListener('click', handleToggleClick);
     });
 }
 
+function handleToggleClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const exerciseId = this.getAttribute('data-exercise-id');
+    const table = document.getElementById(exerciseId);
+
+    if (table) {
+        const isHidden = table.classList.contains('series-collapsed');
+        if (isHidden) {
+            table.classList.remove('series-collapsed');
+            this.textContent = '▼';
+        } else {
+            table.classList.add('series-collapsed');
+            this.textContent = '▶';
+        }
+    }
+}
+
+
 function handleMouseEnter() {
-    const muscleGroups = this.getAttribute('data-muscle-groups');
+    // Get muscle groups from the associated exercise row
+    const table = document.getElementById(this.querySelector('.toggle-series-btn').getAttribute('data-exercise-id'));
+    const muscleGroups = table ? table.querySelector('.exercise-row')?.getAttribute('data-muscle-groups') : '';
     showMuscleModal(this, muscleGroups);
 }
 
@@ -208,24 +268,51 @@ function handleMouseLeave() {
     hideMuscleModal();
 }
 
-function handleClick(e) {
+function handleNameClick(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    const muscleGroups = this.getAttribute('data-muscle-groups');
+    // Get muscle groups from the associated exercise row
+    const table = document.getElementById(this.querySelector('.toggle-series-btn').getAttribute('data-exercise-id'));
+    const muscleGroups = table ? table.querySelector('.exercise-row')?.getAttribute('data-muscle-groups') : '';
     const modal = document.getElementById('muscle-modal');
 
-    // If modal is already visible for this row, hide it
+    // If modal is already visible for this section, hide it
     if (modal && modal.style.display === 'block' && modal.dataset.currentRow === this.dataset.rowId) {
         hideMuscleModal();
     } else {
-        // Show modal for this row
+        // Show modal for this section
         if (!this.dataset.rowId) {
             this.dataset.rowId = 'row-' + Math.random().toString(36).slice(2, 11);
         }
         showMuscleModal(this, muscleGroups);
         if (modal) {
             modal.dataset.currentRow = this.dataset.rowId;
+        }
+    }
+}
+
+function handleToggleClickFromName(e) {
+    // Don't toggle if clicking on the arrow button (it has its own handler)
+    if (e.target === this.querySelector('.toggle-series-btn')) {
+        return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const btn = this.querySelector('.toggle-series-btn');
+    const exerciseId = btn.getAttribute('data-exercise-id');
+    const table = document.getElementById(exerciseId);
+
+    if (table) {
+        const isHidden = table.classList.contains('series-collapsed');
+        if (isHidden) {
+            table.classList.remove('series-collapsed');
+            btn.textContent = '▼';
+        } else {
+            table.classList.add('series-collapsed');
+            btn.textContent = '▶';
         }
     }
 }
@@ -263,7 +350,7 @@ function loadMore() {
 
                 var html = '';
                 response.workout_data.forEach(function (data) {
-                    html += '<div>';
+                    html += '<div class="workout-item">';
                     html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
                     html += '<h2 class="workout_date_type">' + data.workout.date + ' - ' + data.workout.type_workout;
 
@@ -307,45 +394,53 @@ function loadMore() {
                                 exercises: currentGroup
                             });
                         }
-
-                        // Create a separate table for each group
                         groups.forEach(function (group) {
                             if (group.type === 'strength') {
-                                html += '<table><thead><tr>';
-                                html += '<th>' + translations.exercise + '</th>';
-                                html += '<th>' + translations.series + '</th>';
-                                html += '<th>' + translations.reps + '</th>';
-                                html += '<th>' + translations.weight_kg + '</th>';
-                                html += '</tr></thead><tbody>';
-
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
-                                    html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
-                                    html += '<td>' + exercise.name + '</td>';
-                                    html += '<td>' + (exercise.data.nb_series || '-') + '</td>';
-                                    html += '<td>' + (exercise.data.nb_repetition || '-') + '</td>';
-                                    html += '<td>' + (exercise.data.weight || '-') + '</td>';
-                                    html += '</tr>';
-                                });
+                                    var exerciseId = 'exercise-' + globalExerciseCounter;
+                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
-                                html += '</tbody></table>';
+                                    if (exercise.series && exercise.series.length > 0) {
+                                        exercise.series.forEach(function (series) {
+                                            html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
+                                            html += '<td>' + series.reps + ' x ' + series.weight + 'kg</td>';
+                                            html += '</tr>';
+                                        });
+                                    }
+
+                                    html += '</tbody></table>';
+                                    globalExerciseCounter++;
+                                });
                             } else if (group.type === 'cardio') {
-                                html += '<table><thead><tr>';
-                                html += '<th>' + translations.exercise + '</th>';
-                                html += '<th>' + translations.duration_min + '</th>';
-                                html += '<th>' + translations.distance_m + '</th>';
-                                html += '</tr></thead><tbody>';
-
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
-                                    html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
-                                    html += '<td>' + exercise.name + '</td>';
-                                    html += '<td>' + (exercise.data.duration_seconds ? exercise.data.duration_seconds / 60 : '-') + '</td>';
-                                    html += '<td>' + (exercise.data.distance_m || '-') + '</td>';
-                                    html += '</tr>';
-                                });
+                                    var exerciseId = 'exercise-' + globalExerciseCounter;
+                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
-                                html += '</tbody></table>';
+                                    if (exercise.series && exercise.series.length > 0) {
+                                        exercise.series.forEach(function (series) {
+                                            html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
+                                            var displayText = '';
+                                            if (series.duration_seconds && series.duration_seconds > 0) {
+                                                if (series.distance_m && series.distance_m > 0) {
+                                                    displayText = series.duration_seconds + 's / ' + series.distance_m + 'm';
+                                                } else {
+                                                    displayText = series.duration_seconds + 's';
+                                                }
+                                            } else if (series.distance_m && series.distance_m > 0) {
+                                                displayText = series.distance_m + 'm';
+                                            }
+                                            html += '<td>' + displayText + '</td>';
+                                            html += '</tr>';
+                                        });
+                                    }
+
+                                    html += '</tbody></table>';
+                                    globalExerciseCounter++;
+                                });
                             }
                         });
                     }
@@ -355,6 +450,9 @@ function loadMore() {
 
                 // Attach hover listeners to newly added exercises
                 attachHoverListeners();
+
+                // Attach toggle listeners to newly added series
+                attachToggleListeners();
             }
 
             if (response.has_next) {
@@ -463,45 +561,53 @@ function applyFilters(e) {
                                 exercises: currentGroup
                             });
                         }
-
-                        // Create a separate table for each group
                         groups.forEach(function (group) {
                             if (group.type === 'strength') {
-                                html += '<table><thead><tr>';
-                                html += '<th>' + translations.exercise + '</th>';
-                                html += '<th>' + translations.series + '</th>';
-                                html += '<th>' + translations.reps + '</th>';
-                                html += '<th>' + translations.weight_kg + '</th>';
-                                html += '</tr></thead><tbody>';
-
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
-                                    html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
-                                    html += '<td>' + exercise.name + '</td>';
-                                    html += '<td>' + (exercise.data.nb_series || '-') + '</td>';
-                                    html += '<td>' + (exercise.data.nb_repetition || '-') + '</td>';
-                                    html += '<td>' + (exercise.data.weight || '-') + '</td>';
-                                    html += '</tr>';
-                                });
+                                    var exerciseId = 'exercise-' + globalExerciseCounter;
+                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
-                                html += '</tbody></table>';
+                                    if (exercise.series && exercise.series.length > 0) {
+                                        exercise.series.forEach(function (series) {
+                                            html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
+                                            html += '<td>' + series.reps + ' x ' + series.weight + 'kg</td>';
+                                            html += '</tr>';
+                                        });
+                                    }
+
+                                    html += '</tbody></table>';
+                                    globalExerciseCounter++;
+                                });
                             } else if (group.type === 'cardio') {
-                                html += '<table><thead><tr>';
-                                html += '<th>' + translations.exercise + '</th>';
-                                html += '<th>' + translations.duration_min + '</th>';
-                                html += '<th>' + translations.distance_m + '</th>';
-                                html += '</tr></thead><tbody>';
-
                                 group.exercises.forEach(function (exercise) {
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
-                                    html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
-                                    html += '<td>' + exercise.name + '</td>';
-                                    html += '<td>' + (exercise.data.duration_seconds ? exercise.data.duration_seconds / 60 : '-') + '</td>';
-                                    html += '<td>' + (exercise.data.distance_m || '-') + '</td>';
-                                    html += '</tr>';
-                                });
+                                    var exerciseId = 'exercise-' + globalExerciseCounter;
+                                    html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
+                                    html += '<table class="series-table series-collapsed" id="' + exerciseId + '"><tbody>';
 
-                                html += '</tbody></table>';
+                                    if (exercise.series && exercise.series.length > 0) {
+                                        exercise.series.forEach(function (series) {
+                                            html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
+                                            var displayText = '';
+                                            if (series.duration_seconds && series.duration_seconds > 0) {
+                                                if (series.distance_m && series.distance_m > 0) {
+                                                    displayText = series.duration_seconds + 's / ' + series.distance_m + 'm';
+                                                } else {
+                                                    displayText = series.duration_seconds + 's';
+                                                }
+                                            } else if (series.distance_m && series.distance_m > 0) {
+                                                displayText = series.distance_m + 'm';
+                                            }
+                                            html += '<td>' + displayText + '</td>';
+                                            html += '</tr>';
+                                        });
+                                    }
+
+                                    html += '</tbody></table>';
+                                    globalExerciseCounter++;
+                                });
                             }
                         });
                     }
@@ -511,6 +617,9 @@ function applyFilters(e) {
 
                 // Attach hover listeners to newly added exercises
                 attachHoverListeners();
+
+                // Attach toggle listeners to newly added series
+                attachToggleListeners();
             } else {
                 // Show no workouts message
                 $('#workout-list').html('<p>No workouts recorded.</p>');
@@ -563,6 +672,9 @@ $(document).ready(function() {
     // Initialize hover listeners for existing exercises
     attachHoverListeners();
 
+    // Initialize toggle listeners for collapsible series
+    attachToggleListeners();
+
     // Handle filter form submission (prevent default since we use auto-apply)
     $('#filter-form').on('submit', function(e) {
         e.preventDefault();
@@ -601,4 +713,26 @@ $(document).ready(function() {
     $('#load-more').click(function() {
         loadMore();
     });
+
+    // Re-index all exercises with unique global IDs on initial page load
+    var globalIndex = 0;
+    var tables = document.querySelectorAll('.series-table');
+    var buttons = document.querySelectorAll('.toggle-series-btn');
+
+    // Re-index all tables and buttons with unique global IDs
+    tables.forEach(function(table, index) {
+        var newId = 'exercise-' + globalIndex;
+        var oldId = table.id;
+        table.id = newId;
+        globalIndex++;
+    });
+
+    // Update all button data-exercise-id attributes to match
+    buttons.forEach(function(btn, index) {
+        var newId = 'exercise-' + index;
+        btn.setAttribute('data-exercise-id', 'exercise-' + index);
+    });
+
+    // Set the global counter to continue from where we left off
+    globalExerciseCounter = globalIndex;
 });

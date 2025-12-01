@@ -144,6 +144,51 @@ class CardioExerciseLog(BaseExerciseLog):
         return f"{self.exercise.name} - {self.duration_seconds}min{distance_str}"
 
 
+class StrengthSeriesLog(models.Model):
+    """
+    Series-based strength exercise log - one row per series
+    """
+
+    exercise = models.ForeignKey(
+        Exercice, on_delete=models.CASCADE, related_name="strength_series_logs"
+    )
+    workout = models.ForeignKey(
+        Workout, on_delete=models.CASCADE, related_name="strength_series_logs"
+    )
+    series_number = models.IntegerField()  # 1, 2, 3, etc.
+    reps = models.IntegerField()
+    weight = models.IntegerField()
+
+    class Meta:
+        ordering = ["workout", "exercise", "series_number"]
+
+    def __str__(self):
+        return f"{self.exercise.name} - Series {self.series_number}: {self.reps}x{self.weight}kg"
+
+
+class CardioSeriesLog(models.Model):
+    """
+    Series-based cardio exercise log - one row per interval/set
+    """
+
+    exercise = models.ForeignKey(
+        Exercice, on_delete=models.CASCADE, related_name="cardio_series_logs"
+    )
+    workout = models.ForeignKey(
+        Workout, on_delete=models.CASCADE, related_name="cardio_series_logs"
+    )
+    series_number = models.IntegerField()  # 1, 2, 3, etc. for intervals
+    duration_seconds = models.IntegerField(null=True, blank=True)
+    distance_m = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["workout", "exercise", "series_number"]
+
+    def __str__(self):
+        distance_str = f" - {self.distance_m}m" if self.distance_m else ""
+        return f"{self.exercise.name} - Interval {self.series_number}: {self.duration_seconds}s{distance_str}"
+
+
 class OneExercice(models.Model):
     """
     Polymorphic exercise log using generic foreign key
