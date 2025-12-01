@@ -390,6 +390,106 @@ table tr td {
     outline: none;
 }
 
+/* Series Container Styles */
+.series-container {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--color-bg-tertiary);
+    border-radius: 6px;
+    border: 1px solid var(--color-border-primary);
+}
+
+.series-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: var(--color-bg-secondary);
+    border-radius: 4px;
+    border: 1px solid var(--color-border-primary);
+}
+
+.series-header h4 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-weight: bold;
+}
+
+.button_add_series {
+    padding: 8px 12px;
+    font-size: 13px;
+    background-color: var(--color-accent-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button_add_series:hover {
+    background-color: var(--color-accent-hover);
+}
+
+#exercise_0_series_list,
+#exercise_1_series_list,
+#exercise_2_series_list,
+#exercise_3_series_list,
+#exercise_4_series_list,
+#exercise_5_series_list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.series-item {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border-primary);
+    border-radius: 4px;
+    align-items: flex-end;
+}
+
+.series-number {
+    font-weight: bold;
+    min-width: 80px;
+    color: var(--color-text-primary);
+    padding-top: 25px;
+}
+
+.series-fields {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-end;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.series-fields .input-group {
+    flex: 1;
+    min-width: 100px;
+    margin: 0;
+}
+
+.series-fields .input-label {
+    margin-bottom: 4px;
+}
+
+.series-fields .workout_input {
+    margin: 0;
+}
+
+.series-item .add_workout_btn_delete {
+    white-space: nowrap;
+    padding: 8px 10px;
+    align-self: flex-end;
+    margin: 0;
+}
+
 .workout_input:hover {
     background-color: var(--color-bg-hover);
 }
