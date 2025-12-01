@@ -167,12 +167,14 @@ table {
     font-size: 18px;
     font-weight: bold;
     color: var(--color-accent-primary);
-    padding: 12px 0;
+    padding: 12px 8px;
     margin-top: 15px;
     margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 .toggle-series-btn {
@@ -184,10 +186,18 @@ table {
     padding: 0;
     margin-left: 10px;
     transition: transform 0.2s ease;
+    flex-shrink: 0;
 }
 
 .toggle-series-btn:hover {
     transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+    /* Mobile: arrow button is the only way to toggle */
+    .toggle-series-btn {
+        margin-left: 15px;
+    }
 }
 
 table th, table td {

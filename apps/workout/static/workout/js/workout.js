@@ -181,64 +181,62 @@ function isMobileDevice() {
            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-// Attach event listeners to exercise rows
+// Attach event listeners to exercise names
 function attachHoverListeners() {
     const isMobile = isMobileDevice();
 
-    document.querySelectorAll('.exercise-row').forEach(row => {
+    document.querySelectorAll('.exercise-name-section').forEach(section => {
         // Remove all existing listeners
-        row.removeEventListener('mouseenter', handleMouseEnter);
-        row.removeEventListener('mouseleave', handleMouseLeave);
-        row.removeEventListener('click', handleClick);
+        section.removeEventListener('mouseenter', handleMouseEnter);
+        section.removeEventListener('mouseleave', handleMouseLeave);
+        section.removeEventListener('click', handleNameClick);
+        section.removeEventListener('click', handleToggleClickFromName);
 
         if (isMobile) {
-            // On mobile: use click
-            row.addEventListener('click', handleClick);
+            // On mobile: click on the section shows SVG modal
+            section.addEventListener('click', handleNameClick.bind(section));
         } else {
-            // On desktop: use hover
-            row.addEventListener('mouseenter', handleMouseEnter);
-            row.addEventListener('mouseleave', handleMouseLeave);
+            // On desktop: hover shows SVG modal, click toggles series
+            section.addEventListener('mouseenter', handleMouseEnter);
+            section.addEventListener('mouseleave', handleMouseLeave);
+            section.addEventListener('click', handleToggleClickFromName.bind(section));
         }
     });
 }
 
 // Attach toggle listeners for collapsible series
 function attachToggleListeners() {
-    // Listen to the entire exercise-name-section div
-    document.querySelectorAll('.exercise-name-section').forEach(section => {
-        section.removeEventListener('click', handleExerciseSectionClick);
-        section.addEventListener('click', handleExerciseSectionClick);
-        // Make it look clickable
-        section.style.cursor = 'pointer';
+    // Listen only to the arrow button for toggling
+    document.querySelectorAll('.toggle-series-btn').forEach(btn => {
+        btn.removeEventListener('click', handleToggleClick);
+        btn.addEventListener('click', handleToggleClick);
     });
 }
 
-function handleExerciseSectionClick(e) {
+function handleToggleClick(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    // Find the button within this section to get the exercise ID
-    const btn = this.querySelector('.toggle-series-btn');
-    if (btn) {
-        const exerciseId = btn.getAttribute('data-exercise-id');
-        const table = document.getElementById(exerciseId);
+    const exerciseId = this.getAttribute('data-exercise-id');
+    const table = document.getElementById(exerciseId);
 
-        if (table) {
-            const isHidden = table.classList.contains('series-collapsed');
-            if (isHidden) {
-                table.classList.remove('series-collapsed');
-                btn.textContent = '▼';
-            } else {
-                table.classList.add('series-collapsed');
-                btn.textContent = '▶';
-            }
+    if (table) {
+        const isHidden = table.classList.contains('series-collapsed');
+        if (isHidden) {
+            table.classList.remove('series-collapsed');
+            this.textContent = '▼';
+        } else {
+            table.classList.add('series-collapsed');
+            this.textContent = '▶';
         }
     }
 }
 
 
 function handleMouseEnter() {
-    const muscleGroups = this.getAttribute('data-muscle-groups');
+    // Get muscle groups from the associated exercise row
+    const table = document.getElementById(this.querySelector('.toggle-series-btn').getAttribute('data-exercise-id'));
+    const muscleGroups = table ? table.querySelector('.exercise-row')?.getAttribute('data-muscle-groups') : '';
     showMuscleModal(this, muscleGroups);
 }
 
@@ -246,18 +244,20 @@ function handleMouseLeave() {
     hideMuscleModal();
 }
 
-function handleClick(e) {
+function handleNameClick(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    const muscleGroups = this.getAttribute('data-muscle-groups');
+    // Get muscle groups from the associated exercise row
+    const table = document.getElementById(this.querySelector('.toggle-series-btn').getAttribute('data-exercise-id'));
+    const muscleGroups = table ? table.querySelector('.exercise-row')?.getAttribute('data-muscle-groups') : '';
     const modal = document.getElementById('muscle-modal');
 
-    // If modal is already visible for this row, hide it
+    // If modal is already visible for this section, hide it
     if (modal && modal.style.display === 'block' && modal.dataset.currentRow === this.dataset.rowId) {
         hideMuscleModal();
     } else {
-        // Show modal for this row
+        // Show modal for this section
         if (!this.dataset.rowId) {
             this.dataset.rowId = 'row-' + Math.random().toString(36).slice(2, 11);
         }
@@ -268,8 +268,32 @@ function handleClick(e) {
     }
 }
 
+function handleToggleClickFromName(e) {
+    // Don't toggle if clicking on the arrow button (it has its own handler)
+    if (e.target === this.querySelector('.toggle-series-btn')) {
+        return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const btn = this.querySelector('.toggle-series-btn');
+    const exerciseId = btn.getAttribute('data-exercise-id');
+    const table = document.getElementById(exerciseId);
+
+    if (table) {
+        const isHidden = table.classList.contains('series-collapsed');
+        if (isHidden) {
+            table.classList.remove('series-collapsed');
+            btn.textContent = '▼';
+        } else {
+            table.classList.add('series-collapsed');
+            btn.textContent = '▶';
+        }
+    }
+}
+
 function loadMore() {
-    console.log('=== loadMore called, globalExerciseCounter =', globalExerciseCounter);
     if (isLoading || !hasMoreContent) return;
 
     isLoading = true;
@@ -346,13 +370,9 @@ function loadMore() {
                                 exercises: currentGroup
                             });
                         }
-
-                        // Create a separate table for each group
-                        console.log('Before processing groups, globalExerciseCounter =', globalExerciseCounter);
                         groups.forEach(function (group) {
                             if (group.type === 'strength') {
                                 group.exercises.forEach(function (exercise) {
-                                    console.log('Processing strength exercise:', exercise.name, 'with ID:', globalExerciseCounter);
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
                                     html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
@@ -367,12 +387,10 @@ function loadMore() {
                                     }
 
                                     html += '</tbody></table>';
-                                    console.log('Incrementing counter from', globalExerciseCounter, 'to', globalExerciseCounter + 1);
                                     globalExerciseCounter++;
                                 });
                             } else if (group.type === 'cardio') {
                                 group.exercises.forEach(function (exercise) {
-                                    console.log('Processing cardio exercise:', exercise.name, 'with ID:', globalExerciseCounter);
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
                                     html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
@@ -387,12 +405,10 @@ function loadMore() {
                                     }
 
                                     html += '</tbody></table>';
-                                    console.log('Incrementing counter from', globalExerciseCounter, 'to', globalExerciseCounter + 1);
                                     globalExerciseCounter++;
                                 });
                             }
                         });
-                        console.log('After processing groups, globalExerciseCounter =', globalExerciseCounter);
                     }
                     html += '</div>';
                 });
@@ -428,8 +444,6 @@ function applyFilters(e) {
     if (e) {
         e.preventDefault();
     }
-
-    console.log('=== applyFilters called, globalExerciseCounter =', globalExerciseCounter);
 
     // Get filter values
     var workoutType = $('#workout-type-filter').val();
@@ -513,13 +527,9 @@ function applyFilters(e) {
                                 exercises: currentGroup
                             });
                         }
-
-                        // Create a separate table for each group
-                        console.log('Before processing groups, globalExerciseCounter =', globalExerciseCounter);
                         groups.forEach(function (group) {
                             if (group.type === 'strength') {
                                 group.exercises.forEach(function (exercise) {
-                                    console.log('Processing strength exercise:', exercise.name, 'with ID:', globalExerciseCounter);
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
                                     html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
@@ -534,12 +544,10 @@ function applyFilters(e) {
                                     }
 
                                     html += '</tbody></table>';
-                                    console.log('Incrementing counter from', globalExerciseCounter, 'to', globalExerciseCounter + 1);
                                     globalExerciseCounter++;
                                 });
                             } else if (group.type === 'cardio') {
                                 group.exercises.forEach(function (exercise) {
-                                    console.log('Processing cardio exercise:', exercise.name, 'with ID:', globalExerciseCounter);
                                     var muscleGroups = exercise.muscle_groups ? exercise.muscle_groups.join(', ') : '';
                                     var exerciseId = 'exercise-' + globalExerciseCounter;
                                     html += '<div class="exercise-name-section"><strong>' + exercise.name + '</strong><button class="toggle-series-btn" data-exercise-id="' + exerciseId + '">▶</button></div>';
@@ -554,12 +562,10 @@ function applyFilters(e) {
                                     }
 
                                     html += '</tbody></table>';
-                                    console.log('Incrementing counter from', globalExerciseCounter, 'to', globalExerciseCounter + 1);
                                     globalExerciseCounter++;
                                 });
                             }
                         });
-                        console.log('After processing groups, globalExerciseCounter =', globalExerciseCounter);
                     }
                     html += '</div>';
                 });
