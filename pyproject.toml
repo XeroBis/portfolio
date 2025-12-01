@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "asgiref==3.8.1",
-    "django==5.1.13",
+    "django==5.1.14",
     "feedparser==6.0.12",
     "gunicorn==23.0.0",
     "pre-commit>=4.3.0",
