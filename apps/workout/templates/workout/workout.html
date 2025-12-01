@@ -61,47 +61,34 @@
                     {% endif %}
                 </div>
                 {% if data.exercises %}
-                    {% for exercise in data.exercises %}
-                        {% if exercise.exercise_type == "strength" %}
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>{% trans "Exercise" %}</th>
-                                    <th>{% trans "Reps" %}</th>
-                                    <th>{% trans "Weight (kg)" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
-                                    <td rowspan="{{ exercise.series|length }}"><strong>{{ exercise.name }}</strong></td>
+                    {% regroup data.exercises by exercise_type as exercises_by_type %}
+                    {% for type_group in exercises_by_type %}
+                        {% if type_group.grouper == "strength" %}
+                        {% for exercise in type_group.list %}
+                            <div class="exercise-name-section"><strong>{{ exercise.name }}</strong></div>
+                            <table>
+                                <tbody>
                                     {% for series in exercise.series %}
-                                        {% if forloop.counter > 1 %}</tr><tr>{% endif %}
-                                        <td>{{ series.reps }}</td>
-                                        <td>{{ series.weight }}</td>
+                                    <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
+                                        <td>{{ series.reps }} x {{ series.weight }}kg</td>
+                                    </tr>
                                     {% endfor %}
-                                </tr>
-                            </tbody>
-                        </table>
-                        {% elif exercise.exercise_type == "cardio" %}
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>{% trans "Exercise" %}</th>
-                                    <th>{% trans "Duration (sec)" %}</th>
-                                    <th>{% trans "Distance (m)" %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
-                                    <td rowspan="{{ exercise.series|length }}"><strong>{{ exercise.name }}</strong></td>
+                                </tbody>
+                            </table>
+                        {% endfor %}
+                        {% elif type_group.grouper == "cardio" %}
+                        {% for exercise in type_group.list %}
+                            <div class="exercise-name-section"><strong>{{ exercise.name }}</strong></div>
+                            <table>
+                                <tbody>
                                     {% for series in exercise.series %}
-                                        {% if forloop.counter > 1 %}</tr><tr>{% endif %}
-                                        <td>{{ series.duration_seconds }}</td>
-                                        <td>{{ series.distance_m }}</td>
+                                    <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
+                                        <td>{{ series.duration_seconds }}s / {{ series.distance_m }}m</td>
+                                    </tr>
                                     {% endfor %}
-                                </tr>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        {% endfor %}
                         {% endif %}
                     {% endfor %}
                 {% endif %}

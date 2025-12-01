@@ -137,20 +137,36 @@
 }
 
 .workout_date_type {
-    padding-bottom: 2%;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--color-accent-primary);
+    padding: 20px 0;
+    margin: 0;
+    margin-bottom: 25px;
+    border-bottom: 3px solid var(--color-accent-primary);
 }
 
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+.exercise-name-section {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-accent-primary);
+    padding: 12px 0;
+    margin-top: 15px;
+    margin-bottom: 8px;
 }
 
 table th, table td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid var(--color-border-primary);
+    line-height: 1.2;
 }
 
 table th {
@@ -849,6 +865,10 @@ table tr td {
 .workout-item {
     position: relative;
     margin-bottom: 30px;
+    border: 2px solid var(--color-accent-primary);
+    border-radius: 8px;
+    padding: 20px;
+    background: var(--color-bg-primary);
 }
 
 .muscle-visualization-overlay {
