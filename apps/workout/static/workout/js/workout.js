@@ -181,27 +181,51 @@ function isMobileDevice() {
            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-// Attach event listeners to exercise names
+// Attach event listeners to exercise names using event delegation
 function attachHoverListeners() {
     const isMobile = isMobileDevice();
+    const workoutList = document.getElementById('workout-list');
 
-    document.querySelectorAll('.exercise-name-section').forEach(section => {
-        // Remove all existing listeners
-        section.removeEventListener('mouseenter', handleMouseEnter);
-        section.removeEventListener('mouseleave', handleMouseLeave);
-        section.removeEventListener('click', handleNameClick);
-        section.removeEventListener('click', handleToggleClickFromName);
+    if (!workoutList) return;
 
-        if (isMobile) {
-            // On mobile: click on the section shows SVG modal
-            section.addEventListener('click', handleNameClick.bind(section));
-        } else {
-            // On desktop: hover shows SVG modal, click toggles series
-            section.addEventListener('mouseenter', handleMouseEnter);
-            section.addEventListener('mouseleave', handleMouseLeave);
-            section.addEventListener('click', handleToggleClickFromName.bind(section));
-        }
-    });
+    // Only attach once via event delegation
+    if (workoutList.dataset.listenersAttached === 'true') {
+        return;
+    }
+
+    if (isMobile) {
+        // On mobile: click on the section shows SVG modal
+        workoutList.addEventListener('click', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleNameClick.call(section, e);
+            }
+        });
+    } else {
+        // On desktop: hover shows SVG modal, click toggles series
+        workoutList.addEventListener('mouseenter', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleMouseEnter.call(section, e);
+            }
+        }, true);
+
+        workoutList.addEventListener('mouseleave', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleMouseLeave.call(section, e);
+            }
+        }, true);
+
+        workoutList.addEventListener('click', function(e) {
+            const section = e.target.closest('.exercise-name-section');
+            if (section) {
+                handleToggleClickFromName.call(section, e);
+            }
+        });
+    }
+
+    workoutList.dataset.listenersAttached = 'true';
 }
 
 // Attach toggle listeners for collapsible series
@@ -399,7 +423,17 @@ function loadMore() {
                                     if (exercise.series && exercise.series.length > 0) {
                                         exercise.series.forEach(function (series) {
                                             html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
-                                            html += '<td>' + series.duration_seconds + 's / ' + series.distance_m + 'm</td>';
+                                            var displayText = '';
+                                            if (series.duration_seconds && series.duration_seconds > 0) {
+                                                if (series.distance_m && series.distance_m > 0) {
+                                                    displayText = series.duration_seconds + 's / ' + series.distance_m + 'm';
+                                                } else {
+                                                    displayText = series.duration_seconds + 's';
+                                                }
+                                            } else if (series.distance_m && series.distance_m > 0) {
+                                                displayText = series.distance_m + 'm';
+                                            }
+                                            html += '<td>' + displayText + '</td>';
                                             html += '</tr>';
                                         });
                                     }
@@ -556,7 +590,17 @@ function applyFilters(e) {
                                     if (exercise.series && exercise.series.length > 0) {
                                         exercise.series.forEach(function (series) {
                                             html += '<tr class="exercise-row" data-muscle-groups="' + muscleGroups + '">';
-                                            html += '<td>' + series.duration_seconds + 's / ' + series.distance_m + 'm</td>';
+                                            var displayText = '';
+                                            if (series.duration_seconds && series.duration_seconds > 0) {
+                                                if (series.distance_m && series.distance_m > 0) {
+                                                    displayText = series.duration_seconds + 's / ' + series.distance_m + 'm';
+                                                } else {
+                                                    displayText = series.duration_seconds + 's';
+                                                }
+                                            } else if (series.distance_m && series.distance_m > 0) {
+                                                displayText = series.distance_m + 'm';
+                                            }
+                                            html += '<td>' + displayText + '</td>';
                                             html += '</tr>';
                                         });
                                     }
