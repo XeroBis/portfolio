@@ -204,33 +204,38 @@ function attachHoverListeners() {
 
 // Attach toggle listeners for collapsible series
 function attachToggleListeners() {
-    document.querySelectorAll('.toggle-series-btn').forEach(btn => {
-        btn.removeEventListener('click', handleToggleClick);
-        btn.addEventListener('click', handleToggleClick);
+    // Listen to the entire exercise-name-section div
+    document.querySelectorAll('.exercise-name-section').forEach(section => {
+        section.removeEventListener('click', handleExerciseSectionClick);
+        section.addEventListener('click', handleExerciseSectionClick);
+        // Make it look clickable
+        section.style.cursor = 'pointer';
     });
 }
 
-function handleToggleClick(e) {
+function handleExerciseSectionClick(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    const btn = this;
-    const exerciseId = btn.getAttribute('data-exercise-id');
-    const table = document.getElementById(exerciseId);
+    // Find the button within this section to get the exercise ID
+    const btn = this.querySelector('.toggle-series-btn');
+    if (btn) {
+        const exerciseId = btn.getAttribute('data-exercise-id');
+        const table = document.getElementById(exerciseId);
 
-    if (table) {
-        const isHidden = table.classList.contains('series-collapsed');
-        if (isHidden) {
-            table.classList.remove('series-collapsed');
-            btn.textContent = '▼';
-        } else {
-            table.classList.add('series-collapsed');
-            btn.textContent = '▶';
+        if (table) {
+            const isHidden = table.classList.contains('series-collapsed');
+            if (isHidden) {
+                table.classList.remove('series-collapsed');
+                btn.textContent = '▼';
+            } else {
+                table.classList.add('series-collapsed');
+                btn.textContent = '▶';
+            }
         }
-    } else {
-        console.error('Table not found for exercise ID:', exerciseId);
     }
 }
+
 
 function handleMouseEnter() {
     const muscleGroups = this.getAttribute('data-muscle-groups');
