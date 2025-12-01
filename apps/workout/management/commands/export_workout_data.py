@@ -5,11 +5,13 @@ from django.core.management.base import BaseCommand
 
 from apps.workout.models import (
     CardioExerciseLog,
+    CardioSeriesLog,
     Equipment,
     Exercice,
     MuscleGroup,
     OneExercice,
     StrengthExerciseLog,
+    StrengthSeriesLog,
     TypeWorkout,
     Workout,
 )
@@ -38,6 +40,9 @@ class Command(BaseCommand):
             "equipment": self.export_equipment(),
             "exercises": self.export_exercises(),
             "workouts": self.export_workouts(),
+            "strength_series_logs": self.export_strength_series_logs(),
+            "cardio_series_logs": self.export_cardio_series_logs(),
+            # Legacy data - will be empty for new workouts but kept for backward compatibility
             "strength_exercise_logs": self.export_strength_logs(),
             "cardio_exercise_logs": self.export_cardio_logs(),
             "one_exercises": self.export_one_exercises(),
@@ -106,6 +111,34 @@ class Command(BaseCommand):
                 "duration": w.duration,
             }
             for w in Workout.objects.all()
+        ]
+
+    def export_strength_series_logs(self):
+        return [
+            {
+                "id": ssl.id,
+                "exercise_id": ssl.exercise.id,
+                "exercise_name": ssl.exercise.name,
+                "workout_id": ssl.workout.id,
+                "series_number": ssl.series_number,
+                "reps": ssl.reps,
+                "weight": ssl.weight,
+            }
+            for ssl in StrengthSeriesLog.objects.all()
+        ]
+
+    def export_cardio_series_logs(self):
+        return [
+            {
+                "id": csl.id,
+                "exercise_id": csl.exercise.id,
+                "exercise_name": csl.exercise.name,
+                "workout_id": csl.workout.id,
+                "series_number": csl.series_number,
+                "duration_seconds": csl.duration_seconds,
+                "distance_m": csl.distance_m,
+            }
+            for csl in CardioSeriesLog.objects.all()
         ]
 
     def export_strength_logs(self):

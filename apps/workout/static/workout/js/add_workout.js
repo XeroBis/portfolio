@@ -94,40 +94,87 @@ function updateExerciseFields(exerciseIndex, exerciseType = null) {
         exerciseType = selectedOption ? selectedOption.getAttribute('data-type') : null;
     }
 
-
     let fieldsHTML = '';
-
     const translations = JSON.parse(document.getElementById('add-workout-translations').textContent);
 
     if (exerciseType === 'strength') {
-        fieldsHTML += `
-            <div class="input-group">
-                <label class="input-label">${translations.series}</label>
-                <input type="number" class="workout_input" id="exercise_${exerciseIndex}_nb_series" name="exercise_${exerciseIndex}_nb_series" required>
+        fieldsHTML = `
+            <div class="series-container" id="exercise_${exerciseIndex}_series_container">
+                <div class="series-header">
+                    <h4>${translations.series}:</h4>
+                    <button type="button" class="cliquable button_add_series" onclick="addSeries(${exerciseIndex}, 'strength')">+ ${translations.series}</button>
+                </div>
+                <div id="exercise_${exerciseIndex}_series_list"></div>
             </div>
-            <div class="input-group">
-                <label class="input-label">${translations.reps}</label>
-                <input type="number" class="workout_input" id="exercise_${exerciseIndex}_nb_repetition" name="exercise_${exerciseIndex}_nb_repetition" required>
+        `;
+        fieldsContainer.innerHTML = fieldsHTML;
+        addSeries(exerciseIndex, 'strength');
+    } else if (exerciseType === 'cardio') {
+        fieldsHTML = `
+            <div class="series-container" id="exercise_${exerciseIndex}_series_container">
+                <div class="series-header">
+                    <h4>Intervals:</h4>
+                    <button type="button" class="cliquable button_add_series" onclick="addSeries(${exerciseIndex}, 'cardio')">+ Interval</button>
+                </div>
+                <div id="exercise_${exerciseIndex}_series_list"></div>
             </div>
-            <div class="input-group">
-                <label class="input-label">${translations.weight_kg}</label>
-                <input type="number" class="workout_input" id="exercise_${exerciseIndex}_weight" name="exercise_${exerciseIndex}_weight">
+        `;
+        fieldsContainer.innerHTML = fieldsHTML;
+        addSeries(exerciseIndex, 'cardio');
+    }
+}
+
+function addSeries(exerciseIndex, exerciseType) {
+    const seriesList = document.getElementById(`exercise_${exerciseIndex}_series_list`);
+    const seriesCount = seriesList.querySelectorAll('.series-item').length + 1;
+
+    const translations = JSON.parse(document.getElementById('add-workout-translations').textContent);
+
+    let seriesHTML = '';
+    if (exerciseType === 'strength') {
+        seriesHTML = `
+            <div class="series-item" id="exercise_${exerciseIndex}_series_${seriesCount}">
+                <div class="series-number">${translations.series} ${seriesCount}</div>
+                <div class="series-fields">
+                    <div class="input-group">
+                        <label class="input-label">${translations.reps}</label>
+                        <input type="number" class="workout_input" name="exercise_${exerciseIndex}_series_${seriesCount}_reps" value="8" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">${translations.weight_kg}</label>
+                        <input type="number" class="workout_input" name="exercise_${exerciseIndex}_series_${seriesCount}_weight" value="0">
+                    </div>
+                    <button type="button" class="add_workout_btn_delete" onclick="deleteSeries(${exerciseIndex}, ${seriesCount})">❌</button>
+                </div>
             </div>
         `;
     } else if (exerciseType === 'cardio') {
-        fieldsHTML += `
-            <div class="input-group">
-                <label class="input-label">${translations.duration_sec}</label>
-                <input type="number" class="workout_input" id="exercise_${exerciseIndex}_duration_seconds" name="exercise_${exerciseIndex}_duration_seconds" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label">${translations.distance_m}</label>
-                <input type="number" class="workout_input" id="exercise_${exerciseIndex}_distance_m" name="exercise_${exerciseIndex}_distance_m">
+        seriesHTML = `
+            <div class="series-item" id="exercise_${exerciseIndex}_series_${seriesCount}">
+                <div class="series-number">Interval ${seriesCount}</div>
+                <div class="series-fields">
+                    <div class="input-group">
+                        <label class="input-label">${translations.duration_sec}</label>
+                        <input type="number" class="workout_input" name="exercise_${exerciseIndex}_series_${seriesCount}_duration_seconds" value="1200">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">${translations.distance_m}</label>
+                        <input type="number" class="workout_input" name="exercise_${exerciseIndex}_series_${seriesCount}_distance_m">
+                    </div>
+                    <button type="button" class="add_workout_btn_delete" onclick="deleteSeries(${exerciseIndex}, ${seriesCount})">❌</button>
+                </div>
             </div>
         `;
     }
 
-    fieldsContainer.innerHTML = fieldsHTML;
+    seriesList.insertAdjacentHTML('beforeend', seriesHTML);
+}
+
+function deleteSeries(exerciseIndex, seriesNumber) {
+    const seriesItem = document.getElementById(`exercise_${exerciseIndex}_series_${seriesNumber}`);
+    if (seriesItem) {
+        seriesItem.remove();
+    }
 }
 
 function changeWorkoutType() {
@@ -149,36 +196,6 @@ function changeWorkoutType() {
                         exerciseDiv.className = 'exercise';
                         exerciseDiv.id = `exercise_row_${index}`;
 
-                        let fieldsHTML = '';
-                        const translations = JSON.parse(document.getElementById('add-workout-translations').textContent);
-
-                        for (let field in exercise) {
-                            if (['name', 'exercise_type', 'type'].includes(field)) continue;
-                            const value = exercise[field] || 0;
-
-                            let labelText = field;
-                            if (field === 'nb_series') {
-                                labelText = translations.series;
-                            } else if (field === 'nb_repetition') {
-                                labelText = translations.reps;
-                            } else if (field === 'weight') {
-                                labelText = translations.weight_kg;
-                            } else if (field === 'duration_seconds') {
-                                labelText = translations.duration_sec;
-                            } else if (field === 'distance_m') {
-                                labelText = translations.distance_m;
-                            }
-
-                            fieldsHTML += `
-                                <div class="input-group">
-                                    <label class="input-label">${labelText}</label>
-                                    <input type="number" class="workout_input"
-                                        id="exercise_${index}_${field}"
-                                        name="exercise_${index}_${field}"
-                                        value="${value}">
-                                </div>`;
-                        }
-
                         exerciseDiv.innerHTML = `
                             <div class="exercise-name-header">
                                 <div class="exercise-search-container">
@@ -196,10 +213,78 @@ function changeWorkoutType() {
                                 </div>
                                 <button type="button" class="add_workout_btn_delete" onclick="deleteExercise(${index})">❌</button>
                             </div>
-                            <div id="exercise_${index}_fields" class="exercise-fields">${fieldsHTML}</div>
+                            <div id="exercise_${index}_fields" class="exercise-fields"></div>
                         `;
 
                         exercisesContainer.appendChild(exerciseDiv);
+
+                        // Now populate the fields with series data
+                        const fieldsContainer = exerciseDiv.querySelector(`#exercise_${index}_fields`);
+                        const translations = JSON.parse(document.getElementById('add-workout-translations').textContent);
+
+                        if (exercise.exercise_type === 'strength') {
+                            fieldsContainer.innerHTML = `
+                                <div class="series-container" id="exercise_${index}_series_container">
+                                    <div class="series-header">
+                                        <h4>${translations.series}:</h4>
+                                        <button type="button" class="cliquable button_add_series" onclick="addSeries(${index}, 'strength')">+ ${translations.series}</button>
+                                    </div>
+                                    <div id="exercise_${index}_series_list"></div>
+                                </div>
+                            `;
+
+                            const seriesList = exerciseDiv.querySelector(`#exercise_${index}_series_list`);
+                            exercise.series.forEach((series) => {
+                                const seriesHTML = `
+                                    <div class="series-item" id="exercise_${index}_series_${series.series_number}">
+                                        <div class="series-number">${translations.series} ${series.series_number}</div>
+                                        <div class="series-fields">
+                                            <div class="input-group">
+                                                <label class="input-label">${translations.reps}</label>
+                                                <input type="number" class="workout_input" name="exercise_${index}_series_${series.series_number}_reps" value="${series.reps}" required>
+                                            </div>
+                                            <div class="input-group">
+                                                <label class="input-label">${translations.weight_kg}</label>
+                                                <input type="number" class="workout_input" name="exercise_${index}_series_${series.series_number}_weight" value="${series.weight}">
+                                            </div>
+                                            <button type="button" class="add_workout_btn_delete" onclick="deleteSeries(${index}, ${series.series_number})">❌</button>
+                                        </div>
+                                    </div>
+                                `;
+                                seriesList.insertAdjacentHTML('beforeend', seriesHTML);
+                            });
+                        } else if (exercise.exercise_type === 'cardio') {
+                            fieldsContainer.innerHTML = `
+                                <div class="series-container" id="exercise_${index}_series_container">
+                                    <div class="series-header">
+                                        <h4>Intervals:</h4>
+                                        <button type="button" class="cliquable button_add_series" onclick="addSeries(${index}, 'cardio')">+ Interval</button>
+                                    </div>
+                                    <div id="exercise_${index}_series_list"></div>
+                                </div>
+                            `;
+
+                            const seriesList = exerciseDiv.querySelector(`#exercise_${index}_series_list`);
+                            exercise.series.forEach((series) => {
+                                const seriesHTML = `
+                                    <div class="series-item" id="exercise_${index}_series_${series.series_number}">
+                                        <div class="series-number">Interval ${series.series_number}</div>
+                                        <div class="series-fields">
+                                            <div class="input-group">
+                                                <label class="input-label">${translations.duration_sec}</label>
+                                                <input type="number" class="workout_input" name="exercise_${index}_series_${series.series_number}_duration_seconds" value="${series.duration_seconds || ''}">
+                                            </div>
+                                            <div class="input-group">
+                                                <label class="input-label">${translations.distance_m}</label>
+                                                <input type="number" class="workout_input" name="exercise_${index}_series_${series.series_number}_distance_m" value="${series.distance_m || ''}">
+                                            </div>
+                                            <button type="button" class="add_workout_btn_delete" onclick="deleteSeries(${index}, ${series.series_number})">❌</button>
+                                        </div>
+                                    </div>
+                                `;
+                                seriesList.insertAdjacentHTML('beforeend', seriesHTML);
+                            });
+                        }
                     });
                 }
             });

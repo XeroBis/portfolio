@@ -61,49 +61,53 @@
                     {% endif %}
                 </div>
                 {% if data.exercises %}
-                {% for group in data.exercises|group_consecutive_exercises %}
-                    {% if group.type == "strength" %}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{% trans "Exercise" %}</th>
-                                <th>{% trans "Series" %}</th>
-                                <th>{% trans "Reps" %}</th>
-                                <th>{% trans "Weight (kg)" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for exercise in group.exercises %}
-                            <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
-                                <td>{{ exercise.name }}</td>
-                                <td>{% if exercise.data.nb_series %}{{ exercise.data.nb_series }}{% else %}-{% endif %}</td>
-                                <td>{% if exercise.data.nb_repetition %}{{ exercise.data.nb_repetition }}{% else %}-{% endif %}</td>
-                                <td>{% if exercise.data.weight %}{{ exercise.data.weight }}{% else %}-{% endif %}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% elif group.type == "cardio" %}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{% trans "Exercise" %}</th>
-                                <th>{% trans "Duration (min)" %}</th>
-                                <th>{% trans "Distance (m)" %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for exercise in group.exercises %}
-                            <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
-                                <td>{{ exercise.name }}</td>
-                                <td>{% if exercise.data.duration_seconds %}{{ exercise.data.duration_seconds|seconds_to_minutes }}{% else %}-{% endif %}</td>
-                                <td>{% if exercise.data.distance_m %}{{ exercise.data.distance_m }}{% else %}-{% endif %}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% endif %}
-                {% endfor %}
+                    {% for exercise in data.exercises %}
+                        {% if exercise.exercise_type == "strength" %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Exercise" %}</th>
+                                    <th>{% trans "Series" %}</th>
+                                    <th>{% trans "Reps" %}</th>
+                                    <th>{% trans "Weight (kg)" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
+                                    <td rowspan="{{ exercise.series|length }}"><strong>{{ exercise.name }}</strong></td>
+                                    {% for series in exercise.series %}
+                                        {% if forloop.counter > 1 %}</tr><tr>{% endif %}
+                                        <td>{{ series.series_number }}</td>
+                                        <td>{{ series.reps }}</td>
+                                        <td>{{ series.weight }}</td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                        {% elif exercise.exercise_type == "cardio" %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Exercise" %}</th>
+                                    <th>{% trans "Interval" %}</th>
+                                    <th>{% trans "Duration (sec)" %}</th>
+                                    <th>{% trans "Distance (m)" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
+                                    <td rowspan="{{ exercise.series|length }}"><strong>{{ exercise.name }}</strong></td>
+                                    {% for series in exercise.series %}
+                                        {% if forloop.counter > 1 %}</tr><tr>{% endif %}
+                                        <td>{{ series.series_number }}</td>
+                                        <td>{{ series.duration_seconds }}</td>
+                                        <td>{{ series.distance_m }}</td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
             </div>
             {% empty %}

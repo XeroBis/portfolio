@@ -7,11 +7,13 @@ from django.db import connection
 
 from apps.workout.models import (
     CardioExerciseLog,
+    CardioSeriesLog,
     Equipment,
     Exercice,
     MuscleGroup,
     OneExercice,
     StrengthExerciseLog,
+    StrengthSeriesLog,
     TypeWorkout,
     Workout,
 )
@@ -48,6 +50,12 @@ class Command(BaseCommand):
         self.import_equipment(data.get("equipment", []))
         self.import_exercises(data.get("exercises", []))
         self.import_workouts(data.get("workouts", []))
+
+        # Import new series-based data
+        self.import_strength_series_logs(data.get("strength_series_logs", []))
+        self.import_cardio_series_logs(data.get("cardio_series_logs", []))
+
+        # Legacy data - for backward compatibility with old exports
         self.import_strength_logs(data.get("strength_exercise_logs", []))
         self.import_cardio_logs(data.get("cardio_exercise_logs", []))
         self.import_one_exercises(data.get("one_exercises", []))
@@ -136,6 +144,62 @@ class Command(BaseCommand):
                 },
             )
         self.stdout.write(self.style.SUCCESS(f"  Imported {len(workouts)} workouts"))
+
+    def import_strength_series_logs(self, strength_series_logs):
+        for ssl_data in strength_series_logs:
+            try:
+                exercise = Exercice.objects.get(id=ssl_data["exercise_id"])
+                workout = Workout.objects.get(id=ssl_data["workout_id"])
+
+                StrengthSeriesLog.objects.update_or_create(
+                    id=ssl_data["id"],
+                    defaults={
+                        "exercise": exercise,
+                        "workout": workout,
+                        "series_number": ssl_data.get("series_number"),
+                        "reps": ssl_data.get("reps"),
+                        "weight": ssl_data.get("weight"),
+                    },
+                )
+            except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  Skipping strength series log {ssl_data['id']}: {e}"
+                    )
+                )
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"  Imported {len(strength_series_logs)} strength series logs"
+            )
+        )
+
+    def import_cardio_series_logs(self, cardio_series_logs):
+        for csl_data in cardio_series_logs:
+            try:
+                exercise = Exercice.objects.get(id=csl_data["exercise_id"])
+                workout = Workout.objects.get(id=csl_data["workout_id"])
+
+                CardioSeriesLog.objects.update_or_create(
+                    id=csl_data["id"],
+                    defaults={
+                        "exercise": exercise,
+                        "workout": workout,
+                        "series_number": csl_data.get("series_number"),
+                        "duration_seconds": csl_data.get("duration_seconds"),
+                        "distance_m": csl_data.get("distance_m"),
+                    },
+                )
+            except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  Skipping cardio series log {csl_data['id']}: {e}"
+                    )
+                )
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"  Imported {len(cardio_series_logs)} cardio series logs"
+            )
+        )
 
     def import_strength_logs(self, strength_logs):
         for sl_data in strength_logs:

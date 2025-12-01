@@ -2,10 +2,9 @@ import logging
 import os
 import tempfile
 from datetime import datetime, timedelta
-from typing import Any, Union
+from typing import Any
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
 from django.core.paginator import Paginator
 from django.db import transaction
@@ -15,12 +14,13 @@ from django.utils import translation
 from django.utils.translation import gettext
 
 from .models import (
-    CardioExerciseLog,
+    CardioSeriesLog,
     Equipment,
     Exercice,
     MuscleGroup,
     OneExercice,
     StrengthExerciseLog,
+    StrengthSeriesLog,
     TypeWorkout,
     Workout,
 )
@@ -56,10 +56,83 @@ def redirect_workout(request):
 
     workout_data = []
     for workout in page_obj:
-        exercises = OneExercice.objects.filter(seance=workout).order_by("position")
         type_workout = (
             workout.type_workout.name_workout if workout.type_workout else "No Type"
         )
+        exercises: list[dict[str, Any]] = []
+
+        # Get strength exercises with series
+        strength_series = StrengthSeriesLog.objects.filter(workout=workout).order_by(
+            "exercise", "series_number"
+        )
+        current_exercise: int | None = None
+        current_exercise_data: dict[str, Any] | None = None
+
+        for series in strength_series:
+            if current_exercise != series.exercise.id:
+                if current_exercise_data:
+                    exercises.append(current_exercise_data)
+                current_exercise = series.exercise.id
+                current_exercise_data = {
+                    "id": series.exercise.id,
+                    "name": series.exercise.name,
+                    "exercise_type": "strength",
+                    "series": [],
+                    "muscle_groups": list(
+                        series.exercise.muscle_groups.all().values_list(
+                            "name", flat=True
+                        )
+                    ),
+                }
+
+            if current_exercise_data is not None:
+                current_exercise_data["series"].append(
+                    {
+                        "series_number": series.series_number,
+                        "reps": series.reps,
+                        "weight": series.weight,
+                    }
+                )
+
+        if current_exercise_data:
+            exercises.append(current_exercise_data)
+
+        # Get cardio exercises with series
+        cardio_series = CardioSeriesLog.objects.filter(workout=workout).order_by(
+            "exercise", "series_number"
+        )
+        current_cardio_exercise: int | None = None
+        current_cardio_data: dict[str, Any] | None = None
+
+        for cardio_series_item in cardio_series:
+            if current_cardio_exercise != cardio_series_item.exercise.id:
+                if current_cardio_data:
+                    exercises.append(current_cardio_data)
+                current_cardio_exercise = cardio_series_item.exercise.id
+                current_cardio_data = {
+                    "id": cardio_series_item.exercise.id,
+                    "name": cardio_series_item.exercise.name,
+                    "exercise_type": "cardio",
+                    "series": [],
+                    "muscle_groups": list(
+                        cardio_series_item.exercise.muscle_groups.all().values_list(
+                            "name", flat=True
+                        )
+                    ),
+                }
+
+            if current_cardio_data is not None:
+                current_cardio_data["series"].append(
+                    {
+                        "series_number": cardio_series_item.series_number,
+                        "duration_seconds": cardio_series_item.duration_seconds,
+                        "distance_m": cardio_series_item.distance_m,
+                    }
+                )
+
+        if current_cardio_data:
+            exercises.append(current_cardio_data)
+
         workout_data.append(
             {
                 "workout": {
@@ -68,20 +141,7 @@ def redirect_workout(request):
                     "type_workout": type_workout,
                     "duration": workout.duration,
                 },
-                "exercises": [
-                    {
-                        "id": exercise.id,
-                        "name": exercise.name.name if exercise else None,
-                        "exercise_type": exercise.name.exercise_type,
-                        "data": exercise.get_display_data(),
-                        "muscle_groups": list(
-                            exercise.name.muscle_groups.all().values_list(
-                                "name", flat=True
-                            )
-                        ),
-                    }
-                    for exercise in exercises
-                ],
+                "exercises": exercises,
             }
         )
 
@@ -156,23 +216,32 @@ def add_workout(request):
                     date=date, type_workout=type_obj, duration=duration
                 )
 
-                # Process exercises in order to avoid duplicates
+                # Process exercises and series from form data
+                # Form structure: exercise_<id>_name, exercise_<id>_series_<series_num>_reps, etc.
                 exercise_data = {}
                 for key, value in request.POST.items():
                     if key.startswith("exercise_") and key.endswith("_name"):
+                        # Extract exercise ID: exercise_0_name -> 0
                         exercise_id = key.split("_")[1]
                         if exercise_id not in exercise_data:
-                            exercise_data[exercise_id] = {"name": value}
-                    elif key.startswith("exercise_") and not key.endswith("_name"):
+                            exercise_data[exercise_id] = {"name": value, "series": {}}
+                    elif key.startswith("exercise_") and "_series_" in key:
+                        # Extract exercise ID and series number
+                        # Format: exercise_<id>_series_<num>_<field>
                         parts = key.split("_")
-                        if len(parts) >= 3:
-                            exercise_id = parts[1]
-                            field_name = "_".join(parts[2:])
-                            if exercise_id not in exercise_data:
-                                exercise_data[exercise_id] = {}
-                            exercise_data[exercise_id][field_name] = value
+                        exercise_id = parts[1]
+                        series_num = parts[3]
+                        field_name = "_".join(parts[4:])
 
-                # Create exercise logs for each unique exercise
+                        if exercise_id not in exercise_data:
+                            exercise_data[exercise_id] = {"name": "", "series": {}}
+                        if series_num not in exercise_data[exercise_id]["series"]:
+                            exercise_data[exercise_id]["series"][series_num] = {}
+
+                        exercise_data[exercise_id]["series"][series_num][
+                            field_name
+                        ] = value
+
                 logger.info(
                     f"Processing {len(exercise_data)} exercises "
                     f"for workout {workout.id}"
@@ -191,7 +260,7 @@ def add_workout(request):
                         f"data: {data}, position: {position}"
                     )
 
-                    if "name" not in data:
+                    if "name" not in data or not data["name"]:
                         logger.warning(f"Exercise {exercise_id} missing name, skipping")
                         continue
 
@@ -208,93 +277,70 @@ def add_workout(request):
                         )
                         continue
 
-                    # Create specific exercise log based on type
-                    exercise_log: Union[StrengthExerciseLog, CardioExerciseLog]
+                    # Process series for this exercise
                     if exercise_obj.exercise_type == "strength":
                         logger.info(
-                            f"Creating StrengthExerciseLog for "
+                            f"Creating StrengthSeriesLog entries for "
                             f"exercise: {exercise_obj.name}, workout: {workout.id}"
                         )
-                        # Handle empty fields - convert empty string to default values
-                        weight = data.get("weight", 0)
-                        if weight == "" or weight is None:
-                            weight = 0
-                        else:
-                            weight = int(weight)
 
-                        nb_series = data.get("nb_series", 1)
-                        if nb_series == "" or nb_series is None:
-                            nb_series = 1
-                        else:
-                            nb_series = int(nb_series)
+                        for series_num_str, series_data in data["series"].items():
+                            series_num = int(series_num_str)
+                            reps = series_data.get("reps", 1)
+                            if reps == "" or reps is None:
+                                reps = 1
+                            else:
+                                reps = int(reps)
 
-                        nb_repetition = data.get("nb_repetition", 1)
-                        if nb_repetition == "" or nb_repetition is None:
-                            nb_repetition = 1
-                        else:
-                            nb_repetition = int(nb_repetition)
+                            weight = series_data.get("weight", 0)
+                            if weight == "" or weight is None:
+                                weight = 0
+                            else:
+                                weight = int(weight)
 
-                        (
-                            exercise_log,
-                            created,
-                        ) = StrengthExerciseLog.objects.get_or_create(
-                            exercise=exercise_obj,
-                            workout=workout,
-                            defaults={
-                                "nb_series": nb_series,
-                                "nb_repetition": nb_repetition,
-                                "weight": weight,
-                            },
-                        )
-                        logger.info(
-                            f"StrengthExerciseLog "
-                            f"{'created' if created else 'retrieved'}: "
-                            f"{exercise_log.id}"
-                        )
-                        content_type = ContentType.objects.get_for_model(
-                            StrengthExerciseLog
-                        )
+                            StrengthSeriesLog.objects.create(
+                                exercise=exercise_obj,
+                                workout=workout,
+                                series_number=series_num,
+                                reps=reps,
+                                weight=weight,
+                            )
+                            logger.info(
+                                f"Created StrengthSeriesLog: "
+                                f"{exercise_obj.name} series {series_num}"
+                            )
 
                     elif exercise_obj.exercise_type == "cardio":
                         logger.info(
-                            f"Creating CardioExerciseLog for "
+                            f"Creating CardioSeriesLog entries for "
                             f"exercise: {exercise_obj.name}, workout: {workout.id}"
                         )
-                        exercise_log, created = CardioExerciseLog.objects.get_or_create(
-                            exercise=exercise_obj,
-                            workout=workout,
-                            defaults={
-                                "duration_seconds": data.get("duration_seconds"),
-                                "distance_m": data.get("distance_m"),
-                            },
-                        )
-                        logger.info(
-                            f"CardioExerciseLog "
-                            f"{'created' if created else 'retrieved'}: "
-                            f"{exercise_log.id}"
-                        )
-                        content_type = ContentType.objects.get_for_model(
-                            CardioExerciseLog
-                        )
 
-                    # Create the polymorphic OneExercice entry only if it doesn't exist
-                    logger.info(
-                        f"Creating OneExercice entry for "
-                        f"exercise: {exercise_obj.name} at position {position}"
-                    )
-                    one_exercice, created = OneExercice.objects.get_or_create(
-                        name=exercise_obj,
-                        seance=workout,
-                        position=position,
-                        defaults={
-                            "content_type": content_type,
-                            "object_id": exercise_log.id,
-                        },
-                    )
-                    logger.info(
-                        f"OneExercice {'created' if created else 'retrieved'}: "
-                        f"{one_exercice.id}"
-                    )
+                        for series_num_str, series_data in data["series"].items():
+                            series_num = int(series_num_str)
+                            duration = series_data.get("duration_seconds")
+                            if duration == "" or duration is None:
+                                duration = None
+                            else:
+                                duration = int(duration)
+
+                            distance = series_data.get("distance_m")
+                            if distance == "" or distance is None:
+                                distance = None
+                            else:
+                                distance = float(distance)
+
+                            CardioSeriesLog.objects.create(
+                                exercise=exercise_obj,
+                                workout=workout,
+                                series_number=series_num,
+                                duration_seconds=duration,
+                                distance_m=distance,
+                            )
+                            logger.info(
+                                f"Created CardioSeriesLog: "
+                                f"{exercise_obj.name} interval {series_num}"
+                            )
 
         except Exception as e:
             # If there's any error, redirect back to form with error handling
@@ -332,15 +378,67 @@ def get_last_workout(request):
     )
 
     if last_workout:
-        exercises = OneExercice.objects.filter(seance=last_workout).order_by("position")
-        exercises_data = []
-        for exercise in exercises:
-            exercise_data = {
-                "name": exercise.name.name,
-                "exercise_type": exercise.name.exercise_type,
-            }
-            exercise_data.update(exercise.get_display_data())
-            exercises_data.append(exercise_data)
+        exercises_data: list[dict[str, Any]] = []
+
+        # Get all strength exercises from the last workout
+        strength_series = StrengthSeriesLog.objects.filter(
+            workout=last_workout
+        ).order_by("exercise", "series_number")
+        current_exercise: int | None = None
+        current_exercise_data: dict[str, Any] | None = None
+
+        for series in strength_series:
+            if current_exercise != series.exercise.id:
+                if current_exercise_data:
+                    exercises_data.append(current_exercise_data)
+                current_exercise = series.exercise.id
+                current_exercise_data = {
+                    "name": series.exercise.name,
+                    "exercise_type": "strength",
+                    "series": [],
+                }
+
+            if current_exercise_data is not None:
+                current_exercise_data["series"].append(
+                    {
+                        "series_number": series.series_number,
+                        "reps": series.reps,
+                        "weight": series.weight,
+                    }
+                )
+
+        if current_exercise_data:
+            exercises_data.append(current_exercise_data)
+
+        # Get all cardio exercises from the last workout
+        cardio_series = CardioSeriesLog.objects.filter(workout=last_workout).order_by(
+            "exercise", "series_number"
+        )
+        current_cardio_exercise: int | None = None
+        current_cardio_data: dict[str, Any] | None = None
+
+        for cardio_series_item in cardio_series:
+            if current_cardio_exercise != cardio_series_item.exercise.id:
+                if current_cardio_data:
+                    exercises_data.append(current_cardio_data)
+                current_cardio_exercise = cardio_series_item.exercise.id
+                current_cardio_data = {
+                    "name": cardio_series_item.exercise.name,
+                    "exercise_type": "cardio",
+                    "series": [],
+                }
+
+            if current_cardio_data is not None:
+                current_cardio_data["series"].append(
+                    {
+                        "series_number": cardio_series_item.series_number,
+                        "duration_seconds": cardio_series_item.duration_seconds,
+                        "distance_m": cardio_series_item.distance_m,
+                    }
+                )
+
+        if current_cardio_data:
+            exercises_data.append(current_cardio_data)
 
         data = {
             "date": last_workout.date.strftime("%Y-%m-%d"),
@@ -354,7 +452,7 @@ def get_last_workout(request):
 
 
 @login_required
-def get_list_exercise(request):
+def get_list_exercise(_request):
     all_exercises = (
         Exercice.objects.all().order_by("name").values("name", "exercise_type")
     )
@@ -363,7 +461,7 @@ def get_list_exercise(request):
 
 
 @login_required
-def get_workout_types(request):
+def get_workout_types(_request):
     workout_types = TypeWorkout.objects.all().order_by("name_workout")
 
     workout_types_data = []
@@ -377,7 +475,7 @@ def get_workout_types(request):
 
 
 @login_required
-def edit_workout(request, workout_id):
+def edit_workout(_request, workout_id):
     try:
         Workout.objects.get(id=workout_id)
     except Workout.DoesNotExist:
@@ -456,7 +554,7 @@ def exercise_library(request):
 
 
 @login_required
-def export_data(request):
+def export_data(_request):
     """Export all workout data to JSON file"""
     try:
         # Create temporary file
