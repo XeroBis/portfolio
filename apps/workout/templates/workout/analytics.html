@@ -45,7 +45,7 @@
                         <div class="weekday">{% trans "Su" %}</div>
                     </div>
                     <div class="calendar-days">
-                        {% for _ in "x"|rjust:month.start_weekday %}
+                        {% for _ in month.empty_days_before %}
                         <div class="calendar-day empty"></div>
                         {% endfor %}
                         {% for day in "x"|rjust:month.num_days %}

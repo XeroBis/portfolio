@@ -107,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     daysDiv.className = 'calendar-days';
 
                     // Empty days before month starts
-                    for (let i = 0; i < month.start_weekday; i++) {
+                    const emptyDaysCount = month.empty_days_before ? month.empty_days_before.length : month.start_weekday;
+                    for (let i = 0; i < emptyDaysCount; i++) {
                         const emptyDiv = document.createElement('div');
                         emptyDiv.className = 'calendar-day empty';
                         daysDiv.appendChild(emptyDiv);
