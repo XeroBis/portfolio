@@ -946,6 +946,7 @@ def get_calendar_data(request):
                 "number": month,
                 "num_days": num_days,
                 "start_weekday": start_weekday,
+                "empty_days_before": list(range(start_weekday)),
                 "workout_days": workout_days,
                 "is_current": month == current_month
                 and current_year == datetime.now().year,
@@ -1102,6 +1103,7 @@ def analytics(request):
                 "number": month,
                 "num_days": num_days,
                 "start_weekday": start_weekday,
+                "empty_days_before": list(range(start_weekday)),
                 "workout_days": workout_days,
                 "is_current": month == current_month,
             }
