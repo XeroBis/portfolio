@@ -756,8 +756,15 @@ def get_dashboard_data(request):
 
         start_dt = dt.strptime(start_date, "%Y-%m-%d").date()
         end_dt = dt.strptime(end_date, "%Y-%m-%d").date()
+
+        # Adjust start_dt to Monday of that week (Monday = 0, Sunday = 6)
+        days_since_monday = start_dt.weekday()
+        start_dt = start_dt - timedelta(days=days_since_monday)
+
         total_days = (end_dt - start_dt).days
-        num_weeks = max(total_days // 7, 1)  # Show all weeks in the date range
+        num_weeks = max(
+            total_days // 7 + 1, 1
+        )  # Show all weeks including partial current week
 
         weekly_workouts = []
         for week in range(num_weeks):
@@ -779,8 +786,13 @@ def get_dashboard_data(request):
         if earliest_workout:
             start_dt = earliest_workout.date
             end_dt = datetime.now().date()
+
+            # Adjust start_dt to Monday of that week (Monday = 0, Sunday = 6)
+            days_since_monday = start_dt.weekday()
+            start_dt = start_dt - timedelta(days=days_since_monday)
+
             total_days = (end_dt - start_dt).days
-            num_weeks = max(total_days // 7, 1)
+            num_weeks = max(total_days // 7 + 1, 1)
 
             weekly_workouts = []
             for week in range(num_weeks):
