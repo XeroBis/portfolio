@@ -219,3 +219,75 @@ class OneExercice(models.Model):
         )
 
         return f"{self.position}. {exercice_name} - {seance_date}"
+
+
+class WorkoutTemplate(models.Model):
+    """
+    Template for workout structures - global templates shared by all users
+    """
+
+    name = models.CharField(max_length=100)
+    type_workout = models.ForeignKey(TypeWorkout, null=True, on_delete=models.SET_NULL)
+    duration = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        type_name = self.type_workout.name_workout if self.type_workout else "No Type"
+        return f"{self.name} - {type_name}"
+
+
+class TemplateExercise(models.Model):
+    """
+    Exercise within a workout template
+    """
+
+    template = models.ForeignKey(WorkoutTemplate, on_delete=models.CASCADE)
+    exercise = models.ForeignKey(Exercice, on_delete=models.CASCADE)
+    position = models.IntegerField()
+
+    class Meta:
+        ordering = ["position"]
+
+    def __str__(self):
+        return f"{self.position}. {self.exercise.name} - {self.template.name}"
+
+
+class TemplateStrengthSeries(models.Model):
+    """
+    Strength series data for template exercises
+    """
+
+    template_exercise = models.ForeignKey(TemplateExercise, on_delete=models.CASCADE)
+    series_number = models.IntegerField()
+    reps = models.IntegerField()
+    weight = models.IntegerField()
+
+    class Meta:
+        ordering = ["template_exercise__position", "series_number"]
+        verbose_name_plural = "Template Strength Series"
+
+    def __str__(self):
+        return f"{self.template_exercise.exercise.name} - Series {self.series_number}: {self.reps}x{self.weight}kg"
+
+
+class TemplateCardioSeries(models.Model):
+    """
+    Cardio series data for template exercises
+    """
+
+    template_exercise = models.ForeignKey(TemplateExercise, on_delete=models.CASCADE)
+    series_number = models.IntegerField()
+    duration_seconds = models.IntegerField(null=True, blank=True)
+    distance_m = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["template_exercise__position", "series_number"]
+        verbose_name_plural = "Template Cardio Series"
+
+    def __str__(self):
+        distance_str = f" - {self.distance_m}m" if self.distance_m else ""
+        return f"{self.template_exercise.exercise.name} - Interval {self.series_number}: {self.duration_seconds}s{distance_str}"

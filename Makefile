@@ -59,7 +59,7 @@ makemigrations:
 static:
 	uv run python manage.py collectstatic --noinput
 
-makemessages:
+mess:
 	uv run python manage.py makemessages -l en
 	uv run python manage.py makemessages -l fr
 

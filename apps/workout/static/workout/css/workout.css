@@ -257,7 +257,7 @@ table tr td {
     padding: 10px;
     box-sizing: border-box;
 }
-#add_workout_type_workout, #add_workout_date, #add_workout_duration {
+#add_workout_type_workout, #add_workout_date, #add_workout_duration, #add_workout_template_select {
     border: 2px solid var(--color-accent-border);
     border-radius: 8px;
     font-size: 16px;
@@ -270,13 +270,13 @@ table tr td {
     font-weight: 500;
 }
 
-#add_workout_type_workout:hover, #add_workout_date:hover, #add_workout_duration:hover {
+#add_workout_type_workout:hover, #add_workout_date:hover, #add_workout_duration:hover, #add_workout_template_select:hover {
     border-color: var(--color-accent-border-hover);
     box-shadow: 0 6px 10px var(--color-shadow-strong);
     transform: translateY(-2px);
 }
 
-#add_workout_type_workout:focus, #add_workout_date:focus, #add_workout_duration:focus {
+#add_workout_type_workout:focus, #add_workout_date:focus, #add_workout_duration:focus, #add_workout_template_select:focus {
     border-color: var(--color-accent-border-hover);
     outline: none;
     box-shadow: 0 0 0 3px var(--color-accent-focus);
@@ -608,6 +608,84 @@ table tr td {
         text-align: left;
         min-width: auto;
         margin-bottom: 4px;
+    }
+}
+
+/* ===============================================
+   TEMPLATE MODAL STYLES
+   =============================================== */
+
+#template-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.template-modal-content {
+    background-color: var(--color-white);
+    margin: 15% auto;
+    padding: 30px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 20px var(--color-shadow-strong);
+}
+
+.template-modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--color-text-primary);
+    font-size: 20px;
+}
+
+#template-name-input {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px;
+    margin: 10px 0 20px 0;
+    border: 2px solid var(--color-border-primary);
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+#template-name-input:focus {
+    border-color: var(--color-accent-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-accent-focus);
+}
+
+.template-modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.template-modal-buttons .button_workout {
+    margin: 0;
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .template-modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .template-modal-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .template-modal-buttons .button_workout {
+        width: 100%;
     }
 }
 
