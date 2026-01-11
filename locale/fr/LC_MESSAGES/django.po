@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portfolio 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 16:53+0100\n"
+"POT-Creation-Date: 2026-01-11 17:11+0100\n"
 "PO-Revision-Date: 2025-10-17 23:30+0200\n"
 "Last-Translator: Claude Code\n"
 "Language-Team: French\n"
@@ -104,34 +104,38 @@ msgstr "Date :"
 msgid "Duration:"
 msgstr "Durée :"
 
-#: apps/workout/templates/workout/add_workout.html:27
-#, fuzzy
-#| msgid "No template"
-msgid "Load from last session:"
-msgstr "Aucun modèle"
+#: apps/workout/templates/workout/add_workout.html:28
+msgid "Load workout data"
+msgstr "Charger des données"
 
-#: apps/workout/templates/workout/add_workout.html:31
+#: apps/workout/templates/workout/add_workout.html:32
+msgid "From last session"
+msgstr "De la dernière séance"
+
+#: apps/workout/templates/workout/add_workout.html:36
 msgid "Select a type"
 msgstr "Sélectionner un type"
 
-#: apps/workout/templates/workout/add_workout.html:36
-#, fuzzy
-#| msgid "No template"
-msgid "Load from template:"
-msgstr "Aucun modèle"
+#: apps/workout/templates/workout/add_workout.html:42
+msgid "OR"
+msgstr "OU"
 
-#: apps/workout/templates/workout/add_workout.html:38 apps/workout/views.py:390
+#: apps/workout/templates/workout/add_workout.html:47
+msgid "From template"
+msgstr "D'un template"
+
+#: apps/workout/templates/workout/add_workout.html:50 apps/workout/views.py:390
 msgid "No template"
-msgstr "Aucun modèle"
+msgstr "Aucun template"
 
-#: apps/workout/templates/workout/add_workout.html:45
-msgid "Add Exercise"
+#: apps/workout/templates/workout/add_workout.html:58
+msgid "Add exercise"
 msgstr "Ajouter un exercice"
 
-#: apps/workout/templates/workout/add_workout.html:48
+#: apps/workout/templates/workout/add_workout.html:61
 #: apps/workout/templates/workout/workout.html:131
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: apps/workout/templates/workout/analytics.html:14 apps/workout/views.py:1341
 msgid "Calendar"
@@ -295,16 +299,12 @@ msgid "Filters"
 msgstr "Filtres"
 
 #: apps/workout/templates/workout/exercise_library.html:38
-#, fuzzy
-#| msgid "Exercise"
 msgid "Exercise Name"
-msgstr "Exercice"
+msgstr "Nom de l'exercice"
 
 #: apps/workout/templates/workout/exercise_library.html:39
-#, fuzzy
-#| msgid "Search articles..."
 msgid "Search by name..."
-msgstr "Rechercher des articles..."
+msgstr "Rechercher par nom..."
 
 #: apps/workout/templates/workout/exercise_library.html:43
 #: apps/workout/templates/workout/exercise_library.html:92
@@ -377,13 +377,13 @@ msgstr "Tous les exercices"
 msgid "Clear Filters"
 msgstr "Réinitialiser les filtres"
 
-#: apps/workout/templates/workout/workout.html:59
-msgid "Copy as Template"
-msgstr ""
-
-#: apps/workout/templates/workout/workout.html:61 apps/workout/views.py:212
+#: apps/workout/templates/workout/workout.html:60 apps/workout/views.py:212
 msgid "Edit"
 msgstr "Modifier"
+
+#: apps/workout/templates/workout/workout.html:62
+msgid "Template"
+msgstr "Template"
 
 #: apps/workout/templates/workout/workout.html:111
 msgid "No workouts recorded."
@@ -399,15 +399,15 @@ msgstr "Chargement..."
 
 #: apps/workout/templates/workout/workout.html:128
 msgid "Save as Template"
-msgstr ""
+msgstr "Enregistrer comme Template"
 
 #: apps/workout/templates/workout/workout.html:129
 msgid "Enter template name..."
-msgstr ""
+msgstr "Entrer le nom du modèle..."
 
 #: apps/workout/templates/workout/workout.html:132
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: apps/workout/views.py:205 apps/workout/views.py:206
 msgid "Exercise"
@@ -509,114 +509,5 @@ msgstr "Tendance Hebdomadaire"
 msgid "Top Exercises"
 msgstr "Meilleurs Exercices"
 
-#~ msgid "Type of workout:"
-#~ msgstr "Type de séance :"
-
-#~ msgid "Apply Filter"
-#~ msgstr "Appliquer filtre"
-
-#~ msgid "+ Workout"
-#~ msgstr "+ Séance"
-
-#~ msgid "Add Session"
-#~ msgstr "AjouterSéances"
-
-#~ msgid "Save Workout"
-#~ msgstr "Enregistrer Séance"
-
-#~ msgid "Add Workout"
-#~ msgstr "Ajout Séance"
-
-#~ msgid "Go to Library"
-#~ msgstr "Liste d'exercices"
-
-#~ msgid "Workout Analytics"
-#~ msgstr "Analyses des données de sports"
-
-#~ msgid "Workout Calendar"
-#~ msgstr "Calendrier des Séances"
-
-#~ msgid "Progress Dashboard"
-#~ msgstr "Tableau de bord de Progression"
-
-#~ msgid "News"
-#~ msgstr "Actualités"
-
-#~ msgid "News Feed"
-#~ msgstr "Fil d'actualité"
-
-#~ msgid "Fetch Latest Articles"
-#~ msgstr "Récupérer les derniers articles"
-
-#~ msgid "Export RSS Feeds"
-#~ msgstr "Exporter les flux RSS"
-
-#~ msgid "Import RSS Feeds"
-#~ msgstr "Importer les flux RSS"
-
-#~ msgid "Delete Articles"
-#~ msgstr "Supprimer les articles"
-
-#~ msgid "Delete RSS Feeds"
-#~ msgstr "Supprimer les flux RSS"
-
-#~ msgid "Clear All"
-#~ msgstr "Tout effacer"
-
-#, python-format
-#~ msgid "%(total)s article"
-#~ msgid_plural "%(total)s articles"
-#~ msgstr[0] "%(total)s article"
-#~ msgstr[1] "%(total)s articles"
-
-#, python-format
-#~ msgid "Search results for: \"<strong>%(search_query)s</strong>\""
-#~ msgstr "Résultats de recherche pour : \"<strong>%(search_query)s</strong>\""
-
-#~ msgid "Featured Articles"
-#~ msgstr "Articles en vedette"
-
-#~ msgid "Featured"
-#~ msgstr "En vedette"
-
-#~ msgid "of"
-#~ msgstr "sur"
-
-#~ msgid "No articles found"
-#~ msgstr "Aucun article trouvé"
-
-#, python-format
-#~ msgid "No articles match your search for \"%(search_query)s\""
-#~ msgstr ""
-#~ "Aucun article ne correspond à votre recherche pour \"%(search_query)s\""
-
-#~ msgid "Clear search"
-#~ msgstr "Effacer la recherche"
-
-#~ msgid "Try adding some RSS feeds and running the fetch command!"
-#~ msgstr ""
-#~ "Essayez d'ajouter des flux RSS et d'exécuter la commande de récupération !"
-
-#~ msgid "Save Changes"
-#~ msgstr "Sauvegarder les modifications"
-
-#~ msgid "Discard Changes"
-#~ msgstr "Ignorer les modifications"
-
-#~ msgid "Update Workout"
-#~ msgstr "Sauvegarder Modifications"
-
-#~ msgid "Pull"
-#~ msgstr "Pull"
-
-#~ msgid "Push"
-#~ msgstr "Push"
-
-#~ msgid "Legs"
-#~ msgstr "Jambes"
-
-#~ msgid "Push-Ups"
-#~ msgstr "Pompes"
-
-#~ msgid "Upper body"
-#~ msgstr "Haut du corps"
+#~ msgid "Copy as Template"
+#~ msgstr "Copier comme template"

@@ -709,7 +709,6 @@ function saveTemplate() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(`Template "${data.template_name}" saved!`);
             closeTemplateModal();
         } else {
             alert('Error: ' + (data.error || 'Unknown error'));

@@ -561,6 +561,100 @@ table tr td {
     box-shadow: 0 0 10px var(--color-shadow-light);
 }
 
+/* Load Workout Options Section */
+#load_workout_options {
+    margin-bottom: 24px;
+}
+
+.load_options_title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-text-primary);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.load_options_container {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.load_option_card {
+    flex: 1;
+    max-width: 400px;
+    padding: 24px;
+    background: var(--color-white);
+    border-radius: 12px;
+    border: 2px solid var(--color-accent-border);
+    box-shadow: 0 0 10px var(--color-shadow-light);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.load_option_card:hover {
+    border-color: var(--color-accent-border-hover);
+    box-shadow: 0 6px 15px var(--color-shadow-strong);
+    transform: translateY(-2px);
+}
+
+.load_option_header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.load_option_header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.load_option_card select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--color-accent-border);
+    border-radius: 8px;
+    font-size: 16px;
+    background: var(--color-white);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px var(--color-shadow-light);
+    color: var(--color-black);
+    font-weight: 500;
+}
+
+.load_option_card select:hover {
+    border-color: var(--color-accent-border-hover);
+    box-shadow: 0 6px 10px var(--color-shadow-strong);
+}
+
+.load_option_card select:focus {
+    border-color: var(--color-accent-border-hover);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-accent-focus);
+}
+
+.load_option_divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+}
+
+.load_option_divider span {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text-tertiary);
+    background: var(--color-bg-secondary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--color-border-primary);
+}
+
 .form-group {
     display: flex;
     flex-direction: row;
@@ -608,6 +702,37 @@ table tr td {
         text-align: left;
         min-width: auto;
         margin-bottom: 4px;
+    }
+
+    /* Stack load option cards vertically on mobile */
+    .load_options_container {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .load_option_card {
+        max-width: 100%;
+    }
+
+    .load_option_divider {
+        padding: 0;
+    }
+
+    .load_option_divider span {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Stack workout action buttons vertically on mobile */
+    .workout-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+    }
+
+    .workout-actions a,
+    .workout-actions button {
+        width: 100%;
     }
 }
 

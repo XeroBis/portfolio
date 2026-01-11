@@ -55,11 +55,11 @@
                         {% endif %}
                     </h2>
                     {% if user.is_authenticated %}
-                    <div style="display: flex; gap: 10px;">
-                        <button class="cliquable button_workout" onclick="showTemplateModal({{ data.workout.id }})">{% trans "Copy as Template" %}</button>
+                    <div class="workout-actions" style="display: flex; gap: 10px;">
                         <a href="/workout/edit_workout/{{ data.workout.id }}/">
                             <button class="cliquable button_workout">{% trans "Edit" %}</button>
                         </a>
+                        <button class="cliquable button_workout" onclick="showTemplateModal({{ data.workout.id }})">{% trans "Template" %}</button>
                     </div>
                     {% endif %}
                 </div>
