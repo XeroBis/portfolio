@@ -315,6 +315,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (startDateInput && endDateInput) {
         startDateInput.addEventListener('change', applyFilterWithDebounce);
         endDateInput.addEventListener('change', applyFilterWithDebounce);
+
+        // Set default filter to last 1 year on page load
+        const defaultDates = getDateRange('1year');
+        if (defaultDates) {
+            startDateInput.value = defaultDates.startDate;
+            endDateInput.value = defaultDates.endDate;
+            updateDashboard(defaultDates.startDate, defaultDates.endDate);
+        }
     }
 
     if (resetFilterBtn && startDateInput && endDateInput) {

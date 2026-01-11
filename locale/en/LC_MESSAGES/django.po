@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-23 22:54+0200\n"
+"POT-Creation-Date: 2026-01-11 17:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,9 +45,9 @@ msgstr "Workout Sessions"
 msgid "Exercises"
 msgstr "Exercise"
 
-#: apps/home/templates/home/header.html:23 apps/workout/views.py:1054
+#: apps/home/templates/home/header.html:23 apps/workout/views.py:1340
 msgid "Analytics"
-msgstr ""
+msgstr "Analytics"
 
 #: apps/home/templates/home/home.html:10
 msgid "A great addition to your team!"
@@ -99,7 +99,7 @@ msgstr "Reset All Data"
 
 #: apps/workout/templates/workout/add_workout.html:10
 msgid "New Session"
-msgstr ""
+msgstr "New Session"
 
 #: apps/workout/templates/workout/add_workout.html:16
 msgid "Date:"
@@ -109,259 +109,256 @@ msgstr "Date:"
 msgid "Duration:"
 msgstr "Duration:"
 
-#: apps/workout/templates/workout/add_workout.html:27
-msgid "Type of workout:"
-msgstr "Type of workout:"
+#: apps/workout/templates/workout/add_workout.html:28
+#, fuzzy
+#| msgid "Load Workout Data"
+msgid "Load workout data"
+msgstr "Load Workout Data"
 
-#: apps/workout/templates/workout/add_workout.html:31
+#: apps/workout/templates/workout/add_workout.html:32
+#, fuzzy
+#| msgid "From Last Session"
+msgid "From last session"
+msgstr "From Last Session"
+
+#: apps/workout/templates/workout/add_workout.html:36
 msgid "Select a type"
 msgstr "Select a type"
 
-#: apps/workout/templates/workout/add_workout.html:39
-msgid "Add Exercise"
+#: apps/workout/templates/workout/add_workout.html:42
+msgid "OR"
+msgstr "OR"
+
+#: apps/workout/templates/workout/add_workout.html:47
+#, fuzzy
+#| msgid "From Template"
+msgid "From template"
+msgstr "From Template"
+
+#: apps/workout/templates/workout/add_workout.html:50 apps/workout/views.py:390
+msgid "No template"
+msgstr "No template"
+
+#: apps/workout/templates/workout/add_workout.html:58
+#, fuzzy
+#| msgid "Add Exercise"
+msgid "Add exercise"
 msgstr "Add Exercise"
 
-#: apps/workout/templates/workout/add_workout.html:42
+#: apps/workout/templates/workout/add_workout.html:61
+#: apps/workout/templates/workout/workout.html:131
 msgid "Save"
-msgstr ""
+msgstr "Save"
 
-#: apps/workout/templates/workout/analytics.html:14 apps/workout/views.py:1055
+#: apps/workout/templates/workout/analytics.html:14 apps/workout/views.py:1341
 msgid "Calendar"
-msgstr ""
+msgstr "Calendar"
 
-#: apps/workout/templates/workout/analytics.html:15 apps/workout/views.py:1056
+#: apps/workout/templates/workout/analytics.html:15 apps/workout/views.py:1342
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
-#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:1057
+#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:1343
 msgid "Personal Records"
-msgstr ""
+msgstr "Personal Records"
 
 #: apps/workout/templates/workout/analytics.html:22
 msgid "Previous year"
-msgstr ""
+msgstr "Previous year"
 
 #: apps/workout/templates/workout/analytics.html:28
 msgid "Next year"
-msgstr ""
+msgstr "Next year"
 
 #: apps/workout/templates/workout/analytics.html:39
-#: apps/workout/templates/workout/analytics.html:167
+#: apps/workout/templates/workout/analytics.html:166
 msgid "M"
-msgstr ""
+msgstr "M"
 
 #: apps/workout/templates/workout/analytics.html:40
-#: apps/workout/templates/workout/analytics.html:168
+#: apps/workout/templates/workout/analytics.html:167
 msgid "T"
-msgstr ""
+msgstr "T"
 
 #: apps/workout/templates/workout/analytics.html:41
-#: apps/workout/templates/workout/analytics.html:169
+#: apps/workout/templates/workout/analytics.html:168
 msgid "W"
-msgstr ""
+msgstr "W"
 
 #: apps/workout/templates/workout/analytics.html:42
-#: apps/workout/templates/workout/analytics.html:170
+#: apps/workout/templates/workout/analytics.html:169
 msgid "Th"
-msgstr ""
+msgstr "Th"
 
 #: apps/workout/templates/workout/analytics.html:43
-#: apps/workout/templates/workout/analytics.html:171
+#: apps/workout/templates/workout/analytics.html:170
 msgid "F"
-msgstr ""
+msgstr "F"
 
 #: apps/workout/templates/workout/analytics.html:44
-#: apps/workout/templates/workout/analytics.html:172
+#: apps/workout/templates/workout/analytics.html:171
 msgid "Sa"
-msgstr ""
+msgstr "Sa"
 
 #: apps/workout/templates/workout/analytics.html:45
-#: apps/workout/templates/workout/analytics.html:173
+#: apps/workout/templates/workout/analytics.html:172
 msgid "Su"
-msgstr ""
+msgstr "Su"
 
 #: apps/workout/templates/workout/analytics.html:71
 msgid "Quick Select"
-msgstr ""
+msgstr "Quick Select"
 
 #: apps/workout/templates/workout/analytics.html:73
 msgid "Last 7 Days"
-msgstr ""
+msgstr "Last 7 Days"
 
 #: apps/workout/templates/workout/analytics.html:74
 msgid "Last Month"
-msgstr ""
+msgstr "Last Month"
 
 #: apps/workout/templates/workout/analytics.html:75
 msgid "Last 3 Months"
-msgstr ""
+msgstr "Last 3 Months"
 
 #: apps/workout/templates/workout/analytics.html:76
 msgid "Last 6 Months"
-msgstr ""
+msgstr "Last 6 Months"
 
 #: apps/workout/templates/workout/analytics.html:77
 msgid "Last Year"
-msgstr ""
+msgstr "Last Year"
 
 #: apps/workout/templates/workout/analytics.html:78
-#, fuzzy
-#| msgid "Clear All"
 msgid "Year to Date"
-msgstr "Clear All"
+msgstr "Year to Date"
 
 #: apps/workout/templates/workout/analytics.html:83
 msgid "Start Date"
-msgstr ""
+msgstr "Start Date"
 
 #: apps/workout/templates/workout/analytics.html:86
-#, fuzzy
-#| msgid "Date:"
 msgid "End Date"
-msgstr "Date:"
+msgstr "End Date"
 
 #: apps/workout/templates/workout/analytics.html:91
-msgid "Apply Filter"
-msgstr ""
-
-#: apps/workout/templates/workout/analytics.html:92
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
-#: apps/workout/templates/workout/analytics.html:101 apps/workout/views.py:1058
-#, fuzzy
-#| msgid "Workout"
+#: apps/workout/templates/workout/analytics.html:100 apps/workout/views.py:1344
 msgid "Total Workouts"
-msgstr "Workout"
+msgstr "Total Workouts"
 
-#: apps/workout/templates/workout/analytics.html:105 apps/workout/views.py:1059
-#, fuzzy
-#| msgid "Exercise"
+#: apps/workout/templates/workout/analytics.html:104 apps/workout/views.py:1345
 msgid "Total Exercises"
-msgstr "Exercise"
+msgstr "Total Exercises"
 
-#: apps/workout/templates/workout/analytics.html:109 apps/workout/views.py:1060
+#: apps/workout/templates/workout/analytics.html:108 apps/workout/views.py:1346
 msgid "Total Volume"
-msgstr ""
+msgstr "Total Volume"
 
-#: apps/workout/templates/workout/analytics.html:117
+#: apps/workout/templates/workout/analytics.html:116
 msgid "Weekly Workout Trend"
-msgstr ""
+msgstr "Weekly Workout Trend"
 
-#: apps/workout/templates/workout/analytics.html:123 apps/workout/views.py:1063
-#, fuzzy
-#| msgid "Workout"
+#: apps/workout/templates/workout/analytics.html:122 apps/workout/views.py:1349
 msgid "Workouts by Type"
-msgstr "Workout"
+msgstr "Workouts by Type"
 
-#: apps/workout/templates/workout/analytics.html:129
-#, fuzzy
-#| msgid "Exercise"
+#: apps/workout/templates/workout/analytics.html:128
 msgid "Top 5 Exercises"
-msgstr "Exercise"
+msgstr "Top 5 Exercises"
 
-#: apps/workout/templates/workout/analytics.html:150
+#: apps/workout/templates/workout/analytics.html:149
 msgid "No personal records yet. Keep training!"
-msgstr ""
+msgstr "No personal records yet. Keep training!"
+
+#: apps/workout/templates/workout/analytics.html:163
+msgid "Workouts per Week"
+msgstr "Workouts per Week"
 
 #: apps/workout/templates/workout/analytics.html:164
-msgid "Workouts per Week"
-msgstr ""
-
-#: apps/workout/templates/workout/analytics.html:165
 msgid "Times Performed"
-msgstr ""
+msgstr "Times Performed"
 
 #: apps/workout/templates/workout/exercise_library.html:9
-#: apps/workout/views.py:424
-#, fuzzy
-#| msgid "Exercise"
+#: apps/workout/views.py:772
 msgid "Exercise Library"
-msgstr "Exercise"
+msgstr "Exercise Library"
 
 #: apps/workout/templates/workout/exercise_library.html:11
-#, fuzzy
-#| msgid "Workout"
 msgid "Go to Workout"
-msgstr "Workout"
+msgstr "Go to Workout"
 
 #: apps/workout/templates/workout/exercise_library.html:16
 msgid "Data Management"
-msgstr ""
+msgstr "Data Management"
 
 #: apps/workout/templates/workout/exercise_library.html:19
 msgid "Export Data"
-msgstr ""
+msgstr "Export Data"
 
 #: apps/workout/templates/workout/exercise_library.html:22
-#, fuzzy
-#| msgid "Import JSON"
 msgid "Import Data"
-msgstr "Import JSON"
+msgstr "Import Data"
 
 #: apps/workout/templates/workout/exercise_library.html:25
-#, fuzzy
-#| msgid "Clear All"
 msgid "Clear All Data"
-msgstr "Clear All"
+msgstr "Clear All Data"
 
 #: apps/workout/templates/workout/exercise_library.html:35
-#: apps/workout/views.py:425
+#: apps/workout/views.py:773
 msgid "Filters"
-msgstr ""
+msgstr "Filters"
 
 #: apps/workout/templates/workout/exercise_library.html:38
-#, fuzzy
-#| msgid "Exercise"
 msgid "Exercise Name"
-msgstr "Exercise"
+msgstr "Exercise Name"
 
 #: apps/workout/templates/workout/exercise_library.html:39
-#, fuzzy
-#| msgid "Search articles..."
 msgid "Search by name..."
-msgstr "Search articles..."
+msgstr "Search by name..."
 
 #: apps/workout/templates/workout/exercise_library.html:43
 #: apps/workout/templates/workout/exercise_library.html:92
 #: apps/workout/templates/workout/exercise_library_grid.html:14
-#: apps/workout/views.py:426
+#: apps/workout/views.py:774
 msgid "Muscle Group"
-msgstr ""
+msgstr "Muscle Group"
 
 #: apps/workout/templates/workout/exercise_library.html:45
 #: apps/workout/templates/workout/exercise_library.html:55
 #: apps/workout/templates/workout/exercise_library.html:65
-#: apps/workout/views.py:429
+#: apps/workout/views.py:777
 msgid "All"
 msgstr "All"
 
 #: apps/workout/templates/workout/exercise_library.html:53
 #: apps/workout/templates/workout/exercise_library.html:105
 #: apps/workout/templates/workout/exercise_library_grid.html:27
-#: apps/workout/views.py:427
+#: apps/workout/views.py:775
 msgid "Difficulty"
-msgstr ""
+msgstr "Difficulty"
 
 #: apps/workout/templates/workout/exercise_library.html:63
 #: apps/workout/templates/workout/exercise_library.html:114
 #: apps/workout/templates/workout/exercise_library_grid.html:36
-#: apps/workout/views.py:428
+#: apps/workout/views.py:776
 msgid "Equipment"
-msgstr ""
+msgstr "Equipment"
 
 #: apps/workout/templates/workout/exercise_library.html:73
-#: apps/workout/templates/workout/workout.html:41
+#: apps/workout/templates/workout/workout.html:40
 msgid "Apply Filters"
-msgstr ""
+msgstr "Apply Filters"
 
 #: apps/workout/templates/workout/exercise_library.html:74
 msgid "Reset Filters"
-msgstr ""
+msgstr "Reset Filters"
 
 #: apps/workout/templates/workout/exercise_library.html:126
 #: apps/workout/templates/workout/exercise_library_grid.html:48
-#: apps/workout/views.py:430
+#: apps/workout/views.py:778
 #, fuzzy
 #| msgid "No articles found"
 msgid "No exercises found."
@@ -371,234 +368,161 @@ msgstr "No articles found"
 msgid "Workout Sessions"
 msgstr "Workout Sessions"
 
-#: apps/workout/templates/workout/workout.html:19
+#: apps/workout/templates/workout/workout.html:17
 msgid "Filter Workouts"
 msgstr "Filter Workouts"
 
-#: apps/workout/templates/workout/workout.html:22
+#: apps/workout/templates/workout/workout.html:20
 msgid "Workout Type:"
 msgstr "Workout Type:"
 
-#: apps/workout/templates/workout/workout.html:24
+#: apps/workout/templates/workout/workout.html:22
 msgid "All Types"
 msgstr "All Types"
 
-#: apps/workout/templates/workout/workout.html:32
+#: apps/workout/templates/workout/workout.html:30
 msgid "Exercise:"
 msgstr "Exercise:"
 
-#: apps/workout/templates/workout/workout.html:34
+#: apps/workout/templates/workout/workout.html:32
 msgid "All Exercises"
 msgstr "All Exercises"
 
-#: apps/workout/templates/workout/workout.html:42
+#: apps/workout/templates/workout/workout.html:41
 msgid "Clear Filters"
 msgstr "Clear Filters"
 
-#: apps/workout/templates/workout/workout.html:58 apps/workout/views.py:122
+#: apps/workout/templates/workout/workout.html:60 apps/workout/views.py:212
 msgid "Edit"
-msgstr ""
+msgstr "Edit"
 
-#: apps/workout/templates/workout/workout.html:68
-#: apps/workout/templates/workout/workout.html:89 apps/workout/views.py:115
-#: apps/workout/views.py:116
-msgid "Exercise"
-msgstr "Exercise"
+#: apps/workout/templates/workout/workout.html:62
+msgid "Template"
+msgstr "Template"
 
-#: apps/workout/templates/workout/workout.html:69 apps/workout/views.py:117
-#: apps/workout/views.py:299
-msgid "Series"
-msgstr "Series"
-
-#: apps/workout/templates/workout/workout.html:70 apps/workout/views.py:118
-#: apps/workout/views.py:300
-msgid "Reps"
-msgstr ""
-
-#: apps/workout/templates/workout/workout.html:71 apps/workout/views.py:119
-#: apps/workout/views.py:302
-msgid "Weight (kg)"
-msgstr "Weight (kg)"
-
-#: apps/workout/templates/workout/workout.html:90 apps/workout/views.py:120
-#, fuzzy
-#| msgid "Duration:"
-msgid "Duration (min)"
-msgstr "Duration:"
-
-#: apps/workout/templates/workout/workout.html:91 apps/workout/views.py:121
-#: apps/workout/views.py:304
-msgid "Distance (m)"
-msgstr ""
-
-#: apps/workout/templates/workout/workout.html:110
+#: apps/workout/templates/workout/workout.html:111
 msgid "No workouts recorded."
 msgstr "No workouts recorded."
 
-#: apps/workout/templates/workout/workout.html:117
+#: apps/workout/templates/workout/workout.html:118
 msgid "Load More"
 msgstr "Load More"
 
-#: apps/workout/templates/workout/workout.html:120
+#: apps/workout/templates/workout/workout.html:121
 msgid "Loading..."
 msgstr "Loading..."
 
-#: apps/workout/views.py:298
-msgid "Sets"
-msgstr ""
+#: apps/workout/templates/workout/workout.html:128
+msgid "Save as Template"
+msgstr "Save as Template"
 
-#: apps/workout/views.py:301
+#: apps/workout/templates/workout/workout.html:129
+msgid "Enter template name..."
+msgstr "Enter template name..."
+
+#: apps/workout/templates/workout/workout.html:132
+msgid "Cancel"
+msgstr "Cancel"
+
+#: apps/workout/views.py:205 apps/workout/views.py:206
+msgid "Exercise"
+msgstr "Exercise"
+
+#: apps/workout/views.py:207 apps/workout/views.py:384
+msgid "Series"
+msgstr "Series"
+
+#: apps/workout/views.py:208 apps/workout/views.py:385
+msgid "Reps"
+msgstr "Reps"
+
+#: apps/workout/views.py:209 apps/workout/views.py:387
+msgid "Weight (kg)"
+msgstr "Weight (kg)"
+
+#: apps/workout/views.py:210
+msgid "Duration (min)"
+msgstr "Duration (min)"
+
+#: apps/workout/views.py:211 apps/workout/views.py:389
+msgid "Distance (m)"
+msgstr "Distance (m)"
+
+#: apps/workout/views.py:383
+msgid "Sets"
+msgstr "Sets"
+
+#: apps/workout/views.py:386
 msgid "Repetitions"
 msgstr "Repetitions"
 
-#: apps/workout/views.py:303
-#, fuzzy
-#| msgid "Duration:"
+#: apps/workout/views.py:388
 msgid "Duration (sec)"
-msgstr "Duration:"
+msgstr "Duration (sec)"
 
-#: apps/workout/views.py:769 apps/workout/views.py:998
+#: apps/workout/views.py:1128 apps/workout/views.py:1285
 msgid "January"
-msgstr ""
+msgstr "January"
 
-#: apps/workout/views.py:770 apps/workout/views.py:999
+#: apps/workout/views.py:1129 apps/workout/views.py:1286
 msgid "February"
-msgstr ""
+msgstr "February"
 
-#: apps/workout/views.py:771 apps/workout/views.py:1000
+#: apps/workout/views.py:1130 apps/workout/views.py:1287
 msgid "March"
-msgstr ""
+msgstr "March"
 
-#: apps/workout/views.py:772 apps/workout/views.py:1001
+#: apps/workout/views.py:1131 apps/workout/views.py:1288
 msgid "April"
-msgstr ""
+msgstr "April"
 
-#: apps/workout/views.py:773 apps/workout/views.py:1002
+#: apps/workout/views.py:1132 apps/workout/views.py:1289
 msgid "May"
-msgstr ""
+msgstr "May"
 
-#: apps/workout/views.py:774 apps/workout/views.py:1003
+#: apps/workout/views.py:1133 apps/workout/views.py:1290
 msgid "June"
-msgstr ""
+msgstr "June"
 
-#: apps/workout/views.py:775 apps/workout/views.py:1004
+#: apps/workout/views.py:1134 apps/workout/views.py:1291
 msgid "July"
-msgstr ""
+msgstr "July"
 
-#: apps/workout/views.py:776 apps/workout/views.py:1005
+#: apps/workout/views.py:1135 apps/workout/views.py:1292
 msgid "August"
-msgstr ""
+msgstr "August"
 
-#: apps/workout/views.py:777 apps/workout/views.py:1006
+#: apps/workout/views.py:1136 apps/workout/views.py:1293
 msgid "September"
-msgstr ""
+msgstr "September"
 
-#: apps/workout/views.py:778 apps/workout/views.py:1007
+#: apps/workout/views.py:1137 apps/workout/views.py:1294
 msgid "October"
-msgstr ""
+msgstr "October"
 
-#: apps/workout/views.py:779 apps/workout/views.py:1008
+#: apps/workout/views.py:1138 apps/workout/views.py:1295
 msgid "November"
-msgstr ""
+msgstr "November"
 
-#: apps/workout/views.py:780 apps/workout/views.py:1009
+#: apps/workout/views.py:1139 apps/workout/views.py:1296
 msgid "December"
-msgstr ""
+msgstr "December"
 
-#: apps/workout/views.py:1061
+#: apps/workout/views.py:1347
 msgid "Current Streak"
-msgstr ""
+msgstr "Current Streak"
 
-#: apps/workout/views.py:1062
+#: apps/workout/views.py:1348
 msgid "Longest Streak"
-msgstr ""
+msgstr "Longest Streak"
 
-#: apps/workout/views.py:1064
+#: apps/workout/views.py:1350
 msgid "Weekly Trend"
-msgstr ""
+msgstr "Weekly Trend"
 
-#: apps/workout/views.py:1065
-#, fuzzy
-#| msgid "Exercise"
+#: apps/workout/views.py:1351
 msgid "Top Exercises"
-msgstr "Exercise"
+msgstr "Top Exercises"
 
-#~ msgid "News"
-#~ msgstr "News"
-
-#~ msgid "News Feed"
-#~ msgstr "News Feed"
-
-#~ msgid "Fetch Latest Articles"
-#~ msgstr "Fetch Latest Articles"
-
-#~ msgid "Export RSS Feeds"
-#~ msgstr "Export RSS Feeds"
-
-#~ msgid "Import RSS Feeds"
-#~ msgstr "Import RSS Feeds"
-
-#~ msgid "Delete Articles"
-#~ msgstr "Delete Articles"
-
-#~ msgid "Delete RSS Feeds"
-#~ msgstr "Delete RSS Feeds"
-
-#~ msgid "Clear All"
-#~ msgstr "Clear All"
-
-#, python-format
-#~ msgid "%(total)s article"
-#~ msgid_plural "%(total)s articles"
-#~ msgstr[0] "%(total)s article"
-#~ msgstr[1] "%(total)s articles"
-
-#, python-format
-#~ msgid "Search results for: \"<strong>%(search_query)s</strong>\""
-#~ msgstr "Search results for: \"<strong>%(search_query)s</strong>\""
-
-#~ msgid "Featured Articles"
-#~ msgstr "Featured Articles"
-
-#~ msgid "Featured"
-#~ msgstr "Featured"
-
-#~ msgid "of"
-#~ msgstr "of"
-
-#~ msgid "No articles found"
-#~ msgstr "No articles found"
-
-#, python-format
-#~ msgid "No articles match your search for \"%(search_query)s\""
-#~ msgstr "No articles match your search for \"%(search_query)s\""
-
-#~ msgid "Try adding some RSS feeds and running the fetch command!"
-#~ msgstr "Try adding some RSS feeds and running the fetch command!"
-
-#~ msgid "Add Workout"
-#~ msgstr "Add Workout"
-
-#~ msgid "Pull"
-#~ msgstr "Pull"
-
-#~ msgid "Push"
-#~ msgstr "Push"
-
-#~ msgid "Legs"
-#~ msgstr "Legs"
-
-#~ msgid "CrossFit"
-#~ msgstr "CrossFit"
-
-#~ msgid "Natation"
-#~ msgstr "Swimming"
-
-#~ msgid "Vélo"
-#~ msgstr "Bike"
-
-#~ msgid "Push-Ups"
-#~ msgstr "Push-Ups"
-
-#~ msgid "Upper body"
-#~ msgstr "Upper body"
+#~ msgid "Copy as Template"
+#~ msgstr "Copy as Template"

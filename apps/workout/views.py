@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import tempfile
@@ -21,8 +22,12 @@ from .models import (
     OneExercice,
     StrengthExerciseLog,
     StrengthSeriesLog,
+    TemplateCardioSeries,
+    TemplateExercise,
+    TemplateStrengthSeries,
     TypeWorkout,
     Workout,
+    WorkoutTemplate,
 )
 
 logger = logging.getLogger(__name__)
@@ -382,6 +387,7 @@ def add_workout(request):
             "weight_kg": gettext("Weight (kg)"),
             "duration_sec": gettext("Duration (sec)"),
             "distance_m": gettext("Distance (m)"),
+            "no_template": gettext("No template"),
         },
     }
     return render(request, "add_workout.html", context)
@@ -520,6 +526,201 @@ def edit_workout(_request, workout_id):
 
     # Redirect to Django admin page for this workout
     return redirect(f"/admin/workout/workout/{workout_id}/change/")
+
+
+@login_required
+def create_template_from_workout(request, workout_id):
+    if request.method != "POST":
+        return JsonResponse(
+            {"success": False, "error": "POST method required"}, status=405
+        )
+
+    try:
+        data = json.loads(request.body)
+        template_name = data.get("template_name", "").strip()
+
+        if not template_name:
+            return JsonResponse(
+                {"success": False, "error": "Template name is required"}, status=400
+            )
+
+        # Load workout with related data
+        workout = Workout.objects.get(id=workout_id)
+
+        # Create template in atomic transaction
+        with transaction.atomic():
+            # Create WorkoutTemplate
+            template = WorkoutTemplate.objects.create(
+                name=template_name,
+                type_workout=workout.type_workout,
+                duration=workout.duration,
+            )
+
+            # Get exercises ordered by position
+            one_exercises = OneExercice.objects.filter(seance=workout).order_by(
+                "position"
+            )
+
+            for one_exercise in one_exercises:
+                # Create TemplateExercise
+                template_exercise = TemplateExercise.objects.create(
+                    template=template,
+                    exercise=one_exercise.name,
+                    position=one_exercise.position,
+                )
+
+                # Get strength series for this exercise
+                strength_series = StrengthSeriesLog.objects.filter(
+                    workout=workout, exercise=one_exercise.name
+                ).order_by("series_number")
+
+                for strength_series_item in strength_series:
+                    TemplateStrengthSeries.objects.create(
+                        template_exercise=template_exercise,
+                        series_number=strength_series_item.series_number,
+                        reps=strength_series_item.reps,
+                        weight=strength_series_item.weight,
+                    )
+
+                # Get cardio series for this exercise
+                cardio_series = CardioSeriesLog.objects.filter(
+                    workout=workout, exercise=one_exercise.name
+                ).order_by("series_number")
+
+                for cardio_series_item in cardio_series:
+                    TemplateCardioSeries.objects.create(
+                        template_exercise=template_exercise,
+                        series_number=cardio_series_item.series_number,
+                        duration_seconds=cardio_series_item.duration_seconds,
+                        distance_m=cardio_series_item.distance_m,
+                    )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "template_id": template.id,
+                "template_name": template.name,
+            }
+        )
+
+    except Workout.DoesNotExist:
+        return JsonResponse(
+            {"success": False, "error": "Workout not found"}, status=404
+        )
+    except Exception as e:
+        logger.error(f"Error creating template: {e}")
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+@login_required
+def get_template_list(_request):
+    templates = WorkoutTemplate.objects.filter(is_active=True).order_by("name")
+
+    templates_data = []
+    for template in templates:
+        templates_data.append(
+            {
+                "id": template.id,
+                "name": template.name,
+                "type": (
+                    template.type_workout.name_workout if template.type_workout else ""
+                ),
+                "duration": template.duration,
+            }
+        )
+
+    return JsonResponse({"templates": templates_data})
+
+
+@login_required
+def get_template_details(request):
+    template_id = request.GET.get("template_id")
+
+    if not template_id:
+        return JsonResponse({"error": "template_id is required"}, status=400)
+
+    try:
+        template = WorkoutTemplate.objects.get(id=template_id, is_active=True)
+
+        # Get all exercises for dropdown
+        all_exercises = (
+            Exercice.objects.all().order_by("name").values("name", "exercise_type")
+        )
+
+        exercises_data: list[dict[str, Any]] = []
+
+        # Get template exercises ordered by position
+        template_exercises = TemplateExercise.objects.filter(
+            template=template
+        ).order_by("position")
+
+        for template_exercise in template_exercises:
+            # Get strength series for this template exercise
+            strength_series = TemplateStrengthSeries.objects.filter(
+                template_exercise=template_exercise
+            ).order_by("series_number")
+
+            if strength_series.exists():
+                strength_series_list: list[dict[str, Any]] = []
+                for strength_series_item in strength_series:
+                    strength_series_list.append(
+                        {
+                            "series_number": strength_series_item.series_number,
+                            "reps": strength_series_item.reps,
+                            "weight": strength_series_item.weight,
+                        }
+                    )
+
+                exercise_data = {
+                    "name": template_exercise.exercise.name,
+                    "exercise_type": "strength",
+                    "position": template_exercise.position,
+                    "series": strength_series_list,
+                }
+
+                exercises_data.append(exercise_data)
+
+            # Get cardio series for this template exercise
+            cardio_series = TemplateCardioSeries.objects.filter(
+                template_exercise=template_exercise
+            ).order_by("series_number")
+
+            if cardio_series.exists():
+                cardio_series_list: list[dict[str, Any]] = []
+                for cardio_series_item in cardio_series:
+                    cardio_series_list.append(
+                        {
+                            "series_number": cardio_series_item.series_number,
+                            "duration_seconds": cardio_series_item.duration_seconds,
+                            "distance_m": cardio_series_item.distance_m,
+                        }
+                    )
+
+                exercise_data = {
+                    "name": template_exercise.exercise.name,
+                    "exercise_type": "cardio",
+                    "position": template_exercise.position,
+                    "series": cardio_series_list,
+                }
+
+                exercises_data.append(exercise_data)
+
+        data = {
+            "duration": template.duration,
+            "type_workout": (
+                template.type_workout.name_workout if template.type_workout else ""
+            ),
+            "exercises": exercises_data,
+            "all_exercises": list(all_exercises),
+        }
+
+        return JsonResponse(data)
+
+    except WorkoutTemplate.DoesNotExist:
+        return JsonResponse({"error": "Template not found"}, status=404)
+    except Exception as e:
+        logger.error(f"Error getting template details: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 def exercise_library(request):
@@ -756,8 +957,15 @@ def get_dashboard_data(request):
 
         start_dt = dt.strptime(start_date, "%Y-%m-%d").date()
         end_dt = dt.strptime(end_date, "%Y-%m-%d").date()
+
+        # Adjust start_dt to Monday of that week (Monday = 0, Sunday = 6)
+        days_since_monday = start_dt.weekday()
+        start_dt = start_dt - timedelta(days=days_since_monday)
+
         total_days = (end_dt - start_dt).days
-        num_weeks = max(total_days // 7, 1)  # Show all weeks in the date range
+        num_weeks = max(
+            total_days // 7 + 1, 1
+        )  # Show all weeks including partial current week
 
         weekly_workouts = []
         for week in range(num_weeks):
@@ -779,8 +987,13 @@ def get_dashboard_data(request):
         if earliest_workout:
             start_dt = earliest_workout.date
             end_dt = datetime.now().date()
+
+            # Adjust start_dt to Monday of that week (Monday = 0, Sunday = 6)
+            days_since_monday = start_dt.weekday()
+            start_dt = start_dt - timedelta(days=days_since_monday)
+
             total_days = (end_dt - start_dt).days
-            num_weeks = max(total_days // 7, 1)
+            num_weeks = max(total_days // 7 + 1, 1)
 
             weekly_workouts = []
             for week in range(num_weeks):

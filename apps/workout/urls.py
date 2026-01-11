@@ -10,6 +10,15 @@ urlpatterns = [
     path("get_workout_types/", views.get_workout_types, name="get_workout_types"),
     path("add_workout/", views.add_workout, name="add_workout"),
     path("edit_workout/<int:workout_id>/", views.edit_workout, name="edit_workout"),
+    path(
+        "create_template/<int:workout_id>/",
+        views.create_template_from_workout,
+        name="create_template",
+    ),
+    path("get_template_list/", views.get_template_list, name="get_template_list"),
+    path(
+        "get_template_details/", views.get_template_details, name="get_template_details"
+    ),
     path("library/", views.exercise_library, name="exercise_library"),
     path("analytics/", views.analytics, name="analytics"),
     path("get_dashboard_data/", views.get_dashboard_data, name="get_dashboard_data"),

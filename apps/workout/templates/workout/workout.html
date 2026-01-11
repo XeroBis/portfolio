@@ -55,9 +55,12 @@
                         {% endif %}
                     </h2>
                     {% if user.is_authenticated %}
-                    <a href="/workout/edit_workout/{{ data.workout.id }}/">
-                        <button class="cliquable button_workout">{% trans "Edit" %}</button>
-                    </a>
+                    <div class="workout-actions" style="display: flex; gap: 10px;">
+                        <a href="/workout/edit_workout/{{ data.workout.id }}/">
+                            <button class="cliquable button_workout">{% trans "Edit" %}</button>
+                        </a>
+                        <button class="cliquable button_workout" onclick="showTemplateModal({{ data.workout.id }})">{% trans "Template" %}</button>
+                    </div>
                     {% endif %}
                 </div>
                 {% if data.exercises %}
@@ -118,6 +121,17 @@
             {% trans "Loading..." %}
         </div>
         {% endif %}
+    </div>
+
+    <div id="template-modal">
+        <div class="template-modal-content">
+            <h3>{% trans "Save as Template" %}</h3>
+            <input type="text" id="template-name-input" placeholder="{% trans 'Enter template name...' %}">
+            <div class="template-modal-buttons">
+                <button onclick="saveTemplate()" class="cliquable button_workout">{% trans "Save" %}</button>
+                <button onclick="closeTemplateModal()" class="cliquable button_workout">{% trans "Cancel" %}</button>
+            </div>
+        </div>
     </div>
 
     {{ translations|json_script:"workout-translations" }}

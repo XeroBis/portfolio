@@ -361,9 +361,12 @@ function loadMore() {
                         html += ' - ' + timeStr.trim();
                     }
                     html += '</h2>';
+                    html += '<div style="display: flex; gap: 10px;">';
+                    html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">' + (translations.copy_template || 'Copy as Template') + '</button>';
                     html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
                     html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
+                    html += '</div>';
                     html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
@@ -530,9 +533,12 @@ function applyFilters(e) {
                         html += ' - ' + timeStr.trim();
                     }
                     html += '</h2>';
+                    html += '<div style="display: flex; gap: 10px;">';
+                    html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">' + (translations.copy_template || 'Copy as Template') + '</button>';
                     html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
                     html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
+                    html += '</div>';
                     html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
@@ -667,6 +673,66 @@ function scheduleFilterApplication() {
     filterDebounceTimer = setTimeout(function() {
         applyFilters();
     }, FILTER_DEBOUNCE_DELAY);
+}
+
+// Template management functions
+function showTemplateModal(workoutId) {
+    const modal = document.getElementById('template-modal');
+    modal.style.display = 'block';
+    modal.dataset.workoutId = workoutId;
+}
+
+function closeTemplateModal() {
+    const modal = document.getElementById('template-modal');
+    modal.style.display = 'none';
+    document.getElementById('template-name-input').value = '';
+}
+
+function saveTemplate() {
+    const modal = document.getElementById('template-modal');
+    const workoutId = modal.dataset.workoutId;
+    const templateName = document.getElementById('template-name-input').value.trim();
+
+    if (!templateName) {
+        alert('Please enter a template name');
+        return;
+    }
+
+    fetch(`/workout/create_template/${workoutId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ template_name: templateName })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeTemplateModal();
+        } else {
+            alert('Error: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error saving template');
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 $(document).ready(function() {

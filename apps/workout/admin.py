@@ -7,8 +7,12 @@ from .models import (
     MuscleGroup,
     OneExercice,
     StrengthSeriesLog,
+    TemplateCardioSeries,
+    TemplateExercise,
+    TemplateStrengthSeries,
     TypeWorkout,
     Workout,
+    WorkoutTemplate,
 )
 
 
@@ -90,3 +94,33 @@ class WorkoutAdmin(admin.ModelAdmin):
         cardio_count = obj.cardio_series_logs.count()
         total = strength_count + cardio_count
         return f"{total} ({strength_count}S, {cardio_count}C)"
+
+
+class TemplateExerciseInline(admin.TabularInline):
+    model = TemplateExercise
+    extra = 1
+    fields = ["position", "exercise"]
+    ordering = ["position"]
+
+
+class TemplateStrengthSeriesInline(admin.TabularInline):
+    model = TemplateStrengthSeries
+    extra = 1
+    fields = ["template_exercise", "series_number", "reps", "weight"]
+    ordering = ["template_exercise__position", "series_number"]
+
+
+class TemplateCardioSeriesInline(admin.TabularInline):
+    model = TemplateCardioSeries
+    extra = 1
+    fields = ["template_exercise", "series_number", "duration_seconds", "distance_m"]
+    ordering = ["template_exercise__position", "series_number"]
+
+
+@admin.register(WorkoutTemplate)
+class WorkoutTemplateAdmin(admin.ModelAdmin):
+    list_display = ["name", "type_workout", "duration", "is_active", "created_at"]
+    search_fields = ["name", "type_workout__name_workout"]
+    list_filter = ["type_workout", "is_active", "created_at"]
+    fieldsets = ((None, {"fields": ("name", "type_workout", "duration", "is_active")}),)
+    inlines = [TemplateExerciseInline]
