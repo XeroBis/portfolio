@@ -361,11 +361,11 @@ function loadMore() {
                         html += ' - ' + timeStr.trim();
                     }
                     html += '</h2>';
-                    html += '<div style="display: flex; gap: 10px;">';
-                    html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">' + (translations.copy_template || 'Copy as Template') + '</button>';
+                    html += '<div class="workout-actions" style="display: flex; gap: 10px;">';
                     html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
                     html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
+                    html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">Template</button>';
                     html += '</div>';
                     html += '</div>';
 
@@ -533,11 +533,11 @@ function applyFilters(e) {
                         html += ' - ' + timeStr.trim();
                     }
                     html += '</h2>';
-                    html += '<div style="display: flex; gap: 10px;">';
-                    html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">' + (translations.copy_template || 'Copy as Template') + '</button>';
+                    html += '<div class="workout-actions" style="display: flex; gap: 10px;">';
                     html += '<a href="/workout/edit_workout/' + data.workout.id + '/">';
                     html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
+                    html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">Template</button>';
                     html += '</div>';
                     html += '</div>';
 
