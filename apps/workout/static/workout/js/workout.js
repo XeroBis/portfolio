@@ -351,7 +351,6 @@ function loadMore() {
                 var html = '';
                 response.workout_data.forEach(function (data) {
                     html += '<div class="workout-item">';
-                    html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
                     html += '<h2 class="workout_date_type">' + data.workout.date + ' - ' + data.workout.type_workout;
 
                     if (data.workout.duration > 0) {
@@ -366,7 +365,6 @@ function loadMore() {
                     html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
                     html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">Template</button>';
-                    html += '</div>';
                     html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
@@ -523,7 +521,6 @@ function applyFilters(e) {
                 var html = '';
                 response.workout_data.forEach(function (data) {
                     html += '<div class="workout-item">';
-                    html += '<div style="display: flex; justify-content: space-between; align-items: center;">';
                     html += '<h2 class="workout_date_type">' + data.workout.date + ' - ' + data.workout.type_workout;
 
                     if (data.workout.duration > 0) {
@@ -538,7 +535,6 @@ function applyFilters(e) {
                     html += '<button class="cliquable button_workout">' + (translations.edit || 'Edit') + '</button>';
                     html += '</a>';
                     html += '<button class="cliquable button_workout" onclick="showTemplateModal(' + data.workout.id + ')">Template</button>';
-                    html += '</div>';
                     html += '</div>';
 
                     if (data.exercises && data.exercises.length > 0) {
