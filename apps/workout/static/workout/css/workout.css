@@ -726,16 +726,10 @@ margin: 20px auto;
         text-align: center;
     }
 
-    /* Stack workout action buttons vertically on mobile */
+    /* Keep workout action buttons on the same line */
     .workout-actions {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 8px !important;
-    }
-
-    .workout-actions a,
-    .workout-actions button {
-        width: 100%;
+        flex-direction: row !important;
+        gap: 10px !important;
     }
 }
 
