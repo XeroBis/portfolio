@@ -47,20 +47,22 @@
         <div id="workout-list">
             {% for data in workout_data %}
             <div class="workout-item" data-muscle-groups="{{ data.muscle_groups|join:',' }}">
-                <h2 class="workout_date_type">
-                    {{ data.workout.date }} - {{ data.workout.type_workout }}
-                    {% if data.workout.duration > 0 %}
-                    - {{ data.workout.duration|hours_minutes }}
+                <div class="workout-header">
+                    <h2 class="workout_date_type">
+                        {{ data.workout.date }} - {{ data.workout.type_workout }}
+                        {% if data.workout.duration > 0 %}
+                        - {{ data.workout.duration|hours_minutes }}
+                        {% endif %}
+                    </h2>
+                    {% if user.is_authenticated %}
+                    <div class="workout-actions" style="display: flex; gap: 10px;">
+                        <a href="/workout/edit_workout/{{ data.workout.id }}/">
+                            <button class="cliquable button_workout">{% trans "Edit" %}</button>
+                        </a>
+                        <button class="cliquable button_workout" onclick="showTemplateModal({{ data.workout.id }})">{% trans "Template" %}</button>
+                    </div>
                     {% endif %}
-                </h2>
-                {% if user.is_authenticated %}
-                <div class="workout-actions" style="display: flex; gap: 10px;">
-                    <a href="/workout/edit_workout/{{ data.workout.id }}/">
-                        <button class="cliquable button_workout">{% trans "Edit" %}</button>
-                    </a>
-                    <button class="cliquable button_workout" onclick="showTemplateModal({{ data.workout.id }})">{% trans "Template" %}</button>
                 </div>
-                {% endif %}
                 {% if data.exercises %}
                     {% regroup data.exercises by exercise_type as exercises_by_type %}
                     {% for type_group in exercises_by_type %}
