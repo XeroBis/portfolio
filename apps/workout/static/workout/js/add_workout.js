@@ -401,12 +401,18 @@ function changeWorkoutType() {
 };
 
 function loadTemplateList() {
+    const templateSelect = document.getElementById('add_workout_template_select');
+
+    // If template select doesn't exist (e.g., on edit page), skip this
+    if (!templateSelect) {
+        return;
+    }
+
     const translations = JSON.parse(document.getElementById('add-workout-translations').textContent);
 
     fetch('/workout/get_template_list/')
         .then(response => response.json())
         .then(data => {
-            const templateSelect = document.getElementById('add_workout_template_select');
             templateSelect.innerHTML = `<option value="">${translations.no_template}</option>`;
 
             // Show all templates (no filtering by workout type)
