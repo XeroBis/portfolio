@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Portfolio 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-11 17:11+0100\n"
+"POT-Creation-Date: 2026-01-17 18:42+0100\n"
 "PO-Revision-Date: 2025-10-17 23:30+0200\n"
 "Last-Translator: Claude Code\n"
 "Language-Team: French\n"
@@ -37,7 +37,7 @@ msgstr "+ Séance"
 msgid "Exercises"
 msgstr "Exercices"
 
-#: apps/home/templates/home/header.html:23 apps/workout/views.py:1340
+#: apps/home/templates/home/header.html:23 apps/workout/views.py:1560
 msgid "Analytics"
 msgstr "Statistiques"
 
@@ -97,10 +97,12 @@ msgid "New Session"
 msgstr "Nouvelle Séance"
 
 #: apps/workout/templates/workout/add_workout.html:16
+#: apps/workout/templates/workout/edit_workout.html:16
 msgid "Date:"
 msgstr "Date :"
 
 #: apps/workout/templates/workout/add_workout.html:21
+#: apps/workout/templates/workout/edit_workout.html:21
 msgid "Duration:"
 msgstr "Durée :"
 
@@ -113,6 +115,7 @@ msgid "From last session"
 msgstr "De la dernière séance"
 
 #: apps/workout/templates/workout/add_workout.html:36
+#: apps/workout/templates/workout/edit_workout.html:30
 msgid "Select a type"
 msgstr "Sélectionner un type"
 
@@ -125,27 +128,30 @@ msgid "From template"
 msgstr "D'un template"
 
 #: apps/workout/templates/workout/add_workout.html:50 apps/workout/views.py:390
+#: apps/workout/views.py:745
 msgid "No template"
 msgstr "Aucun template"
 
 #: apps/workout/templates/workout/add_workout.html:58
+#: apps/workout/templates/workout/edit_workout.html:37
 msgid "Add exercise"
 msgstr "Ajouter un exercice"
 
 #: apps/workout/templates/workout/add_workout.html:61
-#: apps/workout/templates/workout/workout.html:131
+#: apps/workout/templates/workout/edit_workout.html:40
+#: apps/workout/templates/workout/workout.html:129
 msgid "Save"
 msgstr "Enregistrer"
 
-#: apps/workout/templates/workout/analytics.html:14 apps/workout/views.py:1341
+#: apps/workout/templates/workout/analytics.html:14 apps/workout/views.py:1561
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: apps/workout/templates/workout/analytics.html:15 apps/workout/views.py:1342
+#: apps/workout/templates/workout/analytics.html:15 apps/workout/views.py:1562
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:1343
+#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:1563
 msgid "Personal Records"
 msgstr "Records Personnels"
 
@@ -232,15 +238,15 @@ msgstr "Date de fin"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: apps/workout/templates/workout/analytics.html:100 apps/workout/views.py:1344
+#: apps/workout/templates/workout/analytics.html:100 apps/workout/views.py:1564
 msgid "Total Workouts"
 msgstr "Total des Séances"
 
-#: apps/workout/templates/workout/analytics.html:104 apps/workout/views.py:1345
+#: apps/workout/templates/workout/analytics.html:104 apps/workout/views.py:1565
 msgid "Total Exercises"
 msgstr "Total des Exercices"
 
-#: apps/workout/templates/workout/analytics.html:108 apps/workout/views.py:1346
+#: apps/workout/templates/workout/analytics.html:108 apps/workout/views.py:1566
 msgid "Total Volume"
 msgstr "Volume Total"
 
@@ -248,7 +254,7 @@ msgstr "Volume Total"
 msgid "Weekly Workout Trend"
 msgstr "Tendance Hebdomadaire des Séances"
 
-#: apps/workout/templates/workout/analytics.html:122 apps/workout/views.py:1349
+#: apps/workout/templates/workout/analytics.html:122 apps/workout/views.py:1569
 msgid "Workouts by Type"
 msgstr "Séances par Type"
 
@@ -268,8 +274,16 @@ msgstr "Séances par Semaine"
 msgid "Times Performed"
 msgstr "Fois Réalisé"
 
+#: apps/workout/templates/workout/edit_workout.html:10
+msgid "Edit Session"
+msgstr "Modifier la Séance"
+
+#: apps/workout/templates/workout/edit_workout.html:28
+msgid "Type:"
+msgstr "Type :"
+
 #: apps/workout/templates/workout/exercise_library.html:9
-#: apps/workout/views.py:772
+#: apps/workout/views.py:992
 msgid "Exercise Library"
 msgstr "Exercices"
 
@@ -294,7 +308,7 @@ msgid "Clear All Data"
 msgstr "Tout effacer"
 
 #: apps/workout/templates/workout/exercise_library.html:35
-#: apps/workout/views.py:773
+#: apps/workout/views.py:993
 msgid "Filters"
 msgstr "Filtres"
 
@@ -309,28 +323,28 @@ msgstr "Rechercher par nom..."
 #: apps/workout/templates/workout/exercise_library.html:43
 #: apps/workout/templates/workout/exercise_library.html:92
 #: apps/workout/templates/workout/exercise_library_grid.html:14
-#: apps/workout/views.py:774
+#: apps/workout/views.py:994
 msgid "Muscle Group"
 msgstr "Groupe de muscle"
 
 #: apps/workout/templates/workout/exercise_library.html:45
 #: apps/workout/templates/workout/exercise_library.html:55
 #: apps/workout/templates/workout/exercise_library.html:65
-#: apps/workout/views.py:777
+#: apps/workout/views.py:997
 msgid "All"
 msgstr "Tous"
 
 #: apps/workout/templates/workout/exercise_library.html:53
 #: apps/workout/templates/workout/exercise_library.html:105
 #: apps/workout/templates/workout/exercise_library_grid.html:27
-#: apps/workout/views.py:775
+#: apps/workout/views.py:995
 msgid "Difficulty"
 msgstr "Difficulté"
 
 #: apps/workout/templates/workout/exercise_library.html:63
 #: apps/workout/templates/workout/exercise_library.html:114
 #: apps/workout/templates/workout/exercise_library_grid.html:36
-#: apps/workout/views.py:776
+#: apps/workout/views.py:996
 msgid "Equipment"
 msgstr "Équipement"
 
@@ -345,7 +359,7 @@ msgstr "Réinitialiser les Filtres"
 
 #: apps/workout/templates/workout/exercise_library.html:126
 #: apps/workout/templates/workout/exercise_library_grid.html:48
-#: apps/workout/views.py:778
+#: apps/workout/views.py:998
 msgid "No exercises found."
 msgstr "Aucun Exercice trouvé"
 
@@ -377,35 +391,35 @@ msgstr "Tous les exercices"
 msgid "Clear Filters"
 msgstr "Réinitialiser les filtres"
 
-#: apps/workout/templates/workout/workout.html:60 apps/workout/views.py:212
+#: apps/workout/templates/workout/workout.html:59 apps/workout/views.py:212
 msgid "Edit"
 msgstr "Modifier"
 
-#: apps/workout/templates/workout/workout.html:62
+#: apps/workout/templates/workout/workout.html:61
 msgid "Template"
 msgstr "Template"
 
-#: apps/workout/templates/workout/workout.html:111
+#: apps/workout/templates/workout/workout.html:109
 msgid "No workouts recorded."
 msgstr "Aucun workout enregistré."
 
-#: apps/workout/templates/workout/workout.html:118
+#: apps/workout/templates/workout/workout.html:116
 msgid "Load More"
 msgstr "Charger plus"
 
-#: apps/workout/templates/workout/workout.html:121
+#: apps/workout/templates/workout/workout.html:119
 msgid "Loading..."
 msgstr "Chargement..."
 
-#: apps/workout/templates/workout/workout.html:128
+#: apps/workout/templates/workout/workout.html:126
 msgid "Save as Template"
 msgstr "Enregistrer comme Template"
 
-#: apps/workout/templates/workout/workout.html:129
+#: apps/workout/templates/workout/workout.html:127
 msgid "Enter template name..."
 msgstr "Entrer le nom du modèle..."
 
-#: apps/workout/templates/workout/workout.html:132
+#: apps/workout/templates/workout/workout.html:130
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -414,14 +428,17 @@ msgid "Exercise"
 msgstr "Exercice"
 
 #: apps/workout/views.py:207 apps/workout/views.py:384
+#: apps/workout/views.py:739
 msgid "Series"
 msgstr "Séries"
 
 #: apps/workout/views.py:208 apps/workout/views.py:385
+#: apps/workout/views.py:740
 msgid "Reps"
 msgstr "Reps"
 
 #: apps/workout/views.py:209 apps/workout/views.py:387
+#: apps/workout/views.py:742
 msgid "Weight (kg)"
 msgstr "Poids (kg)"
 
@@ -430,82 +447,83 @@ msgid "Duration (min)"
 msgstr "Durée (min)"
 
 #: apps/workout/views.py:211 apps/workout/views.py:389
+#: apps/workout/views.py:744
 msgid "Distance (m)"
 msgstr "Distance (m)"
 
-#: apps/workout/views.py:383
+#: apps/workout/views.py:383 apps/workout/views.py:738
 msgid "Sets"
 msgstr "Sets"
 
-#: apps/workout/views.py:386
+#: apps/workout/views.py:386 apps/workout/views.py:741
 msgid "Repetitions"
 msgstr "Répétitions"
 
-#: apps/workout/views.py:388
+#: apps/workout/views.py:388 apps/workout/views.py:743
 msgid "Duration (sec)"
 msgstr "Durée (sec)"
 
-#: apps/workout/views.py:1128 apps/workout/views.py:1285
+#: apps/workout/views.py:1348 apps/workout/views.py:1505
 msgid "January"
 msgstr "Janvier"
 
-#: apps/workout/views.py:1129 apps/workout/views.py:1286
+#: apps/workout/views.py:1349 apps/workout/views.py:1506
 msgid "February"
 msgstr "Février"
 
-#: apps/workout/views.py:1130 apps/workout/views.py:1287
+#: apps/workout/views.py:1350 apps/workout/views.py:1507
 msgid "March"
 msgstr "Mars"
 
-#: apps/workout/views.py:1131 apps/workout/views.py:1288
+#: apps/workout/views.py:1351 apps/workout/views.py:1508
 msgid "April"
 msgstr "Avril"
 
-#: apps/workout/views.py:1132 apps/workout/views.py:1289
+#: apps/workout/views.py:1352 apps/workout/views.py:1509
 msgid "May"
 msgstr "Mai"
 
-#: apps/workout/views.py:1133 apps/workout/views.py:1290
+#: apps/workout/views.py:1353 apps/workout/views.py:1510
 msgid "June"
 msgstr "Juin"
 
-#: apps/workout/views.py:1134 apps/workout/views.py:1291
+#: apps/workout/views.py:1354 apps/workout/views.py:1511
 msgid "July"
 msgstr "Juillet"
 
-#: apps/workout/views.py:1135 apps/workout/views.py:1292
+#: apps/workout/views.py:1355 apps/workout/views.py:1512
 msgid "August"
 msgstr "Août"
 
-#: apps/workout/views.py:1136 apps/workout/views.py:1293
+#: apps/workout/views.py:1356 apps/workout/views.py:1513
 msgid "September"
 msgstr "Septembre"
 
-#: apps/workout/views.py:1137 apps/workout/views.py:1294
+#: apps/workout/views.py:1357 apps/workout/views.py:1514
 msgid "October"
 msgstr "Octobre"
 
-#: apps/workout/views.py:1138 apps/workout/views.py:1295
+#: apps/workout/views.py:1358 apps/workout/views.py:1515
 msgid "November"
 msgstr "Novembre"
 
-#: apps/workout/views.py:1139 apps/workout/views.py:1296
+#: apps/workout/views.py:1359 apps/workout/views.py:1516
 msgid "December"
 msgstr "Décembre"
 
-#: apps/workout/views.py:1347
+#: apps/workout/views.py:1567
 msgid "Current Streak"
 msgstr "Série Actuelle"
 
-#: apps/workout/views.py:1348
+#: apps/workout/views.py:1568
 msgid "Longest Streak"
 msgstr "Plus Longue Série"
 
-#: apps/workout/views.py:1350
+#: apps/workout/views.py:1570
 msgid "Weekly Trend"
 msgstr "Tendance Hebdomadaire"
 
-#: apps/workout/views.py:1351
+#: apps/workout/views.py:1571
 msgid "Top Exercises"
 msgstr "Meilleurs Exercices"
 
