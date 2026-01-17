@@ -136,14 +136,21 @@
     color: var(--color-text-primary);
 }
 
+/* Workout Header Container */
+.workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 3px solid var(--color-accent-primary);
+}
+
 .workout_date_type {
     font-size: 24px;
     font-weight: bold;
     color: var(--color-accent-primary);
-    padding: 20px 0;
     margin: 0;
-    margin-bottom: 25px;
-    border-bottom: 3px solid var(--color-accent-primary);
 }
 
 
@@ -724,6 +731,22 @@ margin: 20px auto;
     .load_option_divider span {
         width: 100%;
         text-align: center;
+    }
+
+    /* Mobile workout header layout */
+    .workout-header {
+        flex-direction: column;
+        align-items: flex-start;
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 15px;
+    }
+
+    .workout_date_type {
+        border-bottom: 3px solid var(--color-accent-primary);
+        width: fit-content;
+        padding-bottom: 20px;
+        margin-bottom: 15px;
     }
 
     /* Keep workout action buttons on the same line */
