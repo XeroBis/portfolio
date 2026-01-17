@@ -38,7 +38,110 @@ function deleteExercise(index) {
     const exerciseRow = document.getElementById(`exercise_row_${index}`);
     if (exerciseRow) {
         exerciseRow.remove();
+        renumberExercises();
     }
+}
+
+function renumberExercises() {
+    const exercisesContainer = document.getElementById('exercises');
+    const exercises = exercisesContainer.querySelectorAll('.exercise');
+
+    exercises.forEach((exercise, newIndex) => {
+        const oldIndex = parseInt(exercise.id.replace('exercise_row_', ''));
+
+        if (oldIndex !== newIndex) {
+            // Update exercise row ID
+            exercise.id = `exercise_row_${newIndex}`;
+
+            // Update position number display
+            const positionNumber = exercise.querySelector('.exercise-position-number');
+            if (positionNumber) {
+                positionNumber.textContent = `${newIndex + 1}.`;
+            }
+
+            // Update search input
+            const searchInput = exercise.querySelector('.exercise-search-input');
+            if (searchInput) {
+                searchInput.id = `exercise_${newIndex}_search`;
+                searchInput.setAttribute('onkeyup', `filterExercises(${newIndex})`);
+                searchInput.setAttribute('onfocus', `showExerciseDropdown(${newIndex})`);
+                searchInput.setAttribute('onblur', `hideExerciseDropdown(${newIndex})`);
+            }
+
+            // Update hidden input
+            const hiddenInput = exercise.querySelector('input[type="hidden"]');
+            if (hiddenInput) {
+                hiddenInput.id = `exercise_${newIndex}_name`;
+                hiddenInput.name = `exercise_${newIndex}_name`;
+            }
+
+            // Update dropdown
+            const dropdown = exercise.querySelector('.exercise-dropdown');
+            if (dropdown) {
+                dropdown.id = `exercise_${newIndex}_dropdown`;
+
+                // Update all exercise options onclick handlers
+                const options = dropdown.querySelectorAll('.exercise-option');
+                options.forEach(option => {
+                    const exerciseName = option.getAttribute('data-name');
+                    const exerciseType = option.getAttribute('data-type');
+                    option.setAttribute('onclick', `selectExercise(${newIndex}, '${exerciseName}', '${exerciseType}')`);
+                });
+            }
+
+            // Update delete button
+            const deleteBtn = exercise.querySelector('.add_workout_btn_delete');
+            if (deleteBtn) {
+                deleteBtn.setAttribute('onclick', `deleteExercise(${newIndex})`);
+            }
+
+            // Update fields container
+            const fieldsContainer = exercise.querySelector('.exercise-fields');
+            if (fieldsContainer) {
+                fieldsContainer.id = `exercise_${newIndex}_fields`;
+
+                // Update series container if it exists
+                const seriesContainer = fieldsContainer.querySelector('.series-container');
+                if (seriesContainer) {
+                    seriesContainer.id = `exercise_${newIndex}_series_container`;
+
+                    // Update series list
+                    const seriesList = seriesContainer.querySelector('[id$="_series_list"]');
+                    if (seriesList) {
+                        seriesList.id = `exercise_${newIndex}_series_list`;
+
+                        // Update series items
+                        const seriesItems = seriesList.querySelectorAll('.series-item');
+                        seriesItems.forEach((seriesItem, seriesIndex) => {
+                            const seriesNumber = seriesIndex + 1;
+                            seriesItem.id = `exercise_${newIndex}_series_${seriesNumber}`;
+
+                            // Update series inputs names
+                            const inputs = seriesItem.querySelectorAll('input[type="number"]');
+                            inputs.forEach(input => {
+                                const nameParts = input.name.split('_');
+                                const fieldName = nameParts.slice(3).join('_'); // Get the field name (reps, weight, etc.)
+                                input.name = `exercise_${newIndex}_series_${seriesNumber}_${fieldName}`;
+                            });
+
+                            // Update delete series button
+                            const deleteSeriesBtn = seriesItem.querySelector('.add_workout_btn_delete');
+                            if (deleteSeriesBtn) {
+                                deleteSeriesBtn.setAttribute('onclick', `deleteSeries(${newIndex}, ${seriesNumber})`);
+                            }
+                        });
+                    }
+
+                    // Update add series button
+                    const addSeriesBtn = seriesContainer.querySelector('.button_add_series');
+                    if (addSeriesBtn) {
+                        const exerciseType = addSeriesBtn.getAttribute('onclick').includes('strength') ? 'strength' : 'cardio';
+                        addSeriesBtn.setAttribute('onclick', `addSeries(${newIndex}, '${exerciseType}')`);
+                    }
+                }
+            }
+        }
+    });
 };
 
 function filterExercises(exerciseIndex) {
@@ -325,6 +428,10 @@ function loadTemplate() {
     fetch(`/workout/get_template_details/?template_id=${templateId}`)
         .then(response => response.json())
         .then(data => {
+            // Set date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('add_workout_date').value = today;
+
             // Set workout type and duration
             if (data.type_workout) {
                 document.getElementById('add_workout_type_workout').value = data.type_workout;
