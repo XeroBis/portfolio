@@ -8,6 +8,7 @@ from apps.workout.models import (
     Equipment,
     Exercice,
     MuscleGroup,
+    OneExercice,
     StrengthSeriesLog,
     TypeWorkout,
     Workout,
@@ -39,6 +40,7 @@ class Command(BaseCommand):
             "workouts": self.export_workouts(),
             "strength_series_logs": self.export_strength_series_logs(),
             "cardio_series_logs": self.export_cardio_series_logs(),
+            "one_exercices": self.export_one_exercices(),
         }
 
         with open(output_path, "w", encoding="utf-8") as f:
@@ -132,4 +134,21 @@ class Command(BaseCommand):
                 "distance_m": csl.distance_m,
             }
             for csl in CardioSeriesLog.objects.all()
+        ]
+
+    def export_one_exercices(self):
+        return [
+            {
+                "id": oe.id,
+                "exercise_id": oe.name.id,
+                "workout_id": oe.seance.id,
+                "position": oe.position,
+                "content_type_model": (
+                    oe.content_type.model if oe.content_type else None
+                ),
+                "object_id": oe.object_id,
+            }
+            for oe in OneExercice.objects.select_related(
+                "name", "seance", "content_type"
+            ).all()
         ]

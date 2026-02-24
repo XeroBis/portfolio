@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 
 from apps.workout.models import (
@@ -8,6 +9,7 @@ from apps.workout.models import (
     Equipment,
     Exercice,
     MuscleGroup,
+    OneExercice,
     StrengthSeriesLog,
     TypeWorkout,
     Workout,
@@ -68,8 +70,19 @@ class Command(BaseCommand):
             data.get("exercises", []), muscle_group_map, equipment_map
         )
         workout_map = self.import_workouts(data.get("workouts", []), type_workout_map)
-        self.import_strength_series_logs(strength_series, exercise_map, workout_map)
-        self.import_cardio_series_logs(cardio_series, exercise_map, workout_map)
+        strength_log_map = self.import_strength_series_logs(
+            strength_series, exercise_map, workout_map
+        )
+        cardio_log_map = self.import_cardio_series_logs(
+            cardio_series, exercise_map, workout_map
+        )
+        self.import_one_exercices(
+            data.get("one_exercices", []),
+            exercise_map,
+            workout_map,
+            strength_log_map,
+            cardio_log_map,
+        )
 
         self.stdout.write(
             self.style.SUCCESS(
@@ -165,6 +178,8 @@ class Command(BaseCommand):
     def import_strength_series_logs(
         self, strength_series_logs, exercise_map, workout_map
     ):
+        """Return {json_id: StrengthSeriesLog} map."""
+        id_map = {}
         imported = 0
         for ssl_data in strength_series_logs:
             exercise = exercise_map.get(ssl_data["exercise_id"])
@@ -179,7 +194,7 @@ class Command(BaseCommand):
                     )
                 )
                 continue
-            StrengthSeriesLog.objects.update_or_create(
+            obj, _ = StrengthSeriesLog.objects.update_or_create(
                 exercise=exercise,
                 workout=workout,
                 series_number=ssl_data["series_number"],
@@ -188,12 +203,17 @@ class Command(BaseCommand):
                     "weight": ssl_data.get("weight"),
                 },
             )
+            if "id" in ssl_data:
+                id_map[ssl_data["id"]] = obj
             imported += 1
         self.stdout.write(
             self.style.SUCCESS(f"  Imported {imported} strength series logs")
         )
+        return id_map
 
     def import_cardio_series_logs(self, cardio_series_logs, exercise_map, workout_map):
+        """Return {json_id: CardioSeriesLog} map."""
+        id_map = {}
         imported = 0
         for csl_data in cardio_series_logs:
             exercise = exercise_map.get(csl_data["exercise_id"])
@@ -208,7 +228,7 @@ class Command(BaseCommand):
                     )
                 )
                 continue
-            CardioSeriesLog.objects.update_or_create(
+            obj, _ = CardioSeriesLog.objects.update_or_create(
                 exercise=exercise,
                 workout=workout,
                 series_number=csl_data["series_number"],
@@ -217,10 +237,66 @@ class Command(BaseCommand):
                     "distance_m": csl_data.get("distance_m"),
                 },
             )
+            if "id" in csl_data:
+                id_map[csl_data["id"]] = obj
             imported += 1
         self.stdout.write(
             self.style.SUCCESS(f"  Imported {imported} cardio series logs")
         )
+        return id_map
+
+    def import_one_exercices(
+        self, one_exercices, exercise_map, workout_map, strength_log_map, cardio_log_map
+    ):
+        imported = 0
+        for oe_data in one_exercices:
+            exercise = exercise_map.get(oe_data["exercise_id"])
+            workout = workout_map.get(oe_data["workout_id"])
+            if not exercise or not workout:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  Skipping OneExercice "
+                        f"(exercise_id={oe_data['exercise_id']}, "
+                        f"workout_id={oe_data['workout_id']}): "
+                        f"exercise or workout not found in map"
+                    )
+                )
+                continue
+
+            ct_model = oe_data.get("content_type_model")
+            old_object_id = oe_data.get("object_id")
+            content_type = None
+            new_object_id = None
+
+            if ct_model and old_object_id is not None:
+                try:
+                    content_type = ContentType.objects.get(
+                        app_label="workout", model=ct_model
+                    )
+                except ContentType.DoesNotExist:
+                    pass
+
+                if ct_model == "strengthserieslog":
+                    log_obj = strength_log_map.get(old_object_id)
+                elif ct_model == "cardioserieslog":
+                    log_obj = cardio_log_map.get(old_object_id)
+                else:
+                    log_obj = None
+
+                if log_obj:
+                    new_object_id = log_obj.id
+
+            OneExercice.objects.update_or_create(
+                seance=workout,
+                position=oe_data["position"],
+                defaults={
+                    "name": exercise,
+                    "content_type": content_type,
+                    "object_id": new_object_id,
+                },
+            )
+            imported += 1
+        self.stdout.write(self.style.SUCCESS(f"  Imported {imported} one exercices"))
 
     def convert_legacy_strength_logs(self, strength_exercise_logs):
         """Expand old aggregated strength logs into per-series dicts.
