@@ -1,0 +1,135 @@
+{% load static %}
+{% load i18n %}
+
+{% include "home/head.html" %}
+
+<body data-lang="{{ lang }}">
+    {% include "home/header.html" %}
+    <div class="container_exercise_library">
+        <h1>{% trans "Exercise Library" %}</h1>
+        <a href="/workout/">
+            <button class="cliquable button_workout">{% trans "Go to Workout" %}</button>
+        </a>
+        {% if user.is_authenticated %}
+        <!-- Data Management Section -->
+        <div class="data-management-section">
+            <h2>{% trans "Data Management" %}</h2>
+            <div class="data-buttons">
+                <button id="export-btn" class="cliquable data-button export-button">
+                    {% trans "Export Data" %}
+                </button>
+                <button id="import-btn" class="cliquable data-button import-button">
+                    {% trans "Import Data" %}
+                </button>
+                <button id="clear-btn" class="cliquable data-button clear-button">
+                    {% trans "Clear All Data" %}
+                </button>
+                <input type="file" id="import-file" accept=".json" style="display: none;">
+            </div>
+            <div id="message-area" style="margin-top: 10px;"></div>
+        </div>
+        {% endif %}
+
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <h2>{% trans "Filters" %}</h2>
+            <form method="get" id="filter-form" class="filter-form">
+                <div class="filter-group">
+                    <label for="name">{% trans "Exercise Name" %}:</label>
+                    <input type="text" name="name" id="name" class="filter-input" placeholder="{% trans "Search by name..." %}" value="{{ selected_name }}">
+                </div>
+
+                <div class="filter-group">
+                    <label for="muscle_group">{% trans "Muscle Group" %}:</label>
+                    <select name="muscle_group" id="muscle_group" class="filter-select">
+                        <option value="">{% trans "All" %}</option>
+                        {% for muscle_group in muscle_groups %}
+                        <option value="{{ muscle_group.id }}" {% if selected_muscle_group|stringformat:"s" == muscle_group.id|stringformat:"s" %}selected{% endif %}>{{ muscle_group.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="difficulty">{% trans "Difficulty" %}:</label>
+                    <select name="difficulty" id="difficulty" class="filter-select">
+                        <option value="">{% trans "All" %}</option>
+                        {% for value, label in difficulties %}
+                        <option value="{{ value }}" {% if selected_difficulty == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="equipment">{% trans "Equipment" %}:</label>
+                    <select name="equipment" id="equipment" class="filter-select">
+                        <option value="">{% trans "All" %}</option>
+                        {% for equip in equipments %}
+                        <option value="{{ equip.id }}" {% if selected_equipment|stringformat:"s" == equip.id|stringformat:"s" %}selected{% endif %}>{{ equip.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-buttons">
+                    <button type="submit" class="cliquable data-button">{% trans "Apply Filters" %}</button>
+                    <button type="button" id="reset-filters" class="cliquable data-button">{% trans "Reset Filters" %}</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="exercises-grid">
+            {% for exercise in exercises %}
+            <div class="exercise-card">
+                <div class="exercise-header">
+                    <h3>{{ exercise.name }}</h3>
+                    <span class="exercise-type-badge {{ exercise.exercise_type }}">
+                        {{ exercise.get_exercise_type_display }}
+                    </span>
+                </div>
+
+                <div class="exercise-details">
+                    {% if exercise.muscle_groups.exists %}
+                    <div class="detail-item">
+                        <strong>{% trans "Muscle Group" %}:</strong>
+                        <div class="badges-container">
+                            {% for muscle_group in exercise.muscle_groups.all %}
+                            <span class="badge muscle-{{ muscle_group.name|lower }}">
+                                {{ muscle_group.name }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if exercise.difficulty %}
+                    <div class="detail-item">
+                        <strong>{% trans "Difficulty" %}:</strong>
+                        <span class="badge difficulty-{{ exercise.difficulty }}">
+                            {{ exercise.get_difficulty_display }}
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    {% if exercise.equipment.exists %}
+                    <div class="detail-item">
+                        <strong>{% trans "Equipment" %}:</strong>
+                        <div class="badges-container">
+                            {% for equip in exercise.equipment.all %}
+                            <span class="badge">{{ equip.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-exercises">
+                <p>{% trans "No exercises found." %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {{ translations|json_script:"exercise-library-translations" }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/exercise_library.js' %}"></script>
+</body>

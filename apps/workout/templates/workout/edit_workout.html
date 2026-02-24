@@ -1,0 +1,50 @@
+{% load static %}
+{% load i18n %}
+
+{% include "head.html" %}
+
+<body data-lang="{{ lang }}">
+    {% include "header.html" %}
+    <div class="container_add_workout">
+        <h1 id="name_add_workout">
+            {% trans "Edit Session" %}
+        </h1>
+        <form method="post">
+            {% csrf_token %}
+            <div id="add_workout_date_type">
+                <div class="form-group">
+                    <label for="date" class="label_workout">{% trans "Date:" %}</label>
+                    <input type="date" id="add_workout_date" name="date" value="{{ workout.date }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration" class="label_workout">
+                        {% trans "Duration:" %}
+                    </label>
+                    <input type="number" id="add_workout_duration" name="duration" value="{{ workout.duration }}" required>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="type_workout" class="label_workout">{% trans "Type:" %}</label>
+                <select id="add_workout_type_workout" name="type_workout" required>
+                    <option value="">{% trans "Select a type" %}</option>
+                </select>
+            </div>
+
+            <div id="exercises">
+            </div>
+            <button type="button" class="cliquable button_workout new_workout" onclick="addExercice()">
+                {% trans "Add exercise" %}
+            </button>
+            <button type="submit" class="cliquable button_workout new_workout">
+                {% trans "Save" %}
+            </button>
+        </form>
+    </div>
+    {{ workout|json_script:"workout-data" }}
+    {{ exercises|json_script:"exercises-data" }}
+    {{ all_exercises|json_script:"all-exercises-data" }}
+    {{ translations|json_script:"add-workout-translations" }}
+    <script src="{% static 'js/add_workout.js' %}"></script>
+    <script src="{% static 'js/edit_workout.js' %}"></script>
+</body>

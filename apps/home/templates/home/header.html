@@ -1,0 +1,94 @@
+{% load i18n %}
+{% load static %}
+<header id="contenu_header">
+    <a href="{% url 'home' %}" id="name_href" class="cliquable">Alan Bignon</a>
+    <div id="links">
+        <a href="mailto:bignon.alan.pro@gmail.com" class="cliquable nav-item" id="send_mail">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <span id="span_point" class="nav-separator">•</span>
+
+        <a href="{% url 'home' %}" class="cliquable nav-item" id="home_link">{% trans "Home" %}</a>
+
+        <span id="span_point" class="nav-separator">•</span>
+
+        <div class="dropdown nav-item">
+            <a href="{% url 'workout' %}" class="cliquable dropdown-toggle" id="workout_link">{% trans "Workout" %}</a>
+            <div class="dropdown-menu">
+                <a href="{% url 'workout' %}" class="dropdown-item cliquable">{% trans "Sessions" %}</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'add_workout' %}" class="dropdown-item cliquable">{% trans "+ Session" %}</a>
+                {% endif %}
+                <a href="{% url 'exercise_library' %}" class="dropdown-item cliquable">{% trans "Exercises" %}</a>
+                <a href="{% url 'analytics' %}" class="dropdown-item cliquable">{% trans "Analytics" %}</a>
+            </div>
+        </div>
+
+        <span id="span_point" class="nav-separator">•</span>
+
+        <div class="flag cliquable nav-item">
+            <form method="post" action="{% url 'set_language' %}" style="display: inline;">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                <button type="submit" name="language" value="fr" id="french_flag"
+                    style="background: url('{% static 'images/flag-fr.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;"
+                    title="Français"></button>
+            </form>
+        </div>
+
+        <span id="span_point" class="nav-separator">•</span>
+
+        <div class="flag cliquable nav-item">
+            <form method="post" action="{% url 'set_language' %}" style="display: inline;">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                <button type="submit" name="language" value="en" id="english_flag"
+                    style="background: url('{% static 'images/flag-gb.svg' %}') no-repeat center; background-size: contain; width: 24px; height: 16px; border: none; cursor: pointer; vertical-align: middle;"
+                    title="English"></button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('.dropdown');
+
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+
+        if (window.innerWidth <= 1100) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Close other dropdowns
+                dropdowns.forEach(other => {
+                    if (other !== dropdown) {
+                        other.querySelector('.dropdown-menu').classList.remove('active');
+                    }
+                });
+
+                menu.classList.toggle('active');
+            });
+        }
+    });
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.dropdown')) {
+            dropdowns.forEach(dropdown => {
+                dropdown.querySelector('.dropdown-menu').classList.remove('active');
+            });
+        }
+    });
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1100) {
+            dropdowns.forEach(dropdown => {
+                dropdown.querySelector('.dropdown-menu').classList.remove('active');
+            });
+        }
+    });
+});
+</script>

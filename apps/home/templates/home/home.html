@@ -1,0 +1,93 @@
+{% load static %}
+{% load i18n %}
+
+{% include "head.html" %}
+<body>
+    {% include "header.html" %}
+
+    <section id="about_me">
+        <div id="about_me_txt">
+            <h1 id="about_me_accroche">{% trans "A great addition to your team!" %}</h1>
+            <p id="about_me_phrase">
+                {% trans "I'm Alan, a passionate developer with a strong interest in technology and data. I enjoy working on challenging projects and constantly improving my skills across multiple domains." %}
+            </p>
+        </div>
+        <img src="{% static 'images/me.png' %}" id="img_me">
+        <div id="logo_liens">
+            <a href="https://github.com/XeroBis" target=”_blank”, class="cliquable">
+                <img src="{% static 'images/github_logo.png' %}" class="logo">
+            </a>
+            <a href="https://www.linkedin.com/in/alan-bignon/" target=”_blank” class="cliquable">
+                <img src="{% static 'images/linkedin_logo.png' %}" class ="logo">
+            </a>
+        </div>
+    </section>
+
+    <section id="projects">
+        {% for projet in projets %}
+            <div class="project">
+
+                <div class="project_div">
+                    {% if lang == "en" %}
+                        <div class="project_title">{{ projet.title_en }}</div>
+                        <div class="project_description">{{ projet.description_en }}</div>
+                    {% endif %}
+                    {% if lang == "fr" %}
+                        <div class="project_title">{{ projet.title_fr }}</div>
+                        <div class="project_description">{{ projet.description_fr }}</div>
+                    {% endif %}
+
+                    <div class="project_tags">
+                    {% for tag in projet.tags.all %}
+                        <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                    </div>
+                    <a href="{{ projet.github_url }}" target=”_blank” class="cliquable">
+                        <img src="{% static 'images/github_logo.png' %}" class="logo">
+                    </a>
+
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </section>
+    <section id="testimonials">
+        <div id="testimonials_title">
+            <h2>{% trans "What People Say About Me" %}</h2>
+        </div>
+        <div id="testimonials_list">
+            {% for testimonial in testimonials %}
+                <div class="testimonial">
+                    {% if lang == "en" %}
+                    <p class="testimonial_text">{{ testimonial.text_en }}</p>
+                    {% endif %}
+                    {% if lang == "fr" %}
+                    <p class="testimonial_text">{{ testimonial.text_fr }}</p>
+                    {% endif %}
+                    <p class="testimonial_author">- {{ testimonial.author }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if user.is_authenticated %}
+    <form id="exportFom" action="export_data/">
+        {% csrf_token %}
+        <button type="submit" class="cliquable">{% trans "Download data" %}</button>
+    </form>
+    <form id="importForm" action="import_data/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" id="jsonFile" name="file" accept=".json">
+        <button type="submit" class="cliquable" onclick="return confirm('{% trans "Are you sure you want to import your file? This action cannot be undone!" %}');">
+        {% trans "Import JSON" %}
+        </button>
+    </form>
+    <form id="resetForm" action="reset_data/">
+        {% csrf_token %}
+        <button type="submit" class="cliquable" onclick="return confirm('{% trans "Are you sure you want to reset all data? This action cannot be undone!" %}');">
+            {% trans "Reset All Data" %}
+        </button>
+    </form>
+    {% endif %}
+</body>
+</html>

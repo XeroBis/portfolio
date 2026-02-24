@@ -1,0 +1,67 @@
+{% load static %}
+{% load i18n %}
+
+{% include "head.html" %}
+
+<body data-lang="{{ lang }}">
+    {% include "header.html" %}
+    <div class="container_add_workout">
+        <h1 id="name_add_workout">
+            {% trans "New Session" %}
+        </h1>
+        <form method="post">
+            {% csrf_token %}
+            <div id="add_workout_date_type">
+                <div class="form-group">
+                    <label for="date" class="label_workout">{% trans "Date:" %}</label>
+                    <input type="date" id="add_workout_date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration" class="label_workout">
+                        {% trans "Duration:" %}
+                    </label>
+                    <input type="number" id="add_workout_duration" name="duration" required>
+                </div>
+            </div>
+
+            <div id="load_workout_options">
+                <h3 class="load_options_title">{% trans "Load workout data" %}</h3>
+                <div class="load_options_container">
+                    <div class="load_option_card">
+                        <div class="load_option_header">
+                            <h4>{% trans "From last session" %}</h4>
+                        </div>
+                        <select id="add_workout_type_workout" name="type_workout" onchange="changeWorkoutType()" required>
+                            <option value="">
+                                {% trans "Select a type" %}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="load_option_divider">
+                        <span>{% trans "OR" %}</span>
+                    </div>
+
+                    <div class="load_option_card">
+                        <div class="load_option_header">
+                            <h4>{% trans "From template" %}</h4>
+                        </div>
+                        <select id="add_workout_template_select" name="template" onchange="loadTemplate()">
+                            <option value="">{% trans "No template" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="exercises">
+            </div>
+            <button type="button" class="cliquable button_workout new_workout" onclick="addExercice()">
+                {% trans "Add exercise" %}
+            </button>
+            <button type="submit" class="cliquable button_workout new_workout">
+                {% trans "Save" %}
+            </button>
+        </form>
+    </div>
+    {{ translations|json_script:"add-workout-translations" }}
+    <script src="{% static 'js/add_workout.js' %}"></script>
+</body>

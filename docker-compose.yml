@@ -1,0 +1,47 @@
+services:
+ db:
+   image: postgres:17
+   container_name: postgres-docker
+   environment:
+     POSTGRES_DB: ${DB_NAME}
+     POSTGRES_USER: ${DB_USER}
+     POSTGRES_PASSWORD: ${DB_PASSWORD}
+   ports:
+     - "5432:5432"
+   volumes:
+     - postgres_data:/var/lib/postgresql/data
+   env_file:
+     - .env
+ django-web:
+   restart: always
+   build:
+    context: .
+    dockerfile: dockerfiles/web/Dockerfile
+   container_name: django-docker
+   volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+   ports:
+      - 8000:8000
+   depends_on:
+     - db
+   environment:
+     DJANGO_SECRET_KEY: ${SECRET_KEY}
+     DEBUG: ${DEBUG}
+     DJANGO_ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+     DATABASE_ENGINE: ${DB_ENGINE}
+     DATABASE_NAME: ${DB_NAME}
+     DATABASE_USERNAME: ${DB_USER}
+     DATABASE_PASSWORD: ${DB_PASSWORD}
+     DATABASE_HOST: ${DB_HOST}
+     DATABASE_PORT: ${DB_PORT}
+     DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+     DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+     DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+   env_file:
+     - .env
+
+
+volumes:
+   postgres_data:
+   static_volume:

@@ -1,0 +1,531 @@
+# French translation for Portfolio Workout App
+# Copyright (C) 2025
+# This file is distributed under the same license as the Portfolio package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Portfolio 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-17 18:42+0100\n"
+"PO-Revision-Date: 2025-10-17 23:30+0200\n"
+"Last-Translator: Claude Code\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: apps/home/templates/home/header.html:11
+msgid "Home"
+msgstr "Accueil"
+
+#: apps/home/templates/home/header.html:16
+msgid "Workout"
+msgstr "Sports"
+
+#: apps/home/templates/home/header.html:18
+msgid "Sessions"
+msgstr "Séances"
+
+#: apps/home/templates/home/header.html:20
+#: apps/workout/templates/workout/workout.html:14
+msgid "+ Session"
+msgstr "+ Séance"
+
+#: apps/home/templates/home/header.html:22
+msgid "Exercises"
+msgstr "Exercices"
+
+#: apps/home/templates/home/header.html:23 apps/workout/views.py:1560
+msgid "Analytics"
+msgstr "Statistiques"
+
+#: apps/home/templates/home/home.html:10
+msgid "A great addition to your team!"
+msgstr "Un excellent ajout à votre équipe !"
+
+#: apps/home/templates/home/home.html:12
+msgid ""
+"I'm Alan, a passionate developer with a strong interest in technology and "
+"data. I enjoy working on challenging projects and constantly improving my "
+"skills across multiple domains."
+msgstr ""
+"Je suis Alan, un développeur passionné avec un fort intérêt pour la "
+"technologie et la data. J'aime travailler sur des projets stimulants et "
+"améliorer constamment mes compétences dans plusieurs domaines."
+
+#: apps/home/templates/home/home.html:56
+msgid "What People Say About Me"
+msgstr "Ce que les gens disent de moi"
+
+#: apps/home/templates/home/home.html:74
+msgid "My Resume"
+msgstr "Mon CV"
+
+#: apps/home/templates/home/home.html:75
+msgid "click here to download pdf"
+msgstr "cliquer ici pour le télécharger"
+
+#: apps/home/templates/home/home.html:80
+msgid "Download data"
+msgstr "Télécharger les données"
+
+#: apps/home/templates/home/home.html:85
+msgid ""
+"Are you sure you want to import your file? This action cannot be undone!"
+msgstr ""
+"Êtes-vous sûr de vouloir importer votre fichier ? Cette action ne peut pas "
+"être annulée !"
+
+#: apps/home/templates/home/home.html:86
+msgid "Import JSON"
+msgstr "Importer JSON"
+
+#: apps/home/templates/home/home.html:91
+msgid "Are you sure you want to reset all data? This action cannot be undone!"
+msgstr ""
+"Êtes-vous sûr de vouloir réinitialiser toutes les données ? Cette action ne "
+"peut pas être annulée !"
+
+#: apps/home/templates/home/home.html:92
+msgid "Reset All Data"
+msgstr "Réinitialiser toutes les données"
+
+#: apps/workout/templates/workout/add_workout.html:10
+msgid "New Session"
+msgstr "Nouvelle Séance"
+
+#: apps/workout/templates/workout/add_workout.html:16
+#: apps/workout/templates/workout/edit_workout.html:16
+msgid "Date:"
+msgstr "Date :"
+
+#: apps/workout/templates/workout/add_workout.html:21
+#: apps/workout/templates/workout/edit_workout.html:21
+msgid "Duration:"
+msgstr "Durée :"
+
+#: apps/workout/templates/workout/add_workout.html:28
+msgid "Load workout data"
+msgstr "Charger des données"
+
+#: apps/workout/templates/workout/add_workout.html:32
+msgid "From last session"
+msgstr "De la dernière séance"
+
+#: apps/workout/templates/workout/add_workout.html:36
+#: apps/workout/templates/workout/edit_workout.html:30
+msgid "Select a type"
+msgstr "Sélectionner un type"
+
+#: apps/workout/templates/workout/add_workout.html:42
+msgid "OR"
+msgstr "OU"
+
+#: apps/workout/templates/workout/add_workout.html:47
+msgid "From template"
+msgstr "D'un template"
+
+#: apps/workout/templates/workout/add_workout.html:50 apps/workout/views.py:390
+#: apps/workout/views.py:745
+msgid "No template"
+msgstr "Aucun template"
+
+#: apps/workout/templates/workout/add_workout.html:58
+#: apps/workout/templates/workout/edit_workout.html:37
+msgid "Add exercise"
+msgstr "Ajouter un exercice"
+
+#: apps/workout/templates/workout/add_workout.html:61
+#: apps/workout/templates/workout/edit_workout.html:40
+#: apps/workout/templates/workout/workout.html:129
+msgid "Save"
+msgstr "Enregistrer"
+
+#: apps/workout/templates/workout/analytics.html:14 apps/workout/views.py:1561
+msgid "Calendar"
+msgstr "Calendrier"
+
+#: apps/workout/templates/workout/analytics.html:15 apps/workout/views.py:1562
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: apps/workout/templates/workout/analytics.html:16 apps/workout/views.py:1563
+msgid "Personal Records"
+msgstr "Records Personnels"
+
+#: apps/workout/templates/workout/analytics.html:22
+msgid "Previous year"
+msgstr "Année précédente"
+
+#: apps/workout/templates/workout/analytics.html:28
+msgid "Next year"
+msgstr "Année suivante"
+
+#: apps/workout/templates/workout/analytics.html:39
+#: apps/workout/templates/workout/analytics.html:166
+msgid "M"
+msgstr "L"
+
+#: apps/workout/templates/workout/analytics.html:40
+#: apps/workout/templates/workout/analytics.html:167
+msgid "T"
+msgstr "M"
+
+#: apps/workout/templates/workout/analytics.html:41
+#: apps/workout/templates/workout/analytics.html:168
+msgid "W"
+msgstr "M"
+
+#: apps/workout/templates/workout/analytics.html:42
+#: apps/workout/templates/workout/analytics.html:169
+msgid "Th"
+msgstr "J"
+
+#: apps/workout/templates/workout/analytics.html:43
+#: apps/workout/templates/workout/analytics.html:170
+msgid "F"
+msgstr "V"
+
+#: apps/workout/templates/workout/analytics.html:44
+#: apps/workout/templates/workout/analytics.html:171
+msgid "Sa"
+msgstr "S"
+
+#: apps/workout/templates/workout/analytics.html:45
+#: apps/workout/templates/workout/analytics.html:172
+msgid "Su"
+msgstr "D"
+
+#: apps/workout/templates/workout/analytics.html:71
+msgid "Quick Select"
+msgstr "Sélection rapide"
+
+#: apps/workout/templates/workout/analytics.html:73
+msgid "Last 7 Days"
+msgstr "7 derniers jours"
+
+#: apps/workout/templates/workout/analytics.html:74
+msgid "Last Month"
+msgstr "Dernier mois"
+
+#: apps/workout/templates/workout/analytics.html:75
+msgid "Last 3 Months"
+msgstr "3 derniers mois"
+
+#: apps/workout/templates/workout/analytics.html:76
+msgid "Last 6 Months"
+msgstr "6 derniers mois"
+
+#: apps/workout/templates/workout/analytics.html:77
+msgid "Last Year"
+msgstr "Dernière année"
+
+#: apps/workout/templates/workout/analytics.html:78
+msgid "Year to Date"
+msgstr "Depuis début d'année"
+
+#: apps/workout/templates/workout/analytics.html:83
+msgid "Start Date"
+msgstr "Date de début"
+
+#: apps/workout/templates/workout/analytics.html:86
+msgid "End Date"
+msgstr "Date de fin"
+
+#: apps/workout/templates/workout/analytics.html:91
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: apps/workout/templates/workout/analytics.html:100 apps/workout/views.py:1564
+msgid "Total Workouts"
+msgstr "Total des Séances"
+
+#: apps/workout/templates/workout/analytics.html:104 apps/workout/views.py:1565
+msgid "Total Exercises"
+msgstr "Total des Exercices"
+
+#: apps/workout/templates/workout/analytics.html:108 apps/workout/views.py:1566
+msgid "Total Volume"
+msgstr "Volume Total"
+
+#: apps/workout/templates/workout/analytics.html:116
+msgid "Weekly Workout Trend"
+msgstr "Tendance Hebdomadaire des Séances"
+
+#: apps/workout/templates/workout/analytics.html:122 apps/workout/views.py:1569
+msgid "Workouts by Type"
+msgstr "Séances par Type"
+
+#: apps/workout/templates/workout/analytics.html:128
+msgid "Top 5 Exercises"
+msgstr "Top 5 des Exercices"
+
+#: apps/workout/templates/workout/analytics.html:149
+msgid "No personal records yet. Keep training!"
+msgstr "Aucun record personnel pour le moment. Continuez à vous entraîner !"
+
+#: apps/workout/templates/workout/analytics.html:163
+msgid "Workouts per Week"
+msgstr "Séances par Semaine"
+
+#: apps/workout/templates/workout/analytics.html:164
+msgid "Times Performed"
+msgstr "Fois Réalisé"
+
+#: apps/workout/templates/workout/edit_workout.html:10
+msgid "Edit Session"
+msgstr "Modifier la Séance"
+
+#: apps/workout/templates/workout/edit_workout.html:28
+msgid "Type:"
+msgstr "Type :"
+
+#: apps/workout/templates/workout/exercise_library.html:9
+#: apps/workout/views.py:992
+msgid "Exercise Library"
+msgstr "Exercices"
+
+#: apps/workout/templates/workout/exercise_library.html:11
+msgid "Go to Workout"
+msgstr "Retour au Séances"
+
+#: apps/workout/templates/workout/exercise_library.html:16
+msgid "Data Management"
+msgstr "Modification des données"
+
+#: apps/workout/templates/workout/exercise_library.html:19
+msgid "Export Data"
+msgstr "Exporter les données"
+
+#: apps/workout/templates/workout/exercise_library.html:22
+msgid "Import Data"
+msgstr "Importer JSON"
+
+#: apps/workout/templates/workout/exercise_library.html:25
+msgid "Clear All Data"
+msgstr "Tout effacer"
+
+#: apps/workout/templates/workout/exercise_library.html:35
+#: apps/workout/views.py:993
+msgid "Filters"
+msgstr "Filtres"
+
+#: apps/workout/templates/workout/exercise_library.html:38
+msgid "Exercise Name"
+msgstr "Nom de l'exercice"
+
+#: apps/workout/templates/workout/exercise_library.html:39
+msgid "Search by name..."
+msgstr "Rechercher par nom..."
+
+#: apps/workout/templates/workout/exercise_library.html:43
+#: apps/workout/templates/workout/exercise_library.html:92
+#: apps/workout/templates/workout/exercise_library_grid.html:14
+#: apps/workout/views.py:994
+msgid "Muscle Group"
+msgstr "Groupe de muscle"
+
+#: apps/workout/templates/workout/exercise_library.html:45
+#: apps/workout/templates/workout/exercise_library.html:55
+#: apps/workout/templates/workout/exercise_library.html:65
+#: apps/workout/views.py:997
+msgid "All"
+msgstr "Tous"
+
+#: apps/workout/templates/workout/exercise_library.html:53
+#: apps/workout/templates/workout/exercise_library.html:105
+#: apps/workout/templates/workout/exercise_library_grid.html:27
+#: apps/workout/views.py:995
+msgid "Difficulty"
+msgstr "Difficulté"
+
+#: apps/workout/templates/workout/exercise_library.html:63
+#: apps/workout/templates/workout/exercise_library.html:114
+#: apps/workout/templates/workout/exercise_library_grid.html:36
+#: apps/workout/views.py:996
+msgid "Equipment"
+msgstr "Équipement"
+
+#: apps/workout/templates/workout/exercise_library.html:73
+#: apps/workout/templates/workout/workout.html:40
+msgid "Apply Filters"
+msgstr "Appliquer filtres"
+
+#: apps/workout/templates/workout/exercise_library.html:74
+msgid "Reset Filters"
+msgstr "Réinitialiser les Filtres"
+
+#: apps/workout/templates/workout/exercise_library.html:126
+#: apps/workout/templates/workout/exercise_library_grid.html:48
+#: apps/workout/views.py:998
+msgid "No exercises found."
+msgstr "Aucun Exercice trouvé"
+
+#: apps/workout/templates/workout/workout.html:11
+msgid "Workout Sessions"
+msgstr "Séances de sports"
+
+#: apps/workout/templates/workout/workout.html:17
+msgid "Filter Workouts"
+msgstr "Filtrer les séances"
+
+#: apps/workout/templates/workout/workout.html:20
+msgid "Workout Type:"
+msgstr "Type de séance :"
+
+#: apps/workout/templates/workout/workout.html:22
+msgid "All Types"
+msgstr "Tous les types"
+
+#: apps/workout/templates/workout/workout.html:30
+msgid "Exercise:"
+msgstr "Exercice :"
+
+#: apps/workout/templates/workout/workout.html:32
+msgid "All Exercises"
+msgstr "Tous les exercices"
+
+#: apps/workout/templates/workout/workout.html:41
+msgid "Clear Filters"
+msgstr "Réinitialiser les filtres"
+
+#: apps/workout/templates/workout/workout.html:59 apps/workout/views.py:212
+msgid "Edit"
+msgstr "Modifier"
+
+#: apps/workout/templates/workout/workout.html:61
+msgid "Template"
+msgstr "Template"
+
+#: apps/workout/templates/workout/workout.html:109
+msgid "No workouts recorded."
+msgstr "Aucun workout enregistré."
+
+#: apps/workout/templates/workout/workout.html:116
+msgid "Load More"
+msgstr "Charger plus"
+
+#: apps/workout/templates/workout/workout.html:119
+msgid "Loading..."
+msgstr "Chargement..."
+
+#: apps/workout/templates/workout/workout.html:126
+msgid "Save as Template"
+msgstr "Enregistrer comme Template"
+
+#: apps/workout/templates/workout/workout.html:127
+msgid "Enter template name..."
+msgstr "Entrer le nom du modèle..."
+
+#: apps/workout/templates/workout/workout.html:130
+msgid "Cancel"
+msgstr "Annuler"
+
+#: apps/workout/views.py:205 apps/workout/views.py:206
+msgid "Exercise"
+msgstr "Exercice"
+
+#: apps/workout/views.py:207 apps/workout/views.py:384
+#: apps/workout/views.py:739
+msgid "Series"
+msgstr "Séries"
+
+#: apps/workout/views.py:208 apps/workout/views.py:385
+#: apps/workout/views.py:740
+msgid "Reps"
+msgstr "Reps"
+
+#: apps/workout/views.py:209 apps/workout/views.py:387
+#: apps/workout/views.py:742
+msgid "Weight (kg)"
+msgstr "Poids (kg)"
+
+#: apps/workout/views.py:210
+msgid "Duration (min)"
+msgstr "Durée (min)"
+
+#: apps/workout/views.py:211 apps/workout/views.py:389
+#: apps/workout/views.py:744
+msgid "Distance (m)"
+msgstr "Distance (m)"
+
+#: apps/workout/views.py:383 apps/workout/views.py:738
+msgid "Sets"
+msgstr "Sets"
+
+#: apps/workout/views.py:386 apps/workout/views.py:741
+msgid "Repetitions"
+msgstr "Répétitions"
+
+#: apps/workout/views.py:388 apps/workout/views.py:743
+msgid "Duration (sec)"
+msgstr "Durée (sec)"
+
+#: apps/workout/views.py:1348 apps/workout/views.py:1505
+msgid "January"
+msgstr "Janvier"
+
+#: apps/workout/views.py:1349 apps/workout/views.py:1506
+msgid "February"
+msgstr "Février"
+
+#: apps/workout/views.py:1350 apps/workout/views.py:1507
+msgid "March"
+msgstr "Mars"
+
+#: apps/workout/views.py:1351 apps/workout/views.py:1508
+msgid "April"
+msgstr "Avril"
+
+#: apps/workout/views.py:1352 apps/workout/views.py:1509
+msgid "May"
+msgstr "Mai"
+
+#: apps/workout/views.py:1353 apps/workout/views.py:1510
+msgid "June"
+msgstr "Juin"
+
+#: apps/workout/views.py:1354 apps/workout/views.py:1511
+msgid "July"
+msgstr "Juillet"
+
+#: apps/workout/views.py:1355 apps/workout/views.py:1512
+msgid "August"
+msgstr "Août"
+
+#: apps/workout/views.py:1356 apps/workout/views.py:1513
+msgid "September"
+msgstr "Septembre"
+
+#: apps/workout/views.py:1357 apps/workout/views.py:1514
+msgid "October"
+msgstr "Octobre"
+
+#: apps/workout/views.py:1358 apps/workout/views.py:1515
+msgid "November"
+msgstr "Novembre"
+
+#: apps/workout/views.py:1359 apps/workout/views.py:1516
+msgid "December"
+msgstr "Décembre"
+
+#: apps/workout/views.py:1567
+msgid "Current Streak"
+msgstr "Série Actuelle"
+
+#: apps/workout/views.py:1568
+msgid "Longest Streak"
+msgstr "Plus Longue Série"
+
+#: apps/workout/views.py:1570
+msgid "Weekly Trend"
+msgstr "Tendance Hebdomadaire"
+
+#: apps/workout/views.py:1571
+msgid "Top Exercises"
+msgstr "Meilleurs Exercices"
+
+#~ msgid "Copy as Template"
+#~ msgstr "Copier comme template"

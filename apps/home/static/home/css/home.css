@@ -1,0 +1,10 @@
+/* Main CSS file for home app - imports all component styles */
+
+@import url('colors.css');
+@import url('base.css');
+@import url('header.css');
+@import url('about.css');
+@import url('projects.css');
+@import url('testimonials.css');
+@import url('admin.css');
+@import url('404.css');

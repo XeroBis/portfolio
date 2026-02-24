@@ -1,0 +1,143 @@
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% include "home/head.html" %}
+
+<body data-lang="{{ lang }}">
+    {% include "home/header.html" %}
+    <div class="container_workout">
+        <h1 id="l_workout">
+            {% trans "Workout Sessions" %}
+        </h1>
+        {% if user.is_authenticated %}
+        <button class="cliquable button_workout new_workout" onclick="window.location.href='/workout/add_workout/';">{% trans "+ Session" %}</button>
+
+        <div id="filter-section" class="filter-container">
+            <h3>{% trans "Filter Workouts" %}</h3>
+            <form id="filter-form" method="GET" action="">
+                <div class="filter-group">
+                    <label for="workout-type-filter">{% trans "Workout Type:" %}</label>
+                    <select id="workout-type-filter" name="workout_type">
+                        <option value="">{% trans "All Types" %}</option>
+                        {% for type in all_workout_types %}
+                        <option value="{{ type }}" {% if workout_type_filter == type %}selected{% endif %}>{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="exercise-filter">{% trans "Exercise:" %}</label>
+                    <select id="exercise-filter" name="exercise">
+                        <option value="">{% trans "All Exercises" %}</option>
+                        {% for exercise in all_exercises %}
+                        <option value="{{ exercise }}" {% if exercise_filter == exercise %}selected{% endif %}>{{ exercise }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-button-group">
+                    <button type="submit" class="cliquable button_workout" style="display: none;">{% trans "Apply Filters" %}</button>
+                    <a href="/workout/" class="cliquable button_workout" id="clear-filters">{% trans "Clear Filters" %}</a>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <div id="workout-list">
+            {% for data in workout_data %}
+            <div class="workout-item" data-muscle-groups="{{ data.muscle_groups|join:',' }}">
+                <div class="workout-header">
+                    <h2 class="workout_date_type">
+                        {{ data.workout.date }} - {{ data.workout.type_workout }}
+                        {% if data.workout.duration > 0 %}
+                        - {{ data.workout.duration|hours_minutes }}
+                        {% endif %}
+                    </h2>
+                    {% if user.is_authenticated %}
+                    <div class="workout-actions" style="display: flex; gap: 10px;">
+                        <a href="/workout/edit_workout/{{ data.workout.id }}/">
+                            <button class="cliquable button_workout">{% trans "Edit" %}</button>
+                        </a>
+                        <button class="cliquable button_workout" onclick="showTemplateModal({{ data.workout.id }})">{% trans "Template" %}</button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if data.exercises %}
+                    {% regroup data.exercises by exercise_type as exercises_by_type %}
+                    {% for type_group in exercises_by_type %}
+                        {% if type_group.grouper == "strength" %}
+                        {% for exercise in type_group.list %}
+                            {% with forloop.parentloop.counter|add:forloop.counter as unique_index %}
+                            <div class="exercise-name-section">
+                                <strong>{{ exercise.name }}</strong>
+                                <button class="toggle-series-btn" data-exercise-id="exercise-{{ unique_index }}">▶</button>
+                            </div>
+                            <table class="series-table series-collapsed" id="exercise-{{ unique_index }}">
+                                <tbody>
+                                    {% for series in exercise.series %}
+                                    <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
+                                        <td>{{ series.reps }} x {{ series.weight }}kg</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endwith %}
+                        {% endfor %}
+                        {% elif type_group.grouper == "cardio" %}
+                        {% for exercise in type_group.list %}
+                            {% with forloop.parentloop.counter|add:forloop.counter as unique_index %}
+                            <div class="exercise-name-section">
+                                <strong>{{ exercise.name }}</strong>
+                                <button class="toggle-series-btn" data-exercise-id="exercise-{{ unique_index }}">▶</button>
+                            </div>
+                            <table class="series-table series-collapsed" id="exercise-{{ unique_index }}">
+                                <tbody>
+                                    {% for series in exercise.series %}
+                                    <tr class="exercise-row" data-muscle-groups="{{ exercise.muscle_groups|join:', ' }}">
+                                        <td>{% if series.duration_seconds and series.duration_seconds > 0 %}{% if series.distance_m and series.distance_m > 0 %}{{ series.duration_seconds }}s / {{ series.distance_m }}m{% else %}{{ series.duration_seconds }}s{% endif %}{% elif series.distance_m and series.distance_m > 0 %}{{ series.distance_m }}m{% endif %}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endwith %}
+                        {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% empty %}
+            <p>
+                {% trans "No workouts recorded." %}
+            </p>
+            {% endfor %}
+        </div>
+
+        {% if has_next %}
+        <button id="load-more" class="cliquable button_workout" data-next-page="{{ next_page_number }}">
+            {% trans "Load More" %}
+        </button>
+        <div id="loading-indicator" style="display: none; text-align: center; padding: 20px;">
+            {% trans "Loading..." %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="template-modal">
+        <div class="template-modal-content">
+            <h3>{% trans "Save as Template" %}</h3>
+            <input type="text" id="template-name-input" placeholder="{% trans 'Enter template name...' %}">
+            <div class="template-modal-buttons">
+                <button onclick="saveTemplate()" class="cliquable button_workout">{% trans "Save" %}</button>
+                <button onclick="closeTemplateModal()" class="cliquable button_workout">{% trans "Cancel" %}</button>
+            </div>
+        </div>
+    </div>
+
+    {{ translations|json_script:"workout-translations" }}
+    <script>
+        const isUserAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/workout.js' %}"></script>
+</body>
