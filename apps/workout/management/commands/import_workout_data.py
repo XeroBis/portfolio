@@ -1,18 +1,13 @@
 import json
 from datetime import datetime
 
-from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
-from django.db import connection
 
 from apps.workout.models import (
-    CardioExerciseLog,
     CardioSeriesLog,
     Equipment,
     Exercice,
     MuscleGroup,
-    OneExercice,
-    StrengthExerciseLog,
     StrengthSeriesLog,
     TypeWorkout,
     Workout,
@@ -45,22 +40,36 @@ class Command(BaseCommand):
 
         self.stdout.write("Importing data...")
 
-        self.import_type_workouts(data.get("type_workouts", []))
-        self.import_muscle_groups(data.get("muscle_groups", []))
-        self.import_equipment(data.get("equipment", []))
-        self.import_exercises(data.get("exercises", []))
-        self.import_workouts(data.get("workouts", []))
+        # Convert legacy aggregated logs to series format when present.
+        strength_series = data.get("strength_series_logs", [])
+        cardio_series = data.get("cardio_series_logs", [])
 
-        # Import new series-based data
-        self.import_strength_series_logs(data.get("strength_series_logs", []))
-        self.import_cardio_series_logs(data.get("cardio_series_logs", []))
+        if data.get("strength_exercise_logs"):
+            self.stdout.write(
+                "  Detected legacy strength logs — converting to series format..."
+            )
+            strength_series = strength_series + self.convert_legacy_strength_logs(
+                data["strength_exercise_logs"]
+            )
+        if data.get("cardio_exercise_logs"):
+            self.stdout.write(
+                "  Detected legacy cardio logs — converting to series format..."
+            )
+            cardio_series = cardio_series + self.convert_legacy_cardio_logs(
+                data["cardio_exercise_logs"]
+            )
 
-        # Legacy data - for backward compatibility with old exports
-        self.import_strength_logs(data.get("strength_exercise_logs", []))
-        self.import_cardio_logs(data.get("cardio_exercise_logs", []))
-        self.import_one_exercises(data.get("one_exercises", []))
-
-        self.fix_sequences()
+        # Build ID→object maps as we import each layer so subsequent
+        # layers can resolve cross-references without relying on DB IDs.
+        type_workout_map = self.import_type_workouts(data.get("type_workouts", []))
+        muscle_group_map = self.import_muscle_groups(data.get("muscle_groups", []))
+        equipment_map = self.import_equipment(data.get("equipment", []))
+        exercise_map = self.import_exercises(
+            data.get("exercises", []), muscle_group_map, equipment_map
+        )
+        workout_map = self.import_workouts(data.get("workouts", []), type_workout_map)
+        self.import_strength_series_logs(strength_series, exercise_map, workout_map)
+        self.import_cardio_series_logs(cardio_series, exercise_map, workout_map)
 
         self.stdout.write(
             self.style.SUCCESS(
@@ -69,292 +78,197 @@ class Command(BaseCommand):
         )
 
     def import_type_workouts(self, type_workouts):
+        """Return {json_id: TypeWorkout} map."""
+        id_map = {}
         for tw_data in type_workouts:
-            TypeWorkout.objects.update_or_create(
-                id=tw_data["id"], defaults={"name_workout": tw_data["name_workout"]}
+            obj, _ = TypeWorkout.objects.get_or_create(
+                name_workout=tw_data["name_workout"]
             )
+            id_map[tw_data["id"]] = obj
         self.stdout.write(
             self.style.SUCCESS(f"  Imported {len(type_workouts)} type workouts")
         )
+        return id_map
 
     def import_muscle_groups(self, muscle_groups):
+        """Return {json_id: MuscleGroup} map."""
+        id_map = {}
         for mg_data in muscle_groups:
-            MuscleGroup.objects.update_or_create(
-                id=mg_data["id"],
-                defaults={
-                    "name": mg_data["name"],
-                    "description": mg_data.get("description", ""),
-                },
+            obj, _ = MuscleGroup.objects.update_or_create(
+                name=mg_data["name"],
+                defaults={"description": mg_data.get("description", "")},
             )
+            id_map[mg_data["id"]] = obj
         self.stdout.write(
             self.style.SUCCESS(f"  Imported {len(muscle_groups)} muscle groups")
         )
+        return id_map
 
     def import_equipment(self, equipment_list):
+        """Return {json_id: Equipment} map."""
+        id_map = {}
         for eq_data in equipment_list:
-            Equipment.objects.update_or_create(
-                id=eq_data["id"],
-                defaults={
-                    "name": eq_data["name"],
-                    "description": eq_data.get("description", ""),
-                },
+            obj, _ = Equipment.objects.update_or_create(
+                name=eq_data["name"],
+                defaults={"description": eq_data.get("description", "")},
             )
+            id_map[eq_data["id"]] = obj
         self.stdout.write(
             self.style.SUCCESS(f"  Imported {len(equipment_list)} equipment")
         )
+        return id_map
 
-    def import_exercises(self, exercises):
+    def import_exercises(self, exercises, muscle_group_map, equipment_map):
+        """Return {json_id: Exercice} map."""
+        id_map = {}
         for ex_data in exercises:
-            exercise, created = Exercice.objects.update_or_create(
-                id=ex_data["id"],
+            obj, _ = Exercice.objects.update_or_create(
+                name=ex_data["name"],
                 defaults={
-                    "name": ex_data["name"],
                     "exercise_type": ex_data["exercise_type"],
                     "difficulty": ex_data.get("difficulty", ""),
                 },
             )
-
             if "muscle_groups" in ex_data:
-                exercise.muscle_groups.set(ex_data["muscle_groups"])
+                mapped_mgs = [
+                    muscle_group_map[mg_id]
+                    for mg_id in ex_data["muscle_groups"]
+                    if mg_id in muscle_group_map
+                ]
+                obj.muscle_groups.set(mapped_mgs)
             if "equipment" in ex_data:
-                exercise.equipment.set(ex_data["equipment"])
-
+                mapped_eqs = [
+                    equipment_map[eq_id]
+                    for eq_id in ex_data["equipment"]
+                    if eq_id in equipment_map
+                ]
+                obj.equipment.set(mapped_eqs)
+            id_map[ex_data["id"]] = obj
         self.stdout.write(self.style.SUCCESS(f"  Imported {len(exercises)} exercises"))
+        return id_map
 
-    def import_workouts(self, workouts):
+    def import_workouts(self, workouts, type_workout_map):
+        """Return {json_id: Workout} map."""
+        id_map = {}
         for w_data in workouts:
-            type_workout = None
-            if w_data.get("type_workout_id"):
-                try:
-                    type_workout = TypeWorkout.objects.get(id=w_data["type_workout_id"])
-                except TypeWorkout.DoesNotExist:
-                    self.stdout.write(
-                        self.style.WARNING(
-                            f"  TypeWorkout with id "
-                            f"{w_data['type_workout_id']} not found"
-                        )
-                    )
+            type_workout = type_workout_map.get(w_data.get("type_workout_id"))
+            date = datetime.strptime(w_data["date"], "%Y-%m-%d").date()
+            obj, _ = Workout.objects.update_or_create(
+                date=date,
+                type_workout=type_workout,
+                defaults={"duration": w_data.get("duration", 0)},
+            )
+            id_map[w_data["id"]] = obj
+        self.stdout.write(self.style.SUCCESS(f"  Imported {len(workouts)} workouts"))
+        return id_map
 
-            Workout.objects.update_or_create(
-                id=w_data["id"],
+    def import_strength_series_logs(
+        self, strength_series_logs, exercise_map, workout_map
+    ):
+        imported = 0
+        for ssl_data in strength_series_logs:
+            exercise = exercise_map.get(ssl_data["exercise_id"])
+            workout = workout_map.get(ssl_data["workout_id"])
+            if not exercise or not workout:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  Skipping strength series log "
+                        f"(exercise_id={ssl_data['exercise_id']}, "
+                        f"workout_id={ssl_data['workout_id']}): "
+                        f"exercise or workout not found in map"
+                    )
+                )
+                continue
+            StrengthSeriesLog.objects.update_or_create(
+                exercise=exercise,
+                workout=workout,
+                series_number=ssl_data["series_number"],
                 defaults={
-                    "date": datetime.strptime(w_data["date"], "%Y-%m-%d").date(),
-                    "type_workout": type_workout,
-                    "duration": w_data.get("duration"),
+                    "reps": ssl_data.get("reps"),
+                    "weight": ssl_data.get("weight"),
                 },
             )
-        self.stdout.write(self.style.SUCCESS(f"  Imported {len(workouts)} workouts"))
-
-    def import_strength_series_logs(self, strength_series_logs):
-        for ssl_data in strength_series_logs:
-            try:
-                exercise = Exercice.objects.get(id=ssl_data["exercise_id"])
-                workout = Workout.objects.get(id=ssl_data["workout_id"])
-
-                StrengthSeriesLog.objects.update_or_create(
-                    id=ssl_data["id"],
-                    defaults={
-                        "exercise": exercise,
-                        "workout": workout,
-                        "series_number": ssl_data.get("series_number"),
-                        "reps": ssl_data.get("reps"),
-                        "weight": ssl_data.get("weight"),
-                    },
-                )
-            except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
-                self.stdout.write(
-                    self.style.WARNING(
-                        f"  Skipping strength series log {ssl_data['id']}: {e}"
-                    )
-                )
+            imported += 1
         self.stdout.write(
-            self.style.SUCCESS(
-                f"  Imported {len(strength_series_logs)} strength series logs"
-            )
+            self.style.SUCCESS(f"  Imported {imported} strength series logs")
         )
 
-    def import_cardio_series_logs(self, cardio_series_logs):
+    def import_cardio_series_logs(self, cardio_series_logs, exercise_map, workout_map):
+        imported = 0
         for csl_data in cardio_series_logs:
-            try:
-                exercise = Exercice.objects.get(id=csl_data["exercise_id"])
-                workout = Workout.objects.get(id=csl_data["workout_id"])
-
-                CardioSeriesLog.objects.update_or_create(
-                    id=csl_data["id"],
-                    defaults={
-                        "exercise": exercise,
-                        "workout": workout,
-                        "series_number": csl_data.get("series_number"),
-                        "duration_seconds": csl_data.get("duration_seconds"),
-                        "distance_m": csl_data.get("distance_m"),
-                    },
-                )
-            except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
+            exercise = exercise_map.get(csl_data["exercise_id"])
+            workout = workout_map.get(csl_data["workout_id"])
+            if not exercise or not workout:
                 self.stdout.write(
                     self.style.WARNING(
-                        f"  Skipping cardio series log {csl_data['id']}: {e}"
+                        f"  Skipping cardio series log "
+                        f"(exercise_id={csl_data['exercise_id']}, "
+                        f"workout_id={csl_data['workout_id']}): "
+                        f"exercise or workout not found in map"
                     )
                 )
-        self.stdout.write(
-            self.style.SUCCESS(
-                f"  Imported {len(cardio_series_logs)} cardio series logs"
+                continue
+            CardioSeriesLog.objects.update_or_create(
+                exercise=exercise,
+                workout=workout,
+                series_number=csl_data["series_number"],
+                defaults={
+                    "duration_seconds": csl_data.get("duration_seconds"),
+                    "distance_m": csl_data.get("distance_m"),
+                },
             )
-        )
-
-    def import_strength_logs(self, strength_logs):
-        for sl_data in strength_logs:
-            try:
-                exercise = Exercice.objects.get(id=sl_data["exercise_id"])
-                workout = Workout.objects.get(id=sl_data["workout_id"])
-
-                StrengthExerciseLog.objects.update_or_create(
-                    id=sl_data["id"],
-                    defaults={
-                        "exercise": exercise,
-                        "workout": workout,
-                        "nb_series": sl_data.get("nb_series"),
-                        "nb_repetition": sl_data.get("nb_repetition"),
-                        "weight": sl_data.get("weight"),
-                        "notes": sl_data.get("notes", ""),
-                    },
-                )
-            except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
-                self.stdout.write(
-                    self.style.WARNING(f"  Skipping strength log {sl_data['id']}: {e}")
-                )
+            imported += 1
         self.stdout.write(
-            self.style.SUCCESS(f"  Imported {len(strength_logs)} strength logs")
+            self.style.SUCCESS(f"  Imported {imported} cardio series logs")
         )
 
-    def import_cardio_logs(self, cardio_logs):
-        for cl_data in cardio_logs:
-            try:
-                exercise = Exercice.objects.get(id=cl_data["exercise_id"])
-                workout = Workout.objects.get(id=cl_data["workout_id"])
+    def convert_legacy_strength_logs(self, strength_exercise_logs):
+        """Expand old aggregated strength logs into per-series dicts.
 
-                CardioExerciseLog.objects.update_or_create(
-                    id=cl_data["id"],
-                    defaults={
-                        "exercise": exercise,
-                        "workout": workout,
-                        "duration_seconds": cl_data.get("duration_seconds"),
-                        "distance_m": cl_data.get("distance_m"),
-                        "notes": cl_data.get("notes", ""),
-                    },
+        A single StrengthExerciseLog with nb_series=3 becomes three entries
+        with series_number 1, 2, 3, each carrying the same reps and weight.
+        Multiple logs for the same (exercise_id, workout_id) are numbered
+        sequentially without collision.
+        """
+        series_counter: dict = {}  # (exercise_id, workout_id) -> next series_number
+        converted = []
+        for sl in strength_exercise_logs:
+            key = (sl["exercise_id"], sl["workout_id"])
+            next_num = series_counter.get(key, 1)
+            nb_series = sl.get("nb_series", 1)
+            for i in range(nb_series):
+                converted.append(
+                    {
+                        "exercise_id": sl["exercise_id"],
+                        "workout_id": sl["workout_id"],
+                        "series_number": next_num + i,
+                        "reps": sl.get("nb_repetition"),
+                        "weight": sl.get("weight"),
+                    }
                 )
-            except (Exercice.DoesNotExist, Workout.DoesNotExist) as e:
-                self.stdout.write(
-                    self.style.WARNING(f"  Skipping cardio log {cl_data['id']}: {e}")
-                )
-        self.stdout.write(
-            self.style.SUCCESS(f"  Imported {len(cardio_logs)} cardio logs")
-        )
+            series_counter[key] = next_num + nb_series
+        return converted
 
-    def import_one_exercises(self, one_exercises):
-        for oe_data in one_exercises:
-            try:
-                exercise = None
-                if oe_data.get("exercise_id"):
-                    exercise = Exercice.objects.get(id=oe_data["exercise_id"])
+    def convert_legacy_cardio_logs(self, cardio_exercise_logs):
+        """Convert old aggregated cardio logs into per-series dicts.
 
-                workout = None
-                if oe_data.get("workout_id"):
-                    workout = Workout.objects.get(id=oe_data["workout_id"])
-
-                content_type = None
-                if oe_data.get("content_type_id"):
-                    content_type = ContentType.objects.get(
-                        id=oe_data["content_type_id"]
-                    )
-
-                OneExercice.objects.update_or_create(
-                    id=oe_data["id"],
-                    defaults={
-                        "name": exercise,
-                        "seance": workout,
-                        "position": oe_data.get("position"),
-                        "content_type": content_type,
-                        "object_id": oe_data.get("object_id"),
-                    },
-                )
-            except (
-                Exercice.DoesNotExist,
-                Workout.DoesNotExist,
-                ContentType.DoesNotExist,
-            ) as e:
-                self.stdout.write(
-                    self.style.WARNING(f"  Skipping one exercise {oe_data['id']}: {e}")
-                )
-        self.stdout.write(
-            self.style.SUCCESS(f"  Imported {len(one_exercises)} one exercises")
-        )
-
-    def fix_sequences(self):
-        """Fix PostgreSQL sequences after importing data with explicit IDs."""
-        self.stdout.write("Fixing PostgreSQL sequences...")
-
-        sql_commands = [
-            (
-                "SELECT setval(pg_get_serial_sequence('\"workout_typeworkout\"',"
-                '\'id\'), coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_typeworkout";'
-            ),
-            (
-                "SELECT setval(pg_get_serial_sequence('\"workout_musclegroup\"',"
-                '\'id\'), coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_musclegroup";'
-            ),
-            (
-                "SELECT setval(pg_get_serial_sequence('\"workout_equipment\"',"
-                '\'id\'), coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_equipment";'
-            ),
-            (
-                "SELECT setval(pg_get_serial_sequence('\"workout_exercice\"',"
-                '\'id\'), coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_exercice";'
-            ),
-            (
-                "SELECT setval(pg_get_serial_sequence('\"workout_workout\"',"
-                '\'id\'), coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_workout";'
-            ),
-            (
-                "SELECT setval(pg_get_serial_sequence("
-                "'\"workout_strengthexerciselog\"','id'), "
-                'coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_strengthexerciselog";'
-            ),
-            (
-                "SELECT setval(pg_get_serial_sequence("
-                "'\"workout_cardioexerciselog\"','id'), "
-                'coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_cardioexerciselog";'
-            ),
-            (
-                "SELECT setval(pg_get_serial_sequence('\"workout_oneexercice\"',"
-                '\'id\'), coalesce(max("id"), 1), max("id") IS NOT null) '
-                'FROM "workout_oneexercice";'
-            ),
-        ]
-
-        with connection.cursor() as cursor:
-            for sql in sql_commands:
-                try:
-                    cursor.execute(sql)
-                    result = cursor.fetchone()
-                    if result:
-                        table_name = sql.split('"')[1]
-                        next_id = result[0] + 1
-                        self.stdout.write(
-                            f"Fixed sequence for {table_name}: "
-                            f"next ID will be {next_id}"
-                        )
-                except Exception as e:
-                    self.stdout.write(
-                        self.style.WARNING(
-                            f"Could not fix sequence: {sql} - Error: {e}"
-                        )
-                    )
-
-        self.stdout.write(self.style.SUCCESS("Successfully fixed all sequences!"))
+        Each CardioExerciseLog becomes one series entry (series_number=1).
+        Multiple logs for the same (exercise_id, workout_id) are numbered
+        sequentially without collision.
+        """
+        series_counter: dict = {}  # (exercise_id, workout_id) -> next series_number
+        converted = []
+        for cl in cardio_exercise_logs:
+            key = (cl["exercise_id"], cl["workout_id"])
+            next_num = series_counter.get(key, 1)
+            converted.append(
+                {
+                    "exercise_id": cl["exercise_id"],
+                    "workout_id": cl["workout_id"],
+                    "series_number": next_num,
+                    "duration_seconds": cl.get("duration_seconds"),
+                    "distance_m": cl.get("distance_m"),
+                }
+            )
+            series_counter[key] = next_num + 1
+        return converted

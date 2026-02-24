@@ -29,7 +29,7 @@ END
 echo "Collecting static files"
 python manage.py collectstatic --noinput
 
-python manage.py compilemessages --ignore .venv
+python manage.py compilemessages --exclude .venv
 
 echo "Starting Django server..."
 exec python manage.py runserver 0.0.0.0:8000

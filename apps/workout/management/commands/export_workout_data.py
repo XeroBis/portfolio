@@ -4,13 +4,10 @@ from datetime import datetime
 from django.core.management.base import BaseCommand
 
 from apps.workout.models import (
-    CardioExerciseLog,
     CardioSeriesLog,
     Equipment,
     Exercice,
     MuscleGroup,
-    OneExercice,
-    StrengthExerciseLog,
     StrengthSeriesLog,
     TypeWorkout,
     Workout,
@@ -42,10 +39,6 @@ class Command(BaseCommand):
             "workouts": self.export_workouts(),
             "strength_series_logs": self.export_strength_series_logs(),
             "cardio_series_logs": self.export_cardio_series_logs(),
-            # Legacy data - will be empty for new workouts but kept for backward compatibility
-            "strength_exercise_logs": self.export_strength_logs(),
-            "cardio_exercise_logs": self.export_cardio_logs(),
-            "one_exercises": self.export_one_exercises(),
         }
 
         with open(output_path, "w", encoding="utf-8") as f:
@@ -139,51 +132,4 @@ class Command(BaseCommand):
                 "distance_m": csl.distance_m,
             }
             for csl in CardioSeriesLog.objects.all()
-        ]
-
-    def export_strength_logs(self):
-        return [
-            {
-                "id": sl.id,
-                "exercise_id": sl.exercise.id,
-                "exercise_name": sl.exercise.name,
-                "workout_id": sl.workout.id,
-                "nb_series": sl.nb_series,
-                "nb_repetition": sl.nb_repetition,
-                "weight": sl.weight,
-                "notes": sl.notes,
-            }
-            for sl in StrengthExerciseLog.objects.all()
-        ]
-
-    def export_cardio_logs(self):
-        return [
-            {
-                "id": cl.id,
-                "exercise_id": cl.exercise.id,
-                "exercise_name": cl.exercise.name,
-                "workout_id": cl.workout.id,
-                "duration_seconds": cl.duration_seconds,
-                "distance_m": cl.distance_m,
-                "notes": cl.notes,
-            }
-            for cl in CardioExerciseLog.objects.all()
-        ]
-
-    def export_one_exercises(self):
-        return [
-            {
-                "id": oe.id,
-                "exercise_id": oe.name.id if oe.name else None,
-                "exercise_name": oe.name.name if oe.name else None,
-                "workout_id": oe.seance.id if oe.seance else None,
-                "workout_date": (
-                    oe.seance.date.strftime("%Y-%m-%d") if oe.seance else None
-                ),
-                "position": oe.position,
-                "content_type_id": oe.content_type.id if oe.content_type else None,
-                "object_id": oe.object_id,
-                "exercise_log_data": oe.get_display_data() if oe.exercise_log else None,
-            }
-            for oe in OneExercice.objects.all()
         ]
