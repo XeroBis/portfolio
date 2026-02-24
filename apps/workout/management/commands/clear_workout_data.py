@@ -1,12 +1,11 @@
 from django.core.management.base import BaseCommand
 
 from apps.workout.models import (
-    CardioExerciseLog,
+    CardioSeriesLog,
     Equipment,
     Exercice,
     MuscleGroup,
-    OneExercice,
-    StrengthExerciseLog,
+    StrengthSeriesLog,
     TypeWorkout,
     Workout,
 )
@@ -27,9 +26,8 @@ class Command(BaseCommand):
 
         # Count records before deletion
         counts = {
-            "OneExercice": OneExercice.objects.count(),
-            "StrengthExerciseLog": StrengthExerciseLog.objects.count(),
-            "CardioExerciseLog": CardioExerciseLog.objects.count(),
+            "StrengthSeriesLog": StrengthSeriesLog.objects.count(),
+            "CardioSeriesLog": CardioSeriesLog.objects.count(),
             "Workout": Workout.objects.count(),
             "Exercice": Exercice.objects.count(),
             "Equipment": Equipment.objects.count(),
@@ -56,9 +54,8 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING("Operation cancelled."))
                 return
 
-        OneExercice.objects.all().delete()
-        StrengthExerciseLog.objects.all().delete()
-        CardioExerciseLog.objects.all().delete()
+        StrengthSeriesLog.objects.all().delete()
+        CardioSeriesLog.objects.all().delete()
         Workout.objects.all().delete()
         Exercice.objects.all().delete()
         Equipment.objects.all().delete()

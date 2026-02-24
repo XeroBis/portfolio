@@ -91,59 +91,6 @@ class Exercice(models.Model):
         return self.name
 
 
-class BaseExerciseLog(models.Model):
-    """
-    Abstract base class for exercise logs
-    """
-
-    exercise = models.ForeignKey(Exercice, on_delete=models.CASCADE)
-    workout = models.ForeignKey(Workout, on_delete=models.CASCADE)
-    notes = models.TextField(blank=True)
-
-    class Meta:
-        abstract = True
-
-    def get_display_data(self):
-        """Override in subclasses to return exercise-specific display data"""
-        raise NotImplementedError
-
-
-class StrengthExerciseLog(BaseExerciseLog):
-    nb_series = models.IntegerField()
-    nb_repetition = models.IntegerField()
-    weight = models.IntegerField()
-
-    def get_display_data(self):
-        return {
-            "type": "strength",
-            "nb_series": self.nb_series,
-            "nb_repetition": self.nb_repetition,
-            "weight": self.weight,
-        }
-
-    def __str__(self):
-        return (
-            f"{self.exercise.name} - "
-            f"{self.nb_series}x{self.nb_repetition} @ {self.weight}kg"
-        )
-
-
-class CardioExerciseLog(BaseExerciseLog):
-    duration_seconds = models.IntegerField(null=True, blank=True)
-    distance_m = models.FloatField(null=True, blank=True)
-
-    def get_display_data(self):
-        return {
-            "type": "cardio",
-            "duration_seconds": self.duration_seconds,
-            "distance_m": self.distance_m,
-        }
-
-    def __str__(self):
-        distance_str = f" - {self.distance_m}m" if self.distance_m else ""
-        return f"{self.exercise.name} - {self.duration_seconds}min{distance_str}"
-
-
 class StrengthSeriesLog(models.Model):
     """
     Series-based strength exercise log - one row per series
