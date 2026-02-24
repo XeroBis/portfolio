@@ -10,8 +10,12 @@ from apps.workout.models import (
     MuscleGroup,
     OneExercice,
     StrengthSeriesLog,
+    TemplateCardioSeries,
+    TemplateExercise,
+    TemplateStrengthSeries,
     TypeWorkout,
     Workout,
+    WorkoutTemplate,
 )
 
 
@@ -41,6 +45,10 @@ class Command(BaseCommand):
             "strength_series_logs": self.export_strength_series_logs(),
             "cardio_series_logs": self.export_cardio_series_logs(),
             "one_exercices": self.export_one_exercices(),
+            "workout_templates": self.export_workout_templates(),
+            "template_exercises": self.export_template_exercises(),
+            "template_strength_series": self.export_template_strength_series(),
+            "template_cardio_series": self.export_template_cardio_series(),
         }
 
         with open(output_path, "w", encoding="utf-8") as f:
@@ -145,4 +153,53 @@ class Command(BaseCommand):
                 "position": oe.position,
             }
             for oe in OneExercice.objects.select_related("name", "seance").all()
+        ]
+
+    def export_workout_templates(self):
+        return [
+            {
+                "id": wt.id,
+                "name": wt.name,
+                "type_workout_id": wt.type_workout.id if wt.type_workout else None,
+                "duration": wt.duration,
+                "is_active": wt.is_active,
+            }
+            for wt in WorkoutTemplate.objects.all()
+        ]
+
+    def export_template_exercises(self):
+        return [
+            {
+                "id": te.id,
+                "template_id": te.template.id,
+                "exercise_id": te.exercise.id,
+                "position": te.position,
+            }
+            for te in TemplateExercise.objects.select_related(
+                "template", "exercise"
+            ).all()
+        ]
+
+    def export_template_strength_series(self):
+        return [
+            {
+                "id": tss.id,
+                "template_exercise_id": tss.template_exercise.id,
+                "series_number": tss.series_number,
+                "reps": tss.reps,
+                "weight": tss.weight,
+            }
+            for tss in TemplateStrengthSeries.objects.all()
+        ]
+
+    def export_template_cardio_series(self):
+        return [
+            {
+                "id": tcs.id,
+                "template_exercise_id": tcs.template_exercise.id,
+                "series_number": tcs.series_number,
+                "duration_seconds": tcs.duration_seconds,
+                "distance_m": tcs.distance_m,
+            }
+            for tcs in TemplateCardioSeries.objects.all()
         ]

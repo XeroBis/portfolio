@@ -10,8 +10,12 @@ from apps.workout.models import (
     MuscleGroup,
     OneExercice,
     StrengthSeriesLog,
+    TemplateCardioSeries,
+    TemplateExercise,
+    TemplateStrengthSeries,
     TypeWorkout,
     Workout,
+    WorkoutTemplate,
 )
 
 
@@ -69,10 +73,24 @@ class Command(BaseCommand):
             data.get("exercises", []), muscle_group_map, equipment_map
         )
         workout_map = self.import_workouts(data.get("workouts", []), type_workout_map)
+        self.import_strength_series_logs(strength_series, exercise_map, workout_map)
+        self.import_cardio_series_logs(cardio_series, exercise_map, workout_map)
         self.import_one_exercices(
             data.get("one_exercices", []),
             exercise_map,
             workout_map,
+        )
+        template_map = self.import_workout_templates(
+            data.get("workout_templates", []), type_workout_map
+        )
+        template_exercise_map = self.import_template_exercises(
+            data.get("template_exercises", []), template_map, exercise_map
+        )
+        self.import_template_strength_series(
+            data.get("template_strength_series", []), template_exercise_map
+        )
+        self.import_template_cardio_series(
+            data.get("template_cardio_series", []), template_exercise_map
         )
 
         self.stdout.write(
@@ -259,6 +277,114 @@ class Command(BaseCommand):
             )
             imported += 1
         self.stdout.write(self.style.SUCCESS(f"  Imported {imported} one exercices"))
+
+    def import_workout_templates(self, workout_templates, type_workout_map):
+        """Return {json_id: WorkoutTemplate} map."""
+        id_map = {}
+        for wt_data in workout_templates:
+            type_workout = type_workout_map.get(wt_data.get("type_workout_id"))
+            obj, _ = WorkoutTemplate.objects.update_or_create(
+                name=wt_data["name"],
+                defaults={
+                    "type_workout": type_workout,
+                    "duration": wt_data.get("duration", 0),
+                    "is_active": wt_data.get("is_active", True),
+                },
+            )
+            id_map[wt_data["id"]] = obj
+        self.stdout.write(
+            self.style.SUCCESS(f"  Imported {len(workout_templates)} workout templates")
+        )
+        return id_map
+
+    def import_template_exercises(self, template_exercises, template_map, exercise_map):
+        """Return {json_id: TemplateExercise} map."""
+        id_map = {}
+        imported = 0
+        for te_data in template_exercises:
+            template = template_map.get(te_data["template_id"])
+            exercise = exercise_map.get(te_data["exercise_id"])
+            if not template or not exercise:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  Skipping TemplateExercise "
+                        f"(template_id={te_data['template_id']}, "
+                        f"exercise_id={te_data['exercise_id']}): "
+                        f"template or exercise not found in map"
+                    )
+                )
+                continue
+            obj, _ = TemplateExercise.objects.update_or_create(
+                template=template,
+                position=te_data["position"],
+                defaults={"exercise": exercise},
+            )
+            id_map[te_data["id"]] = obj
+            imported += 1
+        self.stdout.write(
+            self.style.SUCCESS(f"  Imported {imported} template exercises")
+        )
+        return id_map
+
+    def import_template_strength_series(
+        self, template_strength_series, template_exercise_map
+    ):
+        imported = 0
+        for tss_data in template_strength_series:
+            template_exercise = template_exercise_map.get(
+                tss_data["template_exercise_id"]
+            )
+            if not template_exercise:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  Skipping TemplateStrengthSeries "
+                        f"(template_exercise_id={tss_data['template_exercise_id']}): "
+                        f"template exercise not found in map"
+                    )
+                )
+                continue
+            TemplateStrengthSeries.objects.update_or_create(
+                template_exercise=template_exercise,
+                series_number=tss_data["series_number"],
+                defaults={
+                    "reps": tss_data.get("reps"),
+                    "weight": tss_data.get("weight"),
+                },
+            )
+            imported += 1
+        self.stdout.write(
+            self.style.SUCCESS(f"  Imported {imported} template strength series")
+        )
+
+    def import_template_cardio_series(
+        self, template_cardio_series, template_exercise_map
+    ):
+        imported = 0
+        for tcs_data in template_cardio_series:
+            template_exercise = template_exercise_map.get(
+                tcs_data["template_exercise_id"]
+            )
+            if not template_exercise:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  Skipping TemplateCardioSeries "
+                        f"(template_exercise_id={tcs_data['template_exercise_id']}): "
+                        f"template exercise not found in map"
+                    )
+                )
+                continue
+            TemplateCardioSeries.objects.update_or_create(
+                template_exercise=template_exercise,
+                series_number=tcs_data["series_number"],
+                defaults={
+                    "duration_seconds": tcs_data.get("duration_seconds"),
+                    "distance_m": tcs_data.get("distance_m"),
+                },
+            )
+            imported += 1
+        self.stdout.write(
+            self.style.SUCCESS(f"  Imported {imported} template cardio series")
+        )
 
     def convert_legacy_strength_logs(self, strength_exercise_logs):
         """Expand old aggregated strength logs into per-series dicts.
