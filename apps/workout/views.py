@@ -1242,7 +1242,7 @@ def get_dashboard_data(request):
     )
 
 
-def calculate_personal_records(limit=10):
+def calculate_personal_records():
     """
     Calculate personal records at runtime from StrengthSeriesLog data.
 
@@ -1289,9 +1289,9 @@ def calculate_personal_records(limit=10):
             if record_data:
                 all_records.append(record_data)
 
-    # Sort by date achieved (most recent first) and limit
-    all_records.sort(key=lambda x: x["date_achieved"], reverse=True)
-    return all_records[:limit]
+    # Sort by max weight (heaviest first)
+    all_records.sort(key=lambda x: x["value"], reverse=True)
+    return all_records
 
 
 def get_calendar_data(request):
@@ -1489,7 +1489,7 @@ def analytics(request):
         weekly_workouts = []
 
     # Personal Records (calculated at runtime)
-    personal_records = calculate_personal_records(limit=10)
+    personal_records = calculate_personal_records()
 
     # Generate calendar months for the year
     # Define translatable month names
