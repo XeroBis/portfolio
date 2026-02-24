@@ -20,7 +20,6 @@ from .models import (
     Exercice,
     MuscleGroup,
     OneExercice,
-    StrengthExerciseLog,
     StrengthSeriesLog,
     TemplateCardioSeries,
     TemplateExercise,
@@ -1123,11 +1122,9 @@ def get_dashboard_data(request):
 
         # Calculate total volume (for strength exercises) with date filter
         total_volume = (
-            StrengthExerciseLog.objects.filter(
+            StrengthSeriesLog.objects.filter(
                 workout_id__in=filtered_workout_ids
-            ).aggregate(total=Sum(F("nb_series") * F("nb_repetition") * F("weight")))[
-                "total"
-            ]
+            ).aggregate(total=Sum(F("reps") * F("weight")))["total"]
             or 0
         )
 
@@ -1150,9 +1147,9 @@ def get_dashboard_data(request):
 
         # Calculate total volume (for strength exercises)
         total_volume = (
-            StrengthExerciseLog.objects.aggregate(
-                total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
-            )["total"]
+            StrengthSeriesLog.objects.aggregate(total=Sum(F("reps") * F("weight")))[
+                "total"
+            ]
             or 0
         )
 
@@ -1247,17 +1244,14 @@ def get_dashboard_data(request):
 
 def calculate_personal_records(limit=10):
     """
-    Calculate personal records at runtime from StrengthExerciseLog data.
+    Calculate personal records at runtime from StrengthSeriesLog data.
 
     Returns a list of personal records sorted by date achieved (most recent first).
     """
-    from django.db.models import F
-
-    # Get all strength exercise logs with calculated volume (only exercises with weight)
+    # Get all strength series logs (only exercises with weight)
     logs = (
-        StrengthExerciseLog.objects.select_related("exercise", "workout")
+        StrengthSeriesLog.objects.select_related("exercise", "workout")
         .filter(weight__gt=0)  # Only include exercises with weight > 0
-        .annotate(volume=F("nb_series") * F("nb_repetition") * F("weight"))
         .order_by("-workout__date")
     )
 
@@ -1447,9 +1441,7 @@ def analytics(request):
 
     # Calculate total volume (for strength exercises)
     total_volume = (
-        StrengthExerciseLog.objects.aggregate(
-            total=Sum(F("nb_series") * F("nb_repetition") * F("weight"))
-        )["total"]
+        StrengthSeriesLog.objects.aggregate(total=Sum(F("reps") * F("weight")))["total"]
         or 0
     )
 
