@@ -6,6 +6,9 @@ from django.db import models
 class TypeWorkout(models.Model):
     name_workout = models.CharField(max_length=50)
 
+    class Meta:
+        ordering = ["name_workout"]
+
     def __str__(self):
         return self.name_workout
 
@@ -86,6 +89,9 @@ class Exercice(models.Model):
         default="beginner",
         help_text="Exercise difficulty level",
     )
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
