@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import OuterRef, Subquery
 
 from .models import (
     CardioSeriesLog,
@@ -63,14 +64,32 @@ class StrengthSeriesLogInline(admin.TabularInline):
     model = StrengthSeriesLog
     extra = 1
     fields = ["exercise", "series_number", "reps", "weight"]
-    ordering = ["exercise__name", "series_number"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        position_subquery = OneExercice.objects.filter(
+            name=OuterRef("exercise"),
+            seance=OuterRef("workout"),
+        ).values("position")[:1]
+        return qs.annotate(exercise_position=Subquery(position_subquery)).order_by(
+            "exercise_position", "series_number"
+        )
 
 
 class CardioSeriesLogInline(admin.TabularInline):
     model = CardioSeriesLog
     extra = 1
     fields = ["exercise", "series_number", "duration_seconds", "distance_m"]
-    ordering = ["exercise__name", "series_number"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        position_subquery = OneExercice.objects.filter(
+            name=OuterRef("exercise"),
+            seance=OuterRef("workout"),
+        ).values("position")[:1]
+        return qs.annotate(exercise_position=Subquery(position_subquery)).order_by(
+            "exercise_position", "series_number"
+        )
 
 
 class OneExerciceInline(admin.TabularInline):
