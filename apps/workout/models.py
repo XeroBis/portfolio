@@ -1,5 +1,3 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
@@ -151,19 +149,8 @@ class OneExercice(models.Model):
     seance = models.ForeignKey(Workout, on_delete=models.CASCADE)
     position = models.IntegerField(default=1)
 
-    # Generic foreign key to point to specific exercise log
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
-    object_id = models.PositiveIntegerField(null=True)
-    exercise_log = GenericForeignKey("content_type", "object_id")
-
     class Meta:
         ordering = ["seance", "position"]
-
-    def get_display_data(self):
-        """Get display data from the specific exercise log"""
-        if self.exercise_log:
-            return self.exercise_log.get_display_data()
-        return {}
 
     def __str__(self):
         exercice_name = self.name.name if self.name else "No Exercice"

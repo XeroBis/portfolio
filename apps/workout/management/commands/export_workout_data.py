@@ -143,12 +143,6 @@ class Command(BaseCommand):
                 "exercise_id": oe.name.id,
                 "workout_id": oe.seance.id,
                 "position": oe.position,
-                "content_type_model": (
-                    oe.content_type.model if oe.content_type else None
-                ),
-                "object_id": oe.object_id,
             }
-            for oe in OneExercice.objects.select_related(
-                "name", "seance", "content_type"
-            ).all()
+            for oe in OneExercice.objects.select_related("name", "seance").all()
         ]
